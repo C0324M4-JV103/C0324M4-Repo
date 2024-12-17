@@ -1,0 +1,242 @@
+body {
+    font-family: 'Quicksand', sans-serif;
+    background-color: white;
+    color: #4A5568;
+}
+
+.navbar {
+    background-color: #282781; /* Màu nền của navbar */
+    border: 1px solid #242472; /* Đường viền */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ cho navbar */
+}
+
+.nav-link {
+    color: white;
+}
+
+.nav-link:hover {
+    color: #ff664b;
+}
+
+.nav-item a {
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.dropdown-menu {
+    background-color: #f38774;
+    margin-top: 20px !important;
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa; /* Màu nền khi hover */
+    color: #ff664b; /* Màu chữ khi hover */
+}
+
+.hero-image {
+    max-height: 700px; /* Giới hạn chiều cao tối đa */
+
+}
+
+.hero-section {
+    background: #282781;
+    max-height: 700px; /* Giới hạn chiều cao của toàn bộ section */
+    overflow: hidden; /* Cắt nội dung thừa nếu cần */
+    display: flex;
+    align-items: center; /* Căn giữa nội dung theo chiều dọc */
+}
+
+
+.hero-content {
+    color: white;
+    position: relative;
+}
+
+.hero-button {
+    background-color: white;
+    color: #ff664b;
+    padding: 12px 32px;
+    border-radius: 50px;
+    text-decoration: none;
+}
+
+.hero-button:hover {
+    background-color: #f15a29;
+    color: white;
+}
+
+.animate-fade-in {
+    animation: fadeIn 1.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+hr.divider {
+    margin: 0;
+    border: 0;
+    border-top: 1px solid #686464;
+}
+
+/*thông báo css*/
+.timestamp {
+    background-color: #ff9459;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 140px;
+    text-align: center;
+}
+
+.notification-item {
+    display: flex;
+    align-items: start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.notification-content {
+    flex: 1;
+    padding-top: 4px;
+}
+
+.main-title {
+    color: #282781;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 8rem 0;
+}
+
+/*footer css*/
+
+.footer {
+    background-color: #282781;
+    color: #ffffff;
+    padding: 60px 0;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.logo span {
+    color: #fd754d;
+}
+
+.contact-info {
+    color: #888;
+    margin-top: 30px;
+}
+
+.contact-info div {
+    margin-bottom: 15px;
+}
+
+.contact-icon {
+    color: #ff6b6b;
+    margin-right: 10px;
+}
+
+.products {
+    margin-bottom: 20px;
+}
+
+
+.post-title {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.post-title:hover {
+    color: #ff752e;
+}
+
+.subscribe-btn {
+    background-color: #fd6f3c;
+    border: none;
+    padding: 10px 25px;
+}
+
+.subscribe-btn:hover {
+    background-color: #282781;
+}
+
+.footer-heading {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.social-icons {
+    text-align: left; /* Căn giữa các biểu tượng */
+}
+
+.social-icons a, i {
+    font-size: 30px; /* Kích thước icon */
+    color: #ece9e9; /* Màu sắc ban đầu của icon */
+    margin: 0 12px; /* Khoảng cách giữa các icon */
+    text-decoration: none;
+}
+
+.social-icons i:hover {
+    color: #ff6523;
+}
+
+/*  teacher css*/
+
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.card-img-top {
+    height: 450px; /* Chiều cao cố định cho hình ảnh */
+    object-fit: cover; /* Cắt ảnh để vừa khít khung */
+    border-radius: 10px 10px 0 0; /* Bo tròn viền trên */
+    transition: transform 0.9s ease;
+}
+
+.card-title {
+    font-size: 1.3rem;
+    color: #282781;
+}
+.card-img {
+    height: 250px;
+}
+
+.card-text {
+    font-size: 1.2rem;
+    color: #e32b2b;
+    margin-bottom: 20px;
+}
+
+.card:hover {
+    transform: translateY(-25px); /* Hiệu ứng nâng lên khi hover */
+    box-shadow: 0 20px 40px rgba(110, 144, 255, 0.2); /* bóng đổ khi hover */
+}
+
+.card:hover .card-img-top {
+    transform: scale(1.2); /* zoom ảnh khi hover */
+}

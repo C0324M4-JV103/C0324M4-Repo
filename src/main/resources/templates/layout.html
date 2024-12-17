@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!--Navbar-->
+<div th:fragment="nav">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <!--        <a class="navbar-brand" href="#">CodeGym</a>-->
+            <a class="navbar-brand" href="#">
+                <img src="https://cdn.codegym.vn/wp-content/uploads/2020/05/Logo-CodeGym-W-05.png" alt="CodeGym Logo"
+                     style="height: 40px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="#">Trang Chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Tin Tức</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="studentDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">Sinh Viên</a>
+                        <ul class="dropdown-menu" aria-labelledby="studentDropdown">
+                            <li><a class="dropdown-item" href="#">Đăng ký GVHD</a></li>
+                            <li><a class="dropdown-item" href="#">Đăng Ký Nhóm</a></li>
+                            <li><a class="dropdown-item" href="#">Quản lý tiến độ</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="teacherDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">Giáo Viên</a>
+                        <ul class="dropdown-menu" aria-labelledby="teacherDropdown">
+                            <li><a class="dropdown-item" href="#">Đăng thông báo</a></li>
+                            <li><a class="dropdown-item" href="#">Danh sách đề tài</a></li>
+                            <li><a class="dropdown-item" href="#">Kiểm duyệt đề tài</a></li>
+                            <li><a class="dropdown-item" href="#">Danh sách sinh viên</a></li>
+                            <li><a class="dropdown-item" href="#">Quản lý tiến độ</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="managerDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">Quản Lý</a>
+                        <ul class="dropdown-menu" aria-labelledby="managerDropdown">
+                            <li><a class="dropdown-item" href="#">Quản lý sinh viên</a></li>
+                            <li><a class="dropdown-item" href="#">Quản Lý giáo viên</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Liên Hệ</a></li>
+                </ul>
+
+                <div>
+                    <div class="dropdown user-profile d-flex justify-content-between align-items-center">
+                        <a class="nav-link dropdown-toggle" href="#" id="profilee" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="https://www.thaimediafund.or.th/wp-content/uploads/2024/07/default-avatar-profile-icon-.jpg"
+                                 alt="User profile" class="rounded-circle"
+                                 style="width: 40px; height: 40px; object-fit: cover;">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile">
+                            <li><a class="dropdown-item" style="font-size: 17px" th:href="@{#}">Đăng nhập</a></li>
+                            <hr class="divider">
+                            <li><a class="dropdown-item" style="font-size: 17px" th:href="@{#}">Đăng ký</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<!--Section-->
+<div th:fragment="section">
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-content animate-fade-in">
+                        <h4 class="mb-3">Tuyển sinh học viên lập trình</h4>
+                        <h1 class="hero-title">Tiếp Cận Với Môi Trường Giáo Dục Đầy Chuyên Nghiệp</h1>
+                        <p>
+                            Tại CODEGYM chúng tôi tôn vinh sự sáng tạo và khám phá, và cam kết giúp các sinh viên trang
+                            bị đầy kiến thức, kỹ năng và tư duy cần thiết để đạt được thành công trong cuộc sống và sự
+                            nghiệp.
+                        </p><br>
+                        <a href="#" class="hero-button" style="font-size: 30px">TÌM HIỂU THÊM</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="/img/giangvien.png" alt="Student" class="hero-image animate-fade-in">
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!--Thông báo-->
+<div th:fragment="noti">
+    <div class="container py-4">
+        <h1 class="main-title">THÔNG BÁO NỔI BẬT</h1>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="notifications-container">
+                    <div class="notification-item">
+                        <div class="timestamp">2024-11-11</div>
+                        <div class="notification-content">
+                            Thông báo quan trọng từ anh Công 1
+                        </div>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="timestamp">2024-11-11</div>
+                        <div class="notification-content">
+                            Thông báo quan trọng từ anh Công 2
+                        </div>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="timestamp">2024-11-11</div>
+                        <div class="notification-content">
+                            Thông báo quan trọng từ anh Công 3
+                        </div>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="timestamp">2024-11-11</div>
+                        <div class="notification-content">
+                            Thông báo quan trọng từ anh Công 4
+                        </div>
+                    </div>
+
+                    <div class="notification-item">
+                        <div class="timestamp">2024-11-11</div>
+                        <div class="notification-content">
+                            Thông báo quan trọng từ anh Công 5
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="image-container">
+                    <div class="card">
+                        <img src="https://cdn.codegym.vn/wp-content/uploads/2022/06/trang-chu-2-7.jpg" class="card-img-top" style="height: 200px" alt="LMS Illustration">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!--Giảng viên-->
+<div th:fragment="teacher">
+    <div class="container">
+        <h1 class="main-title">ĐỘI NGŨ GIẢNG VIÊN</h1>
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-anh-the-dep-e1664379835782.jpg" class="card-img-top" alt="Giảng viên 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Nguyễn Văn Anh Tú</h5>
+                        <p class="card-text">Tiến sĩ Khoa học Máy tính</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-hinh-the-dep-590x800.jpeg" class="card-img-top" alt="Giảng viên 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Trần Thị Dịu Nhi</h5>
+                        <p class="card-text">Thạc sĩ Kỹ thuật Phần mềm</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="https://cdn.codegym.vn/wp-content/uploads/2023/01/27.Nguyen-Thanh-Cong-_-Giang-Vien.JPG.jpg" class="card-img-top" alt="Giảng viên 3">
+                    <div class="card-body">
+                        <h5 class="card-title">Nguyễn Thanh Công</h5>
+                        <p class="card-text">Chuyên gia Trí tuệ Nhân tạo</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="https://kenh14cdn.com/2019/3/7/5301629225053921961409043040056750658027520n-1551924968498331276673.jpg" class="card-img-top" alt="Giảng viên 4">
+                    <div class="card-body">
+                        <h5 class="card-title">Lê Tâm Băng</h5>
+                        <p class="card-text">Giảng viên An ninh Mạng</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--Các dự án nổi bật-->
+<div th:fragment="project">
+    <div class="container mt-5">
+        <h2 class="main-title">CÁC DỰ ÁN NỔI BẬT</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 d-flex flex-column">
+                    <img src="https://photo.salekit.com/uploads/fchat_5b4872d13803896dd77125af/fchat-chatbot21.png" class="card-img" alt="Dự án 1">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Dự án Chatbox</h5>
+                        <p class="card-text">Tìm hiểu Chatbot - Công cụ chăm sóc khách hàng thông minh dành cho chủ Shop online.</p>
+                        <div class="mt-auto">
+                            <a href="#" class="btn btn-primary">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 d-flex flex-column">
+                    <img src="https://cmcts.com.vn/media/cache/data/products/Facial-Recognition-cr-1200x630.jpg" class="card-img" alt="Dự án 2">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Dự án Ứng dụng AI</h5>
+                        <p class="card-text">Xây dựng một hệ thống nhận diện khuôn mặt với trí tuệ nhân tạo và học máy.</p>
+                        <div class="mt-auto">
+                            <a href="#" class="btn btn-primary">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 d-flex flex-column">
+                    <img src="https://websolutions.com.vn/wp-content/uploads/2017/11/Chilli-Coffee-%E2%80%93-Just-another-WordPress-site-1024x482.png" class="card-img" alt="Dự án 3">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Thiết kế Website CoffeeCafe</h5>
+                        <p class="card-text">Xây dựng hệ thống quản lý và order cho cửa hàng kinh doanh mặt hàng coffee.</p>
+                        <div class="mt-auto">
+                            <a href="#" class="btn btn-primary">Xem Chi Tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Footer-->
+<div th:fragment="footer">
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <div class="logo">Code<span>gym</span></div>
+                    <p class="mb-4">Hệ thống quản lý thực hiện đề tài tốt nghiệp khoa CNTT- Software Requirements
+                        Specification V2.0</p>
+                    <div class="contact-info">
+                        <div>
+                            <i class="bi bi-geo-alt contact-icon"></i>
+                            295, Nguyễn Tất Thành, Hải Châu, Đà Nẵng.
+                        </div>
+                        <div>
+                            <i class="bi bi-envelope contact-icon"></i>
+                            marketing@codegym.vn
+                        </div>
+                        <div>
+                            <i class="bi bi-telephone contact-icon"></i>
+                            0966 238 202
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-4 mb-lg-0">
+                    <h3 class="footer-heading">Các hoạt động & Tài nguyên</h3>
+                    <div class="products">
+                        <div>
+                            <a href="" target="_blank" class="post-title">Cựu học viên</a>
+                        </div>
+                    </div>
+                    <div class="products">
+                        <div>
+                            <a href="" target="_blank" class="post-title">Hoạt động cộng đồng</a>
+                        </div>
+                    </div>
+                    <div class="products">
+                        <div>
+                            <a href="" target="_blank" class="post-title">Tài liệu tải về</a>
+                        </div>
+                    </div>
+                    <div class="products">
+                        <div>
+                            <a href="" target="_blank" class="post-title">Blog chia sẻ kiến thức</a>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div class="col-lg-4">
+                    <h3 class="footer-heading">Đăng ký nhận thông tin</h3>
+                    <div class="input-group">
+                        <input type="email" class="form-control" placeholder="Nhập email của bạn">
+                        <button class="btn subscribe-btn text-white" type="button">Xác nhận</button>
+                    </div>
+                    <br>
+                    <hr class="divider">
+                    <br>
+                    <h3 class="footer-heading">Liên kết mạng xã hội</h3>
+
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/codegym.vn" target="_blank">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@hoclaptrinh.codegymdanang" target="_blank">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+</body>
+</html>
