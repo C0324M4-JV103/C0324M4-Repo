@@ -16,11 +16,6 @@ import java.util.Set;
 @Setter
 @Entity
 public class User {
-<<<<<<< HEAD
-    String name = "Cong dep trai";
-    String name2 = "Huy dan";
-=======
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -67,5 +62,4 @@ public class User {
     @OneToMany(mappedBy = "receiver")
     private Set<Notification> receivedNotifications;
 
->>>>>>> 295d539 (create models)
 }
