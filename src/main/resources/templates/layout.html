@@ -17,23 +17,23 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="#">Trang Chủ</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Tin Tức</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="studentDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">Sinh Viên</a>
-                        <ul class="dropdown-menu" aria-labelledby="studentDropdown">
+                        <!--          1-->
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Sinh Viên</a>
+                        <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Đăng ký GVHD</a></li>
                             <li><a class="dropdown-item" href="#">Đăng Ký Nhóm</a></li>
                             <li><a class="dropdown-item" href="#">Quản lý tiến độ</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="teacherDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">Giáo Viên</a>
-                        <ul class="dropdown-menu" aria-labelledby="teacherDropdown">
+                        <!--          2-->
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Giáo Viên</a>
+                        <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Đăng thông báo</a></li>
                             <li><a class="dropdown-item" href="#">Danh sách đề tài</a></li>
                             <li><a class="dropdown-item" href="#">Kiểm duyệt đề tài</a></li>
@@ -42,9 +42,9 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="managerDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">Quản Lý</a>
-                        <ul class="dropdown-menu" aria-labelledby="managerDropdown">
+                        <!--          3-->
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Quản Lý</a>
+                        <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Quản lý sinh viên</a></li>
                             <li><a class="dropdown-item" href="#">Quản Lý giáo viên</a></li>
                         </ul>
@@ -54,16 +54,16 @@
 
                 <div>
                     <div class="dropdown user-profile d-flex justify-content-between align-items-center">
-                        <a class="nav-link dropdown-toggle" href="#" id="profilee" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
+                        <!--          4-->
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <img src="https://www.thaimediafund.or.th/wp-content/uploads/2024/07/default-avatar-profile-icon-.jpg"
                                  alt="User profile" class="rounded-circle"
                                  style="width: 40px; height: 40px; object-fit: cover;">
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profile">
-                            <li><a class="dropdown-item" style="font-size: 17px" th:href="@{#}">Đăng nhập</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#">Đăng nhập</a></li>
                             <hr class="divider">
-                            <li><a class="dropdown-item" style="font-size: 17px" th:href="@{#}">Đăng ký</a></li>
+                            <li><a class="dropdown-item" href="#">Đăng ký</a></li>
                         </ul>
                     </div>
                 </div>
@@ -90,7 +90,8 @@
                     </div>
                 </div>
                 <div class="col-lg-6 text-center">
-                    <img src="/img/giangvien.png" alt="Student" class="hero-image animate-fade-in">
+                    <img src="/img/giangvien.png"
+                         alt="Student" class="hero-image">
                 </div>
             </div>
         </div>
@@ -149,7 +150,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 <!--Giảng viên-->
@@ -177,9 +177,9 @@
             </div>
             <div class="col-md-3 mb-4">
                 <div class="card h-100">
-                    <img src="https://cdn.codegym.vn/wp-content/uploads/2023/01/27.Nguyen-Thanh-Cong-_-Giang-Vien.JPG.jpg" class="card-img-top" alt="Giảng viên 3">
+                    <img src="https://tiemanhsky.com/wp-content/uploads/2020/03/61103071_2361422507447925_6222318223514140672_n_1.jpg" class="card-img-top" alt="Giảng viên 3">
                     <div class="card-body">
-                        <h5 class="card-title">Nguyễn Thanh Công</h5>
+                        <h5 class="card-title">Lâm Tâm Như</h5>
                         <p class="card-text">Chuyên gia Trí tuệ Nhân tạo</p>
                     </div>
                 </div>
@@ -254,15 +254,15 @@
                         Specification V2.0</p>
                     <div class="contact-info">
                         <div>
-                            <i class="bi bi-geo-alt contact-icon"></i>
+                            <i class="fas fa-map-marker-alt contact-icon"></i>
                             295, Nguyễn Tất Thành, Hải Châu, Đà Nẵng.
                         </div>
                         <div>
-                            <i class="bi bi-envelope contact-icon"></i>
+                            <i class="fas fa-envelope contact-icon"></i>
                             marketing@codegym.vn
                         </div>
                         <div>
-                            <i class="bi bi-telephone contact-icon"></i>
+                            <i class="fas fa-phone contact-icon"></i>
                             0966 238 202
                         </div>
                     </div>

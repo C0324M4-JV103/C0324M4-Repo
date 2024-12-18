@@ -14,13 +14,15 @@ body {
     z-index: 1000;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ cho navbar */
 }
-
 .nav-link {
-    color: white;
+    color: white !important; /* Màu chữ mặc định */
 }
 
 .nav-link:hover {
-    color: #ff664b;
+    color: #f15a29 !important;
+}
+.dropdown-item {
+    color: white; /* Màu chữ mặc định trong dropdown */
 }
 
 .nav-item a {
@@ -30,26 +32,30 @@ body {
 }
 
 .dropdown-menu {
-    background-color: #f38774;
-    margin-top: 20px !important;
+    background-color: #282781;
+    margin-top: 15px !important;
 }
 
+
 .dropdown-item:hover {
-    background-color: #f8f9fa; /* Màu nền khi hover */
-    color: #ff664b; /* Màu chữ khi hover */
+    background-color: rgba(40, 39, 129, 0.7); /* Nền trong suốt 70% */
+    color: #c8bcbc; /* Màu chữ khi hover */
+    cursor: pointer; /* Thêm hiệu ứng con trỏ */
 }
 
 .hero-image {
-    max-height: 700px; /* Giới hạn chiều cao tối đa */
-
+    height: 700px;
+    width: 100%; /* hoặc giá trị phù hợp */
+    margin-top: 32px;
+    object-fit: contain; /* Đảm bảo hình ảnh không bị méo */
 }
 
 .hero-section {
     background: #282781;
     max-height: 700px; /* Giới hạn chiều cao của toàn bộ section */
-    overflow: hidden; /* Cắt nội dung thừa nếu cần */
-    display: flex;
     align-items: center; /* Căn giữa nội dung theo chiều dọc */
+    position: relative; /* Thêm thuộc tính này để căn chỉnh ảnh với đáy của section */
+
 }
 
 
@@ -59,15 +65,15 @@ body {
 }
 
 .hero-button {
-    background-color: white;
-    color: #ff664b;
+    background-color: #f15a29;
+    color: white;
     padding: 12px 32px;
     border-radius: 50px;
     text-decoration: none;
 }
 
 .hero-button:hover {
-    background-color: #f15a29;
+    background-color: #e55527;
     color: white;
 }
 
@@ -151,6 +157,7 @@ hr.divider {
 }
 
 .contact-icon {
+    font-size: 20px;
     color: #ff6b6b;
     margin-right: 10px;
 }
