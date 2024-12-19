@@ -23,7 +23,8 @@
                     <li class="nav-item"><a class="nav-link" href="#">Tin Tức</a></li>
                     <li class="nav-item dropdown">
                         <!--          1-->
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Sinh Viên</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Sinh
+                            Viên</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Đăng ký GVHD</a></li>
                             <li><a class="dropdown-item" href="#">Đăng Ký Nhóm</a></li>
@@ -32,7 +33,8 @@
                     </li>
                     <li class="nav-item dropdown">
                         <!--          2-->
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Giáo Viên</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Giáo
+                            Viên</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">Đăng thông báo</a></li>
                             <li><a class="dropdown-item" href="#">Danh sách đề tài</a></li>
@@ -50,6 +52,9 @@
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#">Liên Hệ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">
+                            <div class="notification-icon"><i class="fa-solid fa-bell" style="font-size: 17px"></i></div>
+                        </a></li>
                 </ul>
 
                 <div>
@@ -100,56 +105,50 @@
 
 <!--Thông báo-->
 <div th:fragment="noti">
-    <div class="container py-4">
+    <div class="container my-4">
         <h1 class="main-title">THÔNG BÁO NỔI BẬT</h1>
         <div class="row">
-            <div class="col-lg-8">
-                <div class="notifications-container">
-                    <div class="notification-item">
-                        <div class="timestamp">2024-11-11</div>
-                        <div class="notification-content">
-                            Thông báo quan trọng từ anh Công 1
-                        </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <div class="news-item">
+                    <div class="news-left">
+                        <img src="/img/logocg.png" alt="News">
                     </div>
-
-                    <div class="notification-item">
-                        <div class="timestamp">2024-11-11</div>
-                        <div class="notification-content">
-                            Thông báo quan trọng từ anh Công 2
-                        </div>
-                    </div>
-
-                    <div class="notification-item">
-                        <div class="timestamp">2024-11-11</div>
-                        <div class="notification-content">
-                            Thông báo quan trọng từ anh Công 3
-                        </div>
-                    </div>
-
-                    <div class="notification-item">
-                        <div class="timestamp">2024-11-11</div>
-                        <div class="notification-content">
-                            Thông báo quan trọng từ anh Công 4
-                        </div>
-                    </div>
-
-                    <div class="notification-item">
-                        <div class="timestamp">2024-11-11</div>
-                        <div class="notification-content">
-                            Thông báo quan trọng từ anh Công 5
-                        </div>
+                    <div class="news-content">
+                        <span class="news-date"><i class="far fa-calendar-alt me-1" style="color: #ff4444; font-size: 0.9rem; font-weight: 500"></i>03/07/2024</span>
+                        <p class="news-title">Hội nghị viên chức và người lao động Khối Quản lý và Đào tạo lập trình viên</p>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <div class="image-container">
-                    <div class="card">
-                        <img src="https://cdn.codegym.vn/wp-content/uploads/2022/06/trang-chu-2-7.jpg" class="card-img-top" style="height: 200px" alt="LMS Illustration">
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <div class="news-item">
+                    <div class="news-left">
+                        <img src="/img/logocg.png" alt="News">
+                    </div>
+                    <div class="news-content">
+                        <span class="news-date"><i class="far fa-calendar-alt me-1" style="color: #ff4444; font-size: 0.9rem; font-weight: 500"></i>03/07/2024</span>
+                        <p class="news-title">Năm thứ 2 liên tiếp, PTIT được Google vinh danh là lập trình viên sáng giá</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-4 mb-4">
+                <div class="news-item">
+                    <div class="news-left">
+                        <img src="/img/logocg.png" alt="News">
+                    </div>
+                    <div class="news-content">
+                        <span class="news-date"><i class="far fa-calendar-alt me-1" style="color: #ff4444; font-size: 0.9rem; font-weight: 500"></i>03/07/2024</span>
+                        <p class="news-title">Học viện Công nghệ Bưu chính Viễn thông ký kết hợp tác với Codegym để</p>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="btn-load-more">
+            <button class="btn btn-danger">Xem thêm</button>
+        </div>
     </div>
+
+
+
 </div>
 
 <!--Giảng viên-->
@@ -159,7 +158,8 @@
         <div class="row text-center">
             <div class="col-md-3 mb-4">
                 <div class="card h-100">
-                    <img src="https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-anh-the-dep-e1664379835782.jpg" class="card-img-top" alt="Giảng viên 1">
+                    <img src="https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-anh-the-dep-e1664379835782.jpg"
+                         class="card-img-top" alt="Giảng viên 1">
                     <div class="card-body">
                         <h5 class="card-title">Nguyễn Văn Anh Tú</h5>
                         <p class="card-text">Tiến sĩ Khoa học Máy tính</p>
@@ -168,7 +168,8 @@
             </div>
             <div class="col-md-3 mb-4">
                 <div class="card h-100">
-                    <img src="https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-hinh-the-dep-590x800.jpeg" class="card-img-top" alt="Giảng viên 2">
+                    <img src="https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-hinh-the-dep-590x800.jpeg"
+                         class="card-img-top" alt="Giảng viên 2">
                     <div class="card-body">
                         <h5 class="card-title">Trần Thị Dịu Nhi</h5>
                         <p class="card-text">Thạc sĩ Kỹ thuật Phần mềm</p>
@@ -177,7 +178,8 @@
             </div>
             <div class="col-md-3 mb-4">
                 <div class="card h-100">
-                    <img src="https://tiemanhsky.com/wp-content/uploads/2020/03/61103071_2361422507447925_6222318223514140672_n_1.jpg" class="card-img-top" alt="Giảng viên 3">
+                    <img src="https://tiemanhsky.com/wp-content/uploads/2020/03/61103071_2361422507447925_6222318223514140672_n_1.jpg"
+                         class="card-img-top" alt="Giảng viên 3">
                     <div class="card-body">
                         <h5 class="card-title">Lâm Tâm Như</h5>
                         <p class="card-text">Chuyên gia Trí tuệ Nhân tạo</p>
@@ -186,7 +188,8 @@
             </div>
             <div class="col-md-3 mb-4">
                 <div class="card h-100">
-                    <img src="https://kenh14cdn.com/2019/3/7/5301629225053921961409043040056750658027520n-1551924968498331276673.jpg" class="card-img-top" alt="Giảng viên 4">
+                    <img src="https://kenh14cdn.com/2019/3/7/5301629225053921961409043040056750658027520n-1551924968498331276673.jpg"
+                         class="card-img-top" alt="Giảng viên 4">
                     <div class="card-body">
                         <h5 class="card-title">Lê Tâm Băng</h5>
                         <p class="card-text">Giảng viên An ninh Mạng</p>
@@ -205,10 +208,12 @@
         <div class="row text-center">
             <div class="col-md-4 mb-4">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="https://photo.salekit.com/uploads/fchat_5b4872d13803896dd77125af/fchat-chatbot21.png" class="card-img" alt="Dự án 1">
+                    <img src="https://photo.salekit.com/uploads/fchat_5b4872d13803896dd77125af/fchat-chatbot21.png"
+                         class="card-img" alt="Dự án 1">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">Dự án Chatbox</h5>
-                        <p class="card-text">Tìm hiểu Chatbot - Công cụ chăm sóc khách hàng thông minh dành cho chủ Shop online.</p>
+                        <p class="card-text">Tìm hiểu Chatbot - Công cụ chăm sóc khách hàng thông minh dành cho chủ Shop
+                            online.</p>
                         <div class="mt-auto">
                             <a href="#" class="btn btn-primary">Xem Chi Tiết</a>
                         </div>
@@ -217,10 +222,12 @@
             </div>
             <div class="col-md-4 mb-4">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="https://cmcts.com.vn/media/cache/data/products/Facial-Recognition-cr-1200x630.jpg" class="card-img" alt="Dự án 2">
+                    <img src="https://cmcts.com.vn/media/cache/data/products/Facial-Recognition-cr-1200x630.jpg"
+                         class="card-img" alt="Dự án 2">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">Dự án Ứng dụng AI</h5>
-                        <p class="card-text">Xây dựng một hệ thống nhận diện khuôn mặt với trí tuệ nhân tạo và học máy.</p>
+                        <p class="card-text">Xây dựng một hệ thống nhận diện khuôn mặt với trí tuệ nhân tạo và học
+                            máy.</p>
                         <div class="mt-auto">
                             <a href="#" class="btn btn-primary">Xem Chi Tiết</a>
                         </div>
@@ -229,10 +236,12 @@
             </div>
             <div class="col-md-4 mb-4">
                 <div class="card h-100 d-flex flex-column">
-                    <img src="https://websolutions.com.vn/wp-content/uploads/2017/11/Chilli-Coffee-%E2%80%93-Just-another-WordPress-site-1024x482.png" class="card-img" alt="Dự án 3">
+                    <img src="https://websolutions.com.vn/wp-content/uploads/2017/11/Chilli-Coffee-%E2%80%93-Just-another-WordPress-site-1024x482.png"
+                         class="card-img" alt="Dự án 3">
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title">Thiết kế Website CoffeeCafe</h5>
-                        <p class="card-text">Xây dựng hệ thống quản lý và order cho cửa hàng kinh doanh mặt hàng coffee.</p>
+                        <p class="card-text">Xây dựng hệ thống quản lý và order cho cửa hàng kinh doanh mặt hàng
+                            coffee.</p>
                         <div class="mt-auto">
                             <a href="#" class="btn btn-primary">Xem Chi Tiết</a>
                         </div>
