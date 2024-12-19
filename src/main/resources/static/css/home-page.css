@@ -3,6 +3,13 @@ body {
     background-color: white;
     color: #4A5568;
 }
+.main-title {
+    color: #282781;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 5rem 0;
+}
 
 .navbar {
     background-color: #282781; /* Màu nền của navbar */
