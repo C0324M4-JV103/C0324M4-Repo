@@ -22,6 +22,9 @@ public class Role {
     @Column(nullable = false)
     private RoleName name;
 
+    public Role(RoleName roleName) {
+    }
+
     public enum RoleName {
         ROLE_ADMIN, ROLE_TEACHER, ROLE_STUDENT
     }
