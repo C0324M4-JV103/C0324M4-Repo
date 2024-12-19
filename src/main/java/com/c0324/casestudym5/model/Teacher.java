@@ -20,9 +20,13 @@ public class Teacher {
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
-    @OneToOne
-    @JoinColumn(name = "degree_id")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Degree degree;
+
+    public enum Degree {
+        MASTER, DOCTOR, PROFESSOR
+    }
 
     @OneToOne
     @JoinColumn(name = "user_id")
