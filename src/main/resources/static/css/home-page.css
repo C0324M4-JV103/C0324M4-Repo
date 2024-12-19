@@ -18,7 +18,7 @@ body {
     color: white !important; /* Màu chữ mặc định */
 }
 
-.nav-link:hover {
+.nav-link:focus, .nav-link:hover{
     color: #f15a29 !important;
 }
 .dropdown-item {
@@ -42,6 +42,8 @@ body {
     color: #c8bcbc; /* Màu chữ khi hover */
     cursor: pointer; /* Thêm hiệu ứng con trỏ */
 }
+
+/*section*/
 
 .hero-image {
     height: 700px;
@@ -99,36 +101,44 @@ hr.divider {
 }
 
 /*thông báo css*/
-.timestamp {
-    background-color: #ff9459;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 140px;
-    text-align: center;
-}
-
-.notification-item {
+.news-item {
     display: flex;
-    align-items: start;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    align-items: center;
+    border: 1px solid #d5d3d3;
+    border-radius: 8px;
+    padding: 10px;
 }
-
-.notification-content {
-    flex: 1;
-    padding-top: 4px;
+.news-item img {
+    width: 100px;
+    height: 80px;
+    border-radius: 5px;
+    object-fit: cover;
 }
-
-.main-title {
-    color: #282781;
-    text-align: center;
-    font-size: 3rem;
+.news-content {
+    margin-left: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 80px;
+}
+.news-date {
+    color: #1f0604;
+    margin-bottom: 5px;
+}
+.news-title {
+    font-size: 1rem;
     font-weight: bold;
-    margin: 8rem 0;
+    color: #333;
+    margin-top: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: clip;
 }
-
+.btn-load-more {
+    text-align: center;
+    margin-top: 20px;
+}
 /*footer css*/
 
 .footer {
@@ -239,10 +249,10 @@ hr.divider {
     margin-bottom: 20px;
 }
 
-.card:hover {
-    transform: translateY(-25px); /* Hiệu ứng nâng lên khi hover */
-    box-shadow: 0 20px 40px rgba(110, 144, 255, 0.2); /* bóng đổ khi hover */
-}
+/*.card:hover {*/
+/*    transform: translateY(-25px); !* Hiệu ứng nâng lên khi hover *!*/
+/*    box-shadow: 0 20px 40px rgba(110, 144, 255, 0.2); !* bóng đổ khi hover *!*/
+/*}*/
 
 .card:hover .card-img-top {
     transform: scale(1.2); /* zoom ảnh khi hover */
