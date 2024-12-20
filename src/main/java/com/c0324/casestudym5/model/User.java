@@ -28,7 +28,7 @@ public class User {
     @Column(columnDefinition = "VARCHAR(50)" , nullable = false, unique = true)
     private String email;
 
-    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(64)", nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -52,7 +52,7 @@ public class User {
     @JoinColumn(name="avatar_id", referencedColumnName = "id")
     private MultiFile avatar;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
