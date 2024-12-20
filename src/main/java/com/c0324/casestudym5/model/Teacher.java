@@ -20,7 +20,6 @@ public class Teacher {
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
-<<<<<<< HEAD
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Degree degree;
@@ -29,12 +28,6 @@ public class Teacher {
         MASTER, DOCTOR, PROFESSOR
     }
 
-=======
-    @OneToOne
-    @JoinColumn(name = "degree_id")
-    private Degree degree;
-
->>>>>>> 467cbbf345d993ca64dd5dffb104b55f52e9266a
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
