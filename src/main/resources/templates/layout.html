@@ -99,50 +99,89 @@
 
 <!--Thông báo-->
 <div th:fragment="noti">
-    <div class="container my-4">
+    <div class="container py-5">
         <h1 class="main-title">THÔNG BÁO NỔI BẬT</h1>
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
-                <div class="news-item">
-                    <div class="news-left">
-                        <img src="/img/logocg.png" alt="News">
+        <swiper-container class="mySwiper" pagination="true" pagination-clickable="true" space-between="20" slides-per-view="3">
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
                     </div>
-                    <div class="news-content">
-                        <span class="news-date"><i class="far fa-calendar-alt me-1" style="color: #ff4444; font-size: 0.9rem; font-weight: 500"></i>03/07/2024</span>
-                        <a href="#" class="news-title">Hội nghị viên chức và người lao động Khối Quản lý và Đào tạo lập trình viên</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
-                <div class="news-item">
-                    <div class="news-left">
-                        <img src="/img/logocg.png" alt="News">
-                    </div>
-                    <div class="news-content">
-                        <span class="news-date"><i class="far fa-calendar-alt me-1" style="color: #ff4444; font-size: 0.9rem; font-weight: 500"></i>03/07/2024</span>
-                        <a href="#" class="news-title">Hội nghị viên chức và người lao động Khối Quản lý và Đào tạo lập trình viên</a>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
                     </div>
                 </div>
-            </div>
-            <div class="col-12 col-md-6 col-lg-4 mb-4">
-                <div class="news-item">
-                    <div class="news-left">
-                        <img src="/img/logocg.png" alt="News">
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
                     </div>
-                    <div class="news-content">
-                        <span class="news-date"><i class="far fa-calendar-alt me-1" style="color: #ff4444; font-size: 0.9rem; font-weight: 500"></i>03/07/2024</span>
-                        <a href="#" class="news-title">Hội nghị viên chức và người lao động Khối Quản lý và Đào tạo lập trình viên</a>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
                     </div>
                 </div>
-            </div>
-        </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+        </swiper-container>
         <div class="btn-load-more">
-            <button class="btn btn-danger">Xem thêm</button>
+            <button class="btn btn-danger" style="font-size: 20px;">Xem thêm</button>
         </div>
     </div>
-
-
-
 </div>
 
 <!--Giảng viên-->
