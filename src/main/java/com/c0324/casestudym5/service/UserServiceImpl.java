@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 
     @PostConstruct
     public void init() {
-        if (userRepository.findByEmail("admin99@gmail.com") == null) {
+        if (userRepository.findByEmail("admin@gmail.com") == null) {
             Role adminRole = roleRepository.findByName(Role.RoleName.ROLE_ADMIN);
             if (adminRole == null) {
                 adminRole = new Role();
@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
             }
 
             User admin = new User();
-            admin.setEmail("admin99@gmail.com");
+            admin.setEmail("admin@gmail.com");
             admin.setPassword(passwordEncoder.encode("123"));
             admin.setRoles(Collections.singleton(adminRole));
             admin.setPhoneNumber("123456789");
