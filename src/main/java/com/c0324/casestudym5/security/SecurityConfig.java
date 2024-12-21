@@ -39,7 +39,7 @@ public class SecurityConfig  {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/fonts/**" ,"/register", "/logout", "/webjars/**").permitAll()
-                        .requestMatchers("/user/**", "/home", "/app/**").hasRole("USER")
+                        .requestMatchers("/user/**", "/home", "/app/**").hasAnyRole("ADMIN", "STUDENT", "TEACHER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

@@ -46,9 +46,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     }
 
         private boolean isAdmin(Set<Role> roles) {
-            for (Role role : roles) {
-                System.out.println(role.getName());
-            }
             return roles.stream().anyMatch(role -> role.getName().toString().equals("ROLE_ADMIN"));
         }
 }

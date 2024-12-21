@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -21,7 +21,7 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="#">Trang Chủ</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Tin Tức</a></li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" sec:authorize="hasRole('STUDENT')">
                         <!--          1-->
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Sinh Viên</a>
                         <ul class="dropdown-menu">
@@ -30,7 +30,7 @@
                             <li><a class="dropdown-item" href="#">Quản lý tiến độ</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" sec:authorize="hasRole('TEACHER')">
                         <!--          2-->
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Giáo Viên</a>
                         <ul class="dropdown-menu">
@@ -41,7 +41,7 @@
                             <li><a class="dropdown-item" href="#">Quản lý tiến độ</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                         <!--          3-->
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Quản Lý</a>
                         <ul class="dropdown-menu">
@@ -61,9 +61,10 @@
                                  style="width: 40px; height: 40px; object-fit: cover;">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" th:href="@{/auth/login}">Đăng nhập</a></li>
-                            <hr class="divider">
-                            <li><a class="dropdown-item" href="#">Đăng ký</a></li>
+                            <li><a class="dropdown-item" th:href="@{/user/profile}">Thông tin cá nhân</a></li>
+                            <li><a class="dropdown-item" th:href="@{/user/change-password}"
+                                   sec:authorize="hasAnyRole('STUDENT','TEACHER','ADMIN')">Đổi mật khẩu</a></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
                         </ul>
                     </div>
                 </div>
