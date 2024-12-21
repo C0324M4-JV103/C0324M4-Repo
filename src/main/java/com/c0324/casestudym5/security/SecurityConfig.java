@@ -38,7 +38,7 @@ public class SecurityConfig  {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/fonts/**" ,"/register", "/logout", "/webjars/**").permitAll()
+                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/fonts/**" , "/logout", "/webjars/**").permitAll()
                         .requestMatchers("/user/**", "/home", "/app/**").hasRole("USER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -48,6 +48,11 @@ public class SecurityConfig  {
                         .usernameParameter("email")
                         .loginProcessingUrl("/authenticateUser")
                         .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            String email = request.getParameter("email");
+                            request.getSession().setAttribute("email", email);
+                            response.sendRedirect("/login?error=true");
+                        })
                         .permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll

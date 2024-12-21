@@ -3,6 +3,13 @@ body {
     background-color: white;
     color: #4A5568;
 }
+.main-title {
+    color: #282781;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 5rem 0;
+}
 
 .navbar {
     background-color: #282781; /* Màu nền của navbar */
@@ -18,11 +25,12 @@ body {
     color: white !important; /* Màu chữ mặc định */
 }
 
-.nav-link:hover {
-    color: #f15a29 !important;
+.nav-link:focus, .nav-link:hover{
+    color: #86868d !important;
 }
 .dropdown-item {
     color: white; /* Màu chữ mặc định trong dropdown */
+    font-size: 11px !important;
 }
 
 .nav-item a {
@@ -32,16 +40,23 @@ body {
 }
 
 .dropdown-menu {
+    width: auto;
+    min-width: unset;
     background-color: #282781;
-    margin-top: 15px !important;
+    margin-top: 14px !important;
 }
-
+.dropdown-menu > li {
+    margin: 0;
+    border: none;
+}
 
 .dropdown-item:hover {
     background-color: rgba(40, 39, 129, 0.7); /* Nền trong suốt 70% */
     color: #c8bcbc; /* Màu chữ khi hover */
     cursor: pointer; /* Thêm hiệu ứng con trỏ */
 }
+
+/*section*/
 
 .hero-image {
     height: 700px;
@@ -99,36 +114,49 @@ hr.divider {
 }
 
 /*thông báo css*/
-.timestamp {
-    background-color: #ff9459;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 140px;
-    text-align: center;
-}
-
-.notification-item {
+.news-item {
     display: flex;
-    align-items: start;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    align-items: center;
+    border: 1px solid #d5d3d3;
+    border-radius: 8px;
+    padding: 10px;
 }
-
-.notification-content {
-    flex: 1;
-    padding-top: 4px;
+.news-item img {
+    width: 100px;
+    height: 80px;
+    border-radius: 5px;
+    object-fit: cover;
 }
-
-.main-title {
-    color: #282781;
-    text-align: center;
-    font-size: 3rem;
+.news-content {
+    margin-left: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 80px;
+}
+.news-date {
+    color: #1f0604;
+    margin-bottom: 5px;
+}
+.news-title {
+    font-size: 1rem;
     font-weight: bold;
-    margin: 8rem 0;
+    color: #333;
+    margin-top: 10px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: clip;
+    text-decoration: none;
 }
-
+.news-title:hover {
+    color: #150c7a; /* Đổi màu khi hover */
+    text-decoration: underline; /* Thêm gạch chân */
+}
+.btn-load-more {
+    text-align: center;
+    margin-top: 20px;
+}
 /*footer css*/
 
 .footer {
@@ -196,15 +224,32 @@ hr.divider {
     text-align: left; /* Căn giữa các biểu tượng */
 }
 
-.social-icons a, i {
-    font-size: 30px; /* Kích thước icon */
-    color: #ece9e9; /* Màu sắc ban đầu của icon */
-    margin: 0 12px; /* Khoảng cách giữa các icon */
+.social-icons a {
+    font-size: 25px;
+    margin: 0 10px; /* Tạo khoảng cách giữa các biểu tượng */
+    color: #ece9e9; /* Màu mặc định */
+    transition: color 0.3s; /* Tạo hiệu ứng chuyển màu mượt mà */
     text-decoration: none;
 }
 
-.social-icons i:hover {
-    color: #ff6523;
+.social-icons a:hover {
+    color: inherit; /* Đảm bảo hover chỉ ảnh hưởng đến màu */
+}
+
+.social-icons a:nth-child(1):hover {
+    color: #4267B2; /* Facebook: màu xanh dương */
+}
+
+.social-icons a:nth-child(2):hover {
+    color: #0077B5; /* LinkedIn: màu xanh nhạt */
+}
+
+.social-icons a:nth-child(3):hover {
+    color: #FF0000; /* YouTube: màu đỏ */
+}
+
+.social-icons a:nth-child(4):hover {
+    color: #000000; /* TikTok: màu đen */
 }
 
 /*  teacher css*/
