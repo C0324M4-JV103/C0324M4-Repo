@@ -48,6 +48,10 @@ public class SecurityConfig  {
                         .usernameParameter("email")
                         .loginProcessingUrl("/authenticateUser")
                         .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            String email = request.getParameter("email");
+                            response.sendRedirect("/login?error=true&email=" + email);
+                        })
                         .permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll
