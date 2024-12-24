@@ -1,5 +1,7 @@
 package com.c0324.casestudym5.model;
 
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -62,9 +64,11 @@ public class User {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "sender")
+    @JsonManagedReference
     private Set<Notification> sentNotifications;
 
     @OneToMany(mappedBy = "receiver")
+    @JsonManagedReference
     private Set<Notification> receivedNotifications;
 
 }
