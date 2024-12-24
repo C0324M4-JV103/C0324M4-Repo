@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Thông tin cá nhân</title>
@@ -35,7 +35,7 @@
                 <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="avatar img-circle img-thumbnail" alt="avatar">
 <!--                <h6>Upload a different photo...</h6>-->
 
-                <button type="button" class="btn btn-primary" onclick="triggerFileInput()">Upload Photo</button>
+                <button sec:authorize="hasAnyRole('ADMIN')" type="button" class="btn btn-primary" onclick="triggerFileInput()">Upload Photo</button>
                 <input type="file" id="fileInput" class="form-control" style="display: none;">
             </div>
         </div>
@@ -92,7 +92,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-8 d-flex justify-content-end">
-                        <button class="btn btn-primary me-2" type="submit">Cập nhật</button>
+                        <button class="btn btn-primary me-2" type="submit" sec:authorize="hasAnyRole('ADMIN')">Cập nhật</button>
                         <a class="btn btn-secondary" th:href="@{/}">Hủy</a>
                     </div>
                 </div>
