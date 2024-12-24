@@ -9,7 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 
-public interface IStudentService {
+public interface StudentService {
     Page<Student> getPageStudents(Pageable pageable, StudentSearchDTO search);
     List<Student> getStudents(StudentSearchDTO search);
     Student getStudent(Long id);
