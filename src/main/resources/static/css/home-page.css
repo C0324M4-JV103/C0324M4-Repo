@@ -114,48 +114,98 @@ hr.divider {
 }
 
 /*thông báo css*/
-.news-item {
+.mySwiper {
+    width: 100%;
+    padding: 2rem 0;
+}
+
+swiper-slide {
+    text-align: center;
+    font-size: 18px;
     display: flex;
+    justify-content: center;
     align-items: center;
-    border: 1px solid #d5d3d3;
-    border-radius: 8px;
-    padding: 10px;
 }
-.news-item img {
-    width: 100px;
-    height: 80px;
-    border-radius: 5px;
+
+.announcement-card {
+    height: 350px;
+    width: auto;
+    border-color: transparent;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.announcement-image-container {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+}
+
+.announcement-image {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
-.news-content {
-    margin-left: 15px;
+
+.announcement-image-container:hover .announcement-image {
+    transform: scale(1.3);
+}
+
+.card-body {
+    padding: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 80px;
+    text-align: left;
 }
-.news-date {
-    color: #1f0604;
-    margin-bottom: 5px;
+
+.announcement-meta {
+    display: flex;
+    justify-content: space-between;
 }
-.news-title {
-    font-size: 1rem;
-    font-weight: bold;
-    color: #333;
-    margin-top: 10px;
+
+.announcement-tag {
+    font-size: 0.9rem;
+    color: #ff4444;
+    font-weight: 550;
+}
+
+.announcement-date {
+    color: #110101;
+    font-size: 0.9rem;
+    font-weight: 550;
+}
+
+.announcement-title {
+    font-size: 1.3rem;
+    line-height: 1.4;
+    font-weight: 700;
+    overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
-    overflow: clip;
     text-decoration: none;
 }
-.news-title:hover {
-    color: #150c7a; /* Đổi màu khi hover */
-    text-decoration: underline; /* Thêm gạch chân */
+.announcement-title:hover {
+    color: #282781 ;
+    text-decoration: underline;
+}
+
+.view-details {
+    font-size: 1.3rem;
+    color: #ff4444;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.view-details:hover {
+    color: #cc0000;
 }
 .btn-load-more {
     text-align: center;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 /*footer css*/
 
