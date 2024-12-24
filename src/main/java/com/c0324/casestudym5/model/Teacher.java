@@ -1,5 +1,8 @@
 package com.c0324.casestudym5.model;
 
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,20 +23,27 @@ public class Teacher {
     @JoinColumn(name = "faculty_id")
     private Faculty faculty;
 
-    @OneToOne
-    @JoinColumn(name = "degree_id")
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Degree degree;
+
+    public enum Degree {
+        MASTER, DOCTOR, PROFESSOR
+    }
 
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference
     private List<Clazz> classes;
 
     @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference
     private List<Team> teams;
 
     @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference
     private List<Comment> replies;
 }

@@ -1,10 +1,13 @@
 package com.c0324.casestudym5.model;
 
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -27,10 +30,12 @@ public class User {
     @Column(columnDefinition = "VARCHAR(50)" , nullable = false, unique = true)
     private String email;
 
-    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(64)", nullable = false)
     private String password;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date dob;
 
     @Enumerated(EnumType.STRING)
@@ -49,7 +54,7 @@ public class User {
     @JoinColumn(name="avatar_id", referencedColumnName = "id")
     private MultiFile avatar;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -58,9 +63,11 @@ public class User {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "sender")
+    @JsonManagedReference
     private Set<Notification> sentNotifications;
 
     @OneToMany(mappedBy = "receiver")
+    @JsonManagedReference
     private Set<Notification> receivedNotifications;
 
 }
