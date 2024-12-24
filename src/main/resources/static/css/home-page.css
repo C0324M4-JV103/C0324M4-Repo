@@ -40,10 +40,15 @@ body {
 }
 
 .dropdown-menu {
+    width: auto;
+    min-width: unset;
     background-color: #282781;
     margin-top: 14px !important;
 }
-
+.dropdown-menu > li {
+    margin: 0;
+    border: none;
+}
 
 .dropdown-item:hover {
     background-color: rgba(40, 39, 129, 0.7); /* Nền trong suốt 70% */
