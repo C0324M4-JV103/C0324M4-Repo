@@ -14,8 +14,12 @@ import java.util.Optional;
 @Service
 public class TeacherService {
 
+    private final TeacherRepository teacherRepository;
+
     @Autowired
-    private TeacherRepository teacherRepository;
+    public TeacherService(TeacherRepository teacherRepository){
+        this.teacherRepository = teacherRepository;
+    }
 
     public Page<Teacher> getTeachersPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);

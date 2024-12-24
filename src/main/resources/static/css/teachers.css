@@ -92,3 +92,45 @@ a.btn-secondary:hover {
 .fas {
     margin-right: 5px;
 }
+
+.avatar {
+    width: 250px;
+    height: 250px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #282781;
+}
+.card {
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+}
+.card-header {
+    background-color: #282781;
+    border-radius: 10px 10px 0 0;
+    color: white;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+.card-body {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+    background-color: #ffffff;
+    border-radius: 0 0 10px 10px;
+}
+.info {
+    flex-grow: 1;
+}
+.info-row {
+    margin-bottom: 10px;
+}
+.info-label {
+    font-weight: 500;
+    color: #6c757d;
+}
+.info-value {
+    font-weight: 600;
+    color: #4A5568;
+}
