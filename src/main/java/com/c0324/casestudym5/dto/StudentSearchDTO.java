@@ -1,6 +1,5 @@
-package com.c0324.casestudym5.model.dto;
+package com.c0324.casestudym5.dto;
 
-import com.c0324.casestudym5.model.Clazz;
 import lombok.Data;
 
 @Data

@@ -1,7 +1,7 @@
 package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.model.Student;
-import com.c0324.casestudym5.model.dto.StudentSearchDTO;
+import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.repository.IStudentRepository;
 import com.c0324.casestudym5.service.IStudentService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -39,5 +40,9 @@ public class UserDTO {
     @Size(min = 5, max = 50, message = "Địa có độ dài từ 5 đến 50 ký tự")
     @NotEmpty(message = "Địa chỉ không được để trống")
     private String address;
+
+    public LocalDate getFormattedDob() {
+        return LocalDate.parse(dob.toString());
+    }
 
 }

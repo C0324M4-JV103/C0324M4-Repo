@@ -1,11 +1,9 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.model.Student;
-import com.c0324.casestudym5.model.dto.StudentSearchDTO;
+import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.repository.IClassRepository;
-import com.c0324.casestudym5.repository.IStudentRepository;
 import com.c0324.casestudym5.service.IStudentService;
-import com.c0324.casestudym5.service.impl.StudentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,10 +19,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/admin/student")
 public class StudentController {
+
+    private final IStudentService studentService;
+    private final IClassRepository classRepository;
+
     @Autowired
-    private IStudentService studentService;
-    @Autowired
-    private IClassRepository classRepository;
+    public StudentController(IStudentService studentService, IClassRepository classRepository) {
+        this.studentService = studentService;
+        this.classRepository = classRepository;
+    }
 
     @GetMapping
     public String index(Model model,
@@ -45,7 +48,7 @@ public class StudentController {
             isSearch = false;
         }
         model.addAttribute("pageTitle", "Danh sách sinh viên");
-        Pageable pageable = PageRequest.of(page, 5);
+        Pageable pageable = PageRequest.of(page, 2);
         Page<Student> students = studentService.getPageStudents(pageable, search);
         model.addAttribute("students", students);
         model.addAttribute("classes", classRepository.findAll());
