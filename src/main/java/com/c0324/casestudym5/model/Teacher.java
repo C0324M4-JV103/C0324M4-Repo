@@ -1,5 +1,8 @@
 package com.c0324.casestudym5.model;
 
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,11 +36,14 @@ public class Teacher {
     private User user;
 
     @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference
     private List<Clazz> classes;
 
     @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference
     private List<Team> teams;
 
     @OneToMany(mappedBy = "teacher")
+    @JsonManagedReference
     private List<Comment> replies;
 }
