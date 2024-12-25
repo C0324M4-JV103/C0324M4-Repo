@@ -1,10 +1,14 @@
 package com.c0324.casestudym5.model;
 
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -31,6 +35,8 @@ public class User {
     private String password;
 
     @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private Date dob;
 
     @Enumerated(EnumType.STRING)
@@ -58,9 +64,11 @@ public class User {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "sender")
+    @JsonManagedReference
     private Set<Notification> sentNotifications;
 
     @OneToMany(mappedBy = "receiver")
+    @JsonManagedReference
     private Set<Notification> receivedNotifications;
 
 }

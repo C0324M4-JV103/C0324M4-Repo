@@ -1,5 +1,8 @@
 package com.c0324.casestudym5.model;
 
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,12 +29,15 @@ public class Student {
 
     @ManyToOne
     @JoinColumn(name = "clazz_id", referencedColumnName = "id")
+    @JsonBackReference
     private Clazz clazz;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name="team_id", referencedColumnName = "id")
     private Team team;
 
     @OneToMany(mappedBy = "student")
+    @JsonManagedReference
     private List<Comment> comments;
 }

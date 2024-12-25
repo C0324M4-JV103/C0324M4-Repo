@@ -10,8 +10,4 @@ public class HomeController {
         return "home-page";
     }
 
-    @GetMapping("/admin/home")
-    public String adminHomePage(){
-        return "admin-home";
-    }
 }

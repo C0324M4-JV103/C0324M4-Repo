@@ -1,13 +1,16 @@
-package com.c0324.casestudym5.service;
+package com.c0324.casestudym5.service.impl;
 
+import com.c0324.casestudym5.dto.ChangePasswordDTO;
+import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.Role;
 import com.c0324.casestudym5.model.User;
 import com.c0324.casestudym5.repository.RoleRepository;
 import com.c0324.casestudym5.repository.UserRepository;
+import com.c0324.casestudym5.service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -53,6 +56,35 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         userRepository.save(user);
+    }
+
+    @Override
+    public User getCurrentUser() {
+        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(currentUserEmail);
+    }
+
+    @Override
+    public void changePassword(ChangePasswordDTO changePasswordDTO) {
+        User user = getCurrentUser();
+        if(!passwordEncoder.matches(changePasswordDTO.getOldPassword(), user.getPassword())){
+            throw new IllegalArgumentException("Mật khẩu cũ không đúng");
+        }
+        user.setPassword(passwordEncoder.encode(changePasswordDTO.getNewPassword()));
+        save(user);
+    }
+
+    @Override
+    @Transactional
+    public void updateProfile(UserDTO userDTO) {
+        User currentUser = getCurrentUser();
+        currentUser.setName(userDTO.getName());
+        currentUser.setEmail(userDTO.getEmail());
+        currentUser.setDob(userDTO.getDob());
+        currentUser.setGender(User.Gender.valueOf(userDTO.getGender()));
+        currentUser.setPhoneNumber(userDTO.getPhoneNumber());
+        currentUser.setAddress(userDTO.getAddress());
+        save(currentUser);
     }
 
     private Collection<SimpleGrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){

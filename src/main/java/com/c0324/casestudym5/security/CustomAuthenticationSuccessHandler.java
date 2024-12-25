@@ -37,18 +37,15 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         Set<Role> roles = theUser.getRoles();
 
-        if (isAdmin(roles)) {
-            response.sendRedirect(request.getContextPath() + "/admin/home");
-            return;
-        }
+//        if (isAdmin(roles)) {
+//            response.sendRedirect(request.getContextPath() + "/admin/home");
+//            return;
+//        }
 
         response.sendRedirect(request.getContextPath());
     }
 
-        private boolean isAdmin(Set<Role> roles) {
-            for (Role role : roles) {
-                System.out.println(role.getName());
-            }
-            return roles.stream().anyMatch(role -> role.getName().toString().equals("ROLE_ADMIN"));
-        }
+//        private boolean isAdmin(Set<Role> roles) {
+//            return roles.stream().anyMatch(role -> role.getName().toString().equals("ROLE_ADMIN"));
+//        }
 }
