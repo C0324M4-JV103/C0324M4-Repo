@@ -32,7 +32,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">Giới tính:</span>
-                    <span class="info-value" th:text="${teacher.user.gender}"></span>
+                    <span class="info-value" th:text="${teacher.user.gender=='MALE'?'Nam':'Nữ'}"></span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Ngày sinh:</span>
