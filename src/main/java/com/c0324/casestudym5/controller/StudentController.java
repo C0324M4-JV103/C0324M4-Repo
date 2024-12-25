@@ -55,7 +55,7 @@ public class StudentController {
         model.addAttribute("search", search);
         model.addAttribute("isSearch", isSearch);
         session.setAttribute("page", page);
-        return "student-list";
+        return "admin/student/student-list";
     }
 
     @GetMapping("/{id}")
@@ -64,6 +64,6 @@ public class StudentController {
         model.addAttribute("student", student);
         model.addAttribute("pageTitle", student.getUser().getName());
         model.addAttribute("page", httpSession.getAttribute("page"));
-        return "student-details";
+        return "admin/student/student-details";
     }
 }

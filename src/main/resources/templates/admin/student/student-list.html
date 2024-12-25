@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="admin/teacher/layout::head"></head>
+<head th:replace="admin/student/layout::head">
+    <title>Quản lý Sinh Viên</title>
+
+</head>
 <body>
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -48,7 +51,8 @@
             <td class="text-center" style="vertical-align: middle;" th:text="${index.count}"></td>
             <td class="text-center" style="vertical-align: middle;" th:text="${s.id}"></td>
             <td class="d-flex justify-content-center">
-                <img src="https://cdn-icons-png.flaticon.com/512/168/168726.png" alt="Avatar" class="img-thumbnail" width="70">
+                <img src="https://cdn-icons-png.flaticon.com/512/168/168726.png" alt="Avatar" class="img-thumbnail"
+                     width="70">
             </td>
             <td style="vertical-align: middle;" th:text="${s.user.name}"></td>
             <td style="vertical-align: middle;" th:text="${s.clazz.name}"></td>
@@ -72,8 +76,11 @@
     <nav aria-label="Page navigation" th:if="${students.totalPages > 0}">
         <ul class="pagination justify-content-center">
             <li class="page-item" th:each="i : ${#numbers.sequence(0, students.totalPages - 1)}">
-                <a class="page-link" th:if="${!isSearch}" th:href="@{/admin/student(page=${i+1})}" th:text="${i + 1}"></a>
-                <a class="page-link" th:if="${isSearch}" th:href="@{/admin/student(page=${i+1}, email=${search.email}, name=${search.name}, classId=${search.clazzId})}" th:text="${i + 1}"></a>
+                <a class="page-link" th:if="${!isSearch}" th:href="@{/admin/student(page=${i+1})}"
+                   th:text="${i + 1}"></a>
+                <a class="page-link" th:if="${isSearch}"
+                   th:href="@{/admin/student(page=${i+1}, email=${search.email}, name=${search.name}, classId=${search.clazzId})}"
+                   th:text="${i + 1}"></a>
             </li>
         </ul>
     </nav>

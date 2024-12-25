@@ -1,7 +1,7 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.model.Teacher;
-import com.c0324.casestudym5.service.TeacherService;
+import com.c0324.casestudym5.service.impl.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -37,7 +37,7 @@ public class TeacherController {
         model.addAttribute("totalPages", teacherPage.getTotalPages());
         model.addAttribute("totalItems", teacherPage.getTotalElements());
         model.addAttribute("searchQuery", searchQuery);
-        return "teachers-list";
+        return "admin/teacher/teacher-list";
     }
 
     @GetMapping("/detail/{id}")
@@ -45,7 +45,7 @@ public class TeacherController {
         Optional<Teacher> teacher = teacherService.getTeacherById(id);
         if (teacher.isPresent()) {
             model.addAttribute("teacher", teacher.get());
-            return "teacher-detail";
+            return "admin/teacher/teacher-details";
         } else {
             return "404";
         }

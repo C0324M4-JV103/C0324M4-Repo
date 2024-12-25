@@ -1,4 +1,4 @@
-package com.c0324.casestudym5.service;
+package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.model.Team;
 import com.c0324.casestudym5.repository.TeamRepository;

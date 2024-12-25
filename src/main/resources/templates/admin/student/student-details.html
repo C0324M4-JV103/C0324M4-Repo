@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head th:replace="admin/teacher/layout :: head">
+<head th:replace="admin/student/layout :: head">
+    <title>Chi tiết Sinh Viên</title>
 </head>
 <body style="font-family: 'Quicksand', sans-serif; color: #4A5568; background-color: #ffffff;">
 
@@ -17,8 +18,10 @@
         <div class="card-body">
             <h5 class="card-title"><strong>Tên:</strong> <span th:text="${student.user.name}"></span></h5>
             <p class="card-text"><strong>ID:</strong> <span th:text="${student.id}"></span></p>
-            <p class="card-text"><strong>Giới tính:</strong> <span th:text="${student.user.gender=='MALE'?'Nam':'Nữ'}"></span></p>
-            <p class="card-text"><strong>Ngày sinh:</strong> <span th:text="${#dates.format(student.user.dob, 'dd/MM/yyyy')}"></span></p>
+            <p class="card-text"><strong>Giới tính:</strong> <span
+                    th:text="${student.user.gender=='MALE'?'Nam':'Nữ'}"></span></p>
+            <p class="card-text"><strong>Ngày sinh:</strong> <span
+                    th:text="${#dates.format(student.user.dob, 'dd/MM/yyyy')}"></span></p>
             <p class="card-text"><strong>Email:</strong> <span th:text="${student.user.email}"></span></p>
             <p class="card-text"><strong>Điện thoại:</strong> <span th:text="${student.user.phoneNumber}"></span></p>
             <p class="card-text"><strong>Địa chỉ:</strong> <span th:text="${student.user.address}"></span></p>
