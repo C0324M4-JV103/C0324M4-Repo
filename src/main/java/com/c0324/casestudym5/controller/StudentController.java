@@ -48,7 +48,7 @@ public class StudentController {
             isSearch = false;
         }
         model.addAttribute("pageTitle", "Danh sách sinh viên");
-        Pageable pageable = PageRequest.of(page, 2);
+        Pageable pageable = PageRequest.of(page, 5);
         Page<Student> students = studentService.getPageStudents(pageable, search);
         model.addAttribute("students", students);
         model.addAttribute("classes", classRepository.findAll());
