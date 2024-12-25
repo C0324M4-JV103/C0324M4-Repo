@@ -3,7 +3,7 @@ package com.c0324.casestudym5.service.impl;
 import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.repository.IStudentRepository;
-import com.c0324.casestudym5.service.IStudentService;
+import com.c0324.casestudym5.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class StudentService implements IStudentService {
+public class StudentServiceImpl implements StudentService {
     @Autowired
     IStudentRepository studentRepository;
 

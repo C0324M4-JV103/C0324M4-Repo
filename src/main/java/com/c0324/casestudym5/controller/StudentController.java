@@ -3,7 +3,7 @@ package com.c0324.casestudym5.controller;
 import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.repository.IClassRepository;
-import com.c0324.casestudym5.service.IStudentService;
+import com.c0324.casestudym5.service.StudentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,11 +20,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/admin/student")
 public class StudentController {
 
-    private final IStudentService studentService;
+    private final StudentService studentService;
     private final IClassRepository classRepository;
 
     @Autowired
-    public StudentController(IStudentService studentService, IClassRepository classRepository) {
+    public StudentController(StudentService studentService, IClassRepository classRepository) {
         this.studentService = studentService;
         this.classRepository = classRepository;
     }
@@ -55,7 +55,7 @@ public class StudentController {
         model.addAttribute("search", search);
         model.addAttribute("isSearch", isSearch);
         session.setAttribute("page", page);
-        return "admin/student/index";
+        return "student-list";
     }
 
     @GetMapping("/{id}")
@@ -64,6 +64,6 @@ public class StudentController {
         model.addAttribute("student", student);
         model.addAttribute("pageTitle", student.getUser().getName());
         model.addAttribute("page", httpSession.getAttribute("page"));
-        return "admin/student/view";
+        return "student-details";
     }
 }

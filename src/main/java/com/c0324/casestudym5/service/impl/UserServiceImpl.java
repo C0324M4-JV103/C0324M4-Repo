@@ -1,4 +1,4 @@
-package com.c0324.casestudym5.service;
+package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.ChangePasswordDTO;
 import com.c0324.casestudym5.dto.UserDTO;
@@ -6,9 +6,9 @@ import com.c0324.casestudym5.model.Role;
 import com.c0324.casestudym5.model.User;
 import com.c0324.casestudym5.repository.RoleRepository;
 import com.c0324.casestudym5.repository.UserRepository;
+import com.c0324.casestudym5.service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

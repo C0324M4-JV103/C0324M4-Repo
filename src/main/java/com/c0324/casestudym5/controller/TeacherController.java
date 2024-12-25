@@ -14,8 +14,12 @@ import java.util.Optional;
 @RequestMapping("/teacher")
 public class TeacherController {
 
+    private final TeacherService teacherService;
+
     @Autowired
-    private TeacherService teacherService;
+    public TeacherController(TeacherService teacherService){
+        this.teacherService = teacherService;
+    }
 
     @GetMapping("/list")
     public String getAllTeachers(@RequestParam(required = false) String searchQuery,
