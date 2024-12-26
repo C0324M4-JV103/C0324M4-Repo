@@ -38,3 +38,6 @@ out/
 
 ### Local Profile ###
 application-local.properties
+
+### Firebase ###
+google-services.json

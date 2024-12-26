@@ -114,7 +114,7 @@ hr.divider {
 }
 
 /*thông báo css*/
-.mySwiper {
+swiper-container {
     width: 100%;
     padding: 2rem 0;
 }
@@ -335,7 +335,7 @@ swiper-slide {
 }
 
 .card:hover {
-    transform: translateY(-25px); /* Hiệu ứng nâng lên khi hover */
+    transform: translateY(-10px); /* Hiệu ứng nâng lên khi hover */
     box-shadow: 0 20px 40px rgba(110, 144, 255, 0.2); /* bóng đổ khi hover */
 }
 

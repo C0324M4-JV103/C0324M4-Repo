@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/admin/student")
+@RequestMapping("/student")
 public class StudentController {
 
     private final StudentService studentService;
@@ -55,7 +55,7 @@ public class StudentController {
         model.addAttribute("search", search);
         model.addAttribute("isSearch", isSearch);
         session.setAttribute("page", page);
-        return "admin/student/student-list";
+        return "/admin/student/student-list";
     }
 
     @GetMapping("/{id}")

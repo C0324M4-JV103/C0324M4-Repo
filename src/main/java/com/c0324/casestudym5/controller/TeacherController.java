@@ -21,7 +21,7 @@ public class TeacherController {
         this.teacherService = teacherService;
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public String getAllTeachers(@RequestParam(required = false) String searchQuery,
                                  @RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "5") int size, Model model) {
@@ -37,7 +37,7 @@ public class TeacherController {
         model.addAttribute("totalPages", teacherPage.getTotalPages());
         model.addAttribute("totalItems", teacherPage.getTotalElements());
         model.addAttribute("searchQuery", searchQuery);
-        return "admin/teacher/teacher-list";
+        return "/admin/teacher/teacher-list";
     }
 
     @GetMapping("/detail/{id}")
@@ -45,9 +45,9 @@ public class TeacherController {
         Optional<Teacher> teacher = teacherService.getTeacherById(id);
         if (teacher.isPresent()) {
             model.addAttribute("teacher", teacher.get());
-            return "admin/teacher/teacher-details";
+            return "/admin/teacher/teacher-details";
         } else {
-            return "admin/teacher/teacher-list";
+            return "/common/404";
         }
     }
 }

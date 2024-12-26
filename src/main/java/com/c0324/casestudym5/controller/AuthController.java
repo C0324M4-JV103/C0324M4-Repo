@@ -29,7 +29,7 @@ public class AuthController {
                 model.addAttribute("email", email);
             }
         }
-        return "common/login-form";
+        return "/common/login-form";
     }
 
     @GetMapping("/logout")
