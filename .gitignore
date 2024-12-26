@@ -38,6 +38,4 @@ out/
 
 ### Local Profile ###
 application-local.properties
-
-### Firebase Key ###
-src/main/resources/google-services.json
+google-services.json
