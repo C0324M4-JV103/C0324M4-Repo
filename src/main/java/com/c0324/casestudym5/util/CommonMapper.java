@@ -15,7 +15,7 @@ public class CommonMapper {
         userDTO.setGender(user.getGender().name());
         userDTO.setPhoneNumber(user.getPhoneNumber());
         userDTO.setAddress(user.getAddress());
-//        userDTO.setAvatarUrl(user.getAvatar().getUrl());
+
         return userDTO;
     }
 

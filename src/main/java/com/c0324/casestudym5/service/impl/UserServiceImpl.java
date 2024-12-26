@@ -2,10 +2,12 @@ package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.ChangePasswordDTO;
 import com.c0324.casestudym5.dto.UserDTO;
+import com.c0324.casestudym5.model.MultiFile;
 import com.c0324.casestudym5.model.Role;
 import com.c0324.casestudym5.model.User;
 import com.c0324.casestudym5.repository.RoleRepository;
 import com.c0324.casestudym5.repository.UserRepository;
+import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.UserService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -28,12 +31,14 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final FirebaseService firebaseService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, FirebaseService firebaseService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.firebaseService = firebaseService;
     }
 
     @Override
@@ -77,6 +82,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateProfile(UserDTO userDTO) {
+        if(findByEmail(userDTO.getEmail()) != null && !userDTO.getEmail().equals(getCurrentUser().getEmail())){
+            throw new IllegalArgumentException("Email đã tồn tại");
+        }
         User currentUser = getCurrentUser();
         currentUser.setName(userDTO.getName());
         currentUser.setEmail(userDTO.getEmail());
@@ -85,6 +93,27 @@ public class UserServiceImpl implements UserService {
         currentUser.setPhoneNumber(userDTO.getPhoneNumber());
         currentUser.setAddress(userDTO.getAddress());
         save(currentUser);
+    }
+
+    @Override
+    public void changeAvatar(MultipartFile avatar) {
+       User currentUser = getCurrentUser();
+        if(!avatar.isEmpty()){
+            try {
+                MultiFile oldAvatar = currentUser.getAvatar();
+                if(oldAvatar != null){
+                    currentUser.setAvatar(null);
+                    save(currentUser);
+                    firebaseService.deleteFileFromFireBase(oldAvatar.getUrl());
+                }
+                String urlImage = firebaseService.uploadFileToFireBase(avatar);
+                MultiFile newAvatar = MultiFile.builder().url(urlImage).build();
+                currentUser.setAvatar(newAvatar);
+                save(currentUser);
+            } catch (Exception e){
+                throw new IllegalArgumentException("Lỗi tải ảnh lên");
+            }
+        }
     }
 
     private Collection<SimpleGrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
