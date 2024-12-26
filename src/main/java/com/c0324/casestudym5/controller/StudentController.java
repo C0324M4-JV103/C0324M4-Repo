@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/admin/student")
+@RequestMapping("/student")
 public class StudentController {
 
     private final StudentService studentService;
@@ -48,14 +48,14 @@ public class StudentController {
             isSearch = false;
         }
         model.addAttribute("pageTitle", "Danh sách sinh viên");
-        Pageable pageable = PageRequest.of(page, 5);
+        Pageable pageable = PageRequest.of(page, 2);
         Page<Student> students = studentService.getPageStudents(pageable, search);
         model.addAttribute("students", students);
         model.addAttribute("classes", classRepository.findAll());
         model.addAttribute("search", search);
         model.addAttribute("isSearch", isSearch);
         session.setAttribute("page", page);
-        return "admin/student/student-list";
+        return "/admin/student/student-list";
     }
 
     @GetMapping("/{id}")
