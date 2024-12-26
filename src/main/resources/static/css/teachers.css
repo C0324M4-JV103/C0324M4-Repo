@@ -134,3 +134,6 @@ a.btn-secondary:hover {
     font-weight: 600;
     color: #4A5568;
 }
+.mt-5 {
+    margin-top: 7rem !important;
+}
