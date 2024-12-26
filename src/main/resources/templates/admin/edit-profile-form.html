@@ -33,10 +33,9 @@
         <div class="col-md-3">
             <div class="text-center">
                 <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="avatar img-circle img-thumbnail" alt="avatar">
-<!--                <h6>Upload a different photo...</h6>-->
-
-                <button sec:authorize="hasAnyRole('ADMIN')" type="button" class="btn btn-primary" onclick="triggerFileInput()">Upload Photo</button>
-                <input type="file" id="fileInput" class="form-control" style="display: none;">
+                <br>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateAvatarModal">Cập nhật ảnh</button>
+                <div th:if="${imageError}" th:text="${imageError}" class="text-danger"></div>
             </div>
         </div>
 
@@ -74,6 +73,7 @@
                         <label for="email" class="col-lg-3 control-label">Email:</label>
                         <input class="form-control" id="email" type="text" th:field="*{email}">
                         <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
+                        <div th:if="${emailError}" th:text="${error}" class="text-danger"></div>
                     </div>
                 </div>
                 <div class="form-group mb-3">
@@ -103,6 +103,28 @@
 <hr>
 <!-- Footer -->
 <div th:replace="layout :: footer"></div>
+<div class="modal fade" id="updateAvatarModal" tabindex="-1" aria-labelledby="updateAvatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateAvatarModalLabel">Cập nhật ảnh đại diện</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/user/change-avatar}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="avatar" class="form-label">Chọn ảnh mới</label>
+                        <input type="file" class="form-control" id="avatar" name="avatar" accept=".jpg,.png,.jpeg" required>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary me-2">Cập nhật</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
