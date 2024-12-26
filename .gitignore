@@ -40,4 +40,4 @@ out/
 application-local.properties
 
 ### Firebase Key ###
-google-services.json
+src/main/resources/google-services.json
