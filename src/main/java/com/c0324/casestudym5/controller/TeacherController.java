@@ -37,7 +37,7 @@ public class TeacherController {
         model.addAttribute("totalPages", teacherPage.getTotalPages());
         model.addAttribute("totalItems", teacherPage.getTotalElements());
         model.addAttribute("searchQuery", searchQuery);
-        return "/admin/teacher/teacher-list";
+        return "admin/teacher/teacher-list";
     }
 
     @GetMapping("/detail/{id}")
@@ -45,9 +45,9 @@ public class TeacherController {
         Optional<Teacher> teacher = teacherService.getTeacherById(id);
         if (teacher.isPresent()) {
             model.addAttribute("teacher", teacher.get());
-            return "/admin/teacher/teacher-details";
+            return "admin/teacher/teacher-details";
         } else {
-            return "/common/404";
+            return "common/404";
         }
     }
 }

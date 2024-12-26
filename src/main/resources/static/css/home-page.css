@@ -42,7 +42,7 @@ body {
 .dropdown-menu {
     width: auto;
     min-width: unset;
-    background-color: #282781;
+    background-color: #282781 !important;
     margin-top: 14px !important;
 }
 .dropdown-menu > li {
