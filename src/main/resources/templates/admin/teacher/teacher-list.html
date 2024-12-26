@@ -43,7 +43,11 @@
             <td th:text="${teacher.user.name}"></td>
             <td th:text="${#dates.format(teacher.user.dob, 'dd/MM/yyyy')}"></td>
             <td th:text="${teacher.user.phoneNumber}"></td>
-            <td th:text="${teacher.degree}"></td>
+            <td>
+                <span th:text="${teacher.degree.name() == 'MASTER' ? 'Thạc sĩ' :
+                   (teacher.degree.name() == 'DOCTOR' ? 'Tiến sĩ' : 'Giáo sư')}"></span>
+            </td>
+
             <td>
                 <a th:href="@{/teacher/detail/{id}(id=${teacher.id})}" class="btn btn-info">
                     <i class="fas fa-eye"></i>

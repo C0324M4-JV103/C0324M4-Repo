@@ -35,7 +35,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">Giới tính:</span>
-                    <span class="info-value" th:text="${teacher.user.gender=='MALE'?'Nam':'Nữ'}"></span>
+                    <span class="info-value" th:text="${teacher.user.gender.name()=='MALE'?'Nam':'Nữ'}"></span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Ngày sinh:</span>
@@ -43,7 +43,8 @@
                 </div>
                 <div class="info-row">
                     <span class="info-label">Chức danh:</span>
-                    <span class="info-value" th:text="${teacher.degree}"></span>
+                    <span class="info-value" th:text="${teacher.degree.name() == 'MASTER' ? 'Thạc sĩ' :
+                   (teacher.degree.name() == 'DOCTOR' ? 'Tiến sĩ' : 'Giáo sư')}"></span>
                 </div>
                 <div class="info-row">
                     <span class="info-label">Email:</span>
