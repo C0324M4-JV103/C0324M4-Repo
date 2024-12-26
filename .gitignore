@@ -39,5 +39,5 @@ out/
 ### Local Profile ###
 application-local.properties
 
-### Firebase ###
+### Firebase Key ###
 google-services.json
