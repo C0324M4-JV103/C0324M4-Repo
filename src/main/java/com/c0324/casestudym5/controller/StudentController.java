@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/admin/student")
+@RequestMapping("/student")
 public class StudentController {
 
     private final StudentService studentService;

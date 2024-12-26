@@ -5,6 +5,7 @@ import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService extends UserDetailsService {
 
@@ -19,4 +20,6 @@ public interface UserService extends UserDetailsService {
     void changePassword(ChangePasswordDTO changePasswordDTO);
 
     void updateProfile(UserDTO user);
+
+    void changeAvatar(MultipartFile avatar);
 }
