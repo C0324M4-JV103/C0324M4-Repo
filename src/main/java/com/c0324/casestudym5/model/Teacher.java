@@ -20,7 +20,7 @@ public class Teacher {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "faculty_id")
+    @JoinColumn(name = "faculty_id", referencedColumnName = "id")
     private Faculty faculty;
 
     @Enumerated(EnumType.STRING)
