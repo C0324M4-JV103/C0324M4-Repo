@@ -4,7 +4,7 @@
 <head th:replace="admin/student/layout::head"></head>
 <body>
 <div th:replace="layout.html :: nav"></div>
-<div class="container mt-5">
+<div id="body-fixed" class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <form th:action="@{/student}" method="get" class="d-flex align-items-center" th:object="${search}">
             <input type="text" name="name" class="form-control me-3" placeholder="Tên sinh viên" th:field="*{name}">
