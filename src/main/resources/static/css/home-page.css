@@ -3,6 +3,11 @@ body {
     background-color: white;
     color: #4A5568;
 }
+
+#body-fixed {
+    height: 600px !important;
+}
+
 .main-title {
     color: #282781;
     text-align: center;
