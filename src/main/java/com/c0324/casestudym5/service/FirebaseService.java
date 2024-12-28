@@ -19,9 +19,9 @@ public class FirebaseService {
     }
 
     public String uploadFileToFireBase(MultipartFile file, String directory) {
-        String fileName = directory + UUID.randomUUID() + "-" + file.getOriginalFilename();
+        String fileName = "casestudym5/"+ directory + UUID.randomUUID() + "-" + file.getOriginalFilename();
         try {
-            var blob = storageClient.bucket().create("casestudym5/" + directory, file.getInputStream(), file.getContentType());
+            var blob = storageClient.bucket().create(fileName, file.getInputStream(), file.getContentType());
             blob.createAcl(com.google.cloud.storage.Acl.of(com.google.cloud.storage.Acl.User.ofAllUsers(), com.google.cloud.storage.Acl.Role.READER));
             return blob.getMediaLink();
         } catch (IOException e) {
@@ -40,3 +40,4 @@ public class FirebaseService {
         }
     }
 }
+

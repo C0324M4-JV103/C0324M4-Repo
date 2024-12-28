@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @Controller
-@RequestMapping("/teacher")
+@RequestMapping("/admin/teacher")
 public class TeacherController {
 
     private final TeacherService teacherService;
@@ -50,5 +50,7 @@ public class TeacherController {
             return "common/404";
         }
     }
+
+
 }
 
