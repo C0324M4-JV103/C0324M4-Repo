@@ -27,7 +27,7 @@ public class NotificationService {
         User sender = notification.getSender();
         User receiver = notification.getReceiver();
         notificationRepository.save(notification);
-
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(receiver.getEmail()), "/queue/notify", notification);
     }
 
     public List<Notification> getNotificationsByUserId(Long receiverId){
