@@ -21,7 +21,7 @@ public class TeacherController {
         this.teacherService = teacherService;
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public String getAllTeachers(@RequestParam(required = false) String searchQuery,
                                  @RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "5") int size, Model model) {

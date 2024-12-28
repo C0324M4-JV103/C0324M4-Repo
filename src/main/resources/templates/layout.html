@@ -42,8 +42,8 @@
                     <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">QUẢN LÝ</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">QUẢN LÝ SINH VIÊN</a></li>
-                            <li><a class="dropdown-item" href="/teacher/list">QUẢN LÝ GIÁO VIÊN</a></li>
+                            <li><a class="dropdown-item" th:href="@{/student}">QUẢN LÝ SINH VIÊN</a></li>
+                            <li><a class="dropdown-item" th:href="@{/teacher}">QUẢN LÝ GIÁO VIÊN</a></li>
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#">LIÊN HỆ</a></li>

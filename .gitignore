@@ -38,3 +38,4 @@ out/
 
 ### Local Profile ###
 application-local.properties
+google-services.json

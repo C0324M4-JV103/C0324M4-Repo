@@ -8,11 +8,13 @@ import com.c0324.casestudym5.util.CommonMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/user")
@@ -50,6 +52,12 @@ public class UserController {
             return "/common/change-password-form";
         }
 
+        if(changePasswordDTO.getOldPassword().equals(changePasswordDTO.getNewPassword())){
+            model.addAttribute("changePassword", changePasswordDTO);
+            model.addAttribute("error", "Mật khẩu mới không được trùng với mật khẩu cũ");
+            return "/common/change-password-form";
+        }
+
         try {
             userService.changePassword(changePasswordDTO);
         } catch (Exception e) {
@@ -74,12 +82,33 @@ public class UserController {
             model.addAttribute("user", userDTO);
             return "/admin/edit-profile-form";
         }
-
-        userService.updateProfile(userDTO);
-
-
-
+        try {
+            userService.updateProfile(userDTO);
+        } catch (Exception e) {
+            model.addAttribute("user", userDTO);
+            model.addAttribute("emailError", "Email đã tồn tại");
+            return "/admin/edit-profile-form";
+        }
         return "redirect:/";
+    }
+
+    @PostMapping("/change-avatar")
+    public String showChangeAvatarForm(@RequestParam("avatar") MultipartFile avatar, Model model) {
+        String fileName = avatar.getOriginalFilename();
+        long fileSize = avatar.getSize();
+        long maxFileSize = 5 * 1024 * 1024; // 5MB
+
+        if (fileName != null && (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg"))) {
+            if (fileSize <= maxFileSize) {
+                userService.changeAvatar(avatar);
+            } else {
+                model.addAttribute("imageError", "Kích thước ảnh không được vượt quá 5MB");
+            }
+        } else {
+            model.addAttribute("imageError", "Chỉ hỗ trợ ảnh có định dạng jpg, jpeg, png");
+        }
+
+        return "/admin/edit-profile-form";
     }
 
 }
