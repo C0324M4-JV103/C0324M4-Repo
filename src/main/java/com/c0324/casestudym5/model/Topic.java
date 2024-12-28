@@ -3,7 +3,9 @@ package com.c0324.casestudym5.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -26,6 +28,9 @@ public class Topic {
 
     @Column(columnDefinition = "INT DEFAULT 0")
     private Integer status;
+
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
+    private Date deadline;
 
     @OneToOne
     @JoinColumn(name = "team_id")

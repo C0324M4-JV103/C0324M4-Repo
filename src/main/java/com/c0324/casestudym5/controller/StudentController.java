@@ -2,7 +2,7 @@ package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
-import com.c0324.casestudym5.repository.IClassRepository;
+import com.c0324.casestudym5.repository.ClassRepository;
 import com.c0324.casestudym5.service.StudentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
-@RequestMapping("/student")
+@RequestMapping("/admin/student")
 public class StudentController {
 
     private final StudentService studentService;
-    private final IClassRepository classRepository;
+    private final ClassRepository classRepository;
 
     @Autowired
-    public StudentController(StudentService studentService, IClassRepository classRepository) {
+    public StudentController(StudentService studentService, ClassRepository classRepository) {
         this.studentService = studentService;
         this.classRepository = classRepository;
     }
