@@ -36,26 +36,26 @@ public class UserController {
     @GetMapping("/change-password")
     public String showChangePasswordForm(Model model) {
         model.addAttribute("changePassword", new ChangePasswordDTO());
-        return "/common/change-password-form";
+        return "common/change-password-form";
     }
 
     @PostMapping("/change-password")
     public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordDTO changePasswordDTO, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("changePassword", changePasswordDTO);
-            return "/common/change-password-form";
+            return "common/change-password-form";
         }
 
         if (!changePasswordDTO.isMatched()) {
             model.addAttribute("changePassword", changePasswordDTO);
             model.addAttribute("confirmError", "Xác nhận mật khẩu không khớp");
-            return "/common/change-password-form";
+            return "common/change-password-form";
         }
 
         if(changePasswordDTO.getOldPassword().equals(changePasswordDTO.getNewPassword())){
             model.addAttribute("changePassword", changePasswordDTO);
             model.addAttribute("error", "Mật khẩu mới không được trùng với mật khẩu cũ");
-            return "/common/change-password-form";
+            return "common/change-password-form";
         }
 
         try {
@@ -63,7 +63,7 @@ public class UserController {
         } catch (Exception e) {
             model.addAttribute("changePassword", changePasswordDTO);
             model.addAttribute("error", "Mật khẩu cũ không đúng");
-            return "/common/change-password-form";
+            return "common/change-password-form";
         }
 
         return "redirect:/";
@@ -73,21 +73,21 @@ public class UserController {
     public String showProfile(Model model) {
         User currentUser = userService.getCurrentUser();
         model.addAttribute("user", CommonMapper.mapUserToUserDTO(currentUser));
-        return "/admin/edit-profile-form";
+        return "admin/edit-profile-form";
     }
 
     @PostMapping("/edit-profile")
     public String editProfile(@Valid @ModelAttribute("user") UserDTO userDTO, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", userDTO);
-            return "/admin/edit-profile-form";
+            return "admin/edit-profile-form";
         }
         try {
             userService.updateProfile(userDTO);
         } catch (Exception e) {
             model.addAttribute("user", userDTO);
             model.addAttribute("emailError", "Email đã tồn tại");
-            return "/admin/edit-profile-form";
+            return "admin/edit-profile-form";
         }
         return "redirect:/";
     }
@@ -108,7 +108,7 @@ public class UserController {
             model.addAttribute("imageError", "Chỉ hỗ trợ ảnh có định dạng jpg, jpeg, png");
         }
 
-        return "/admin/edit-profile-form";
+        return "admin/edit-profile-form";
     }
 
 }

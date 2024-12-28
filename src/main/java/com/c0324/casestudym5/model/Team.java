@@ -29,6 +29,9 @@ public class Team {
     @JsonBackReference
     private Teacher teacher;
 
+    @OneToOne(mappedBy = "team")
+    private Topic topic;
+
     @OneToMany(mappedBy = "team")
     @JsonManagedReference
     private List<Student> students;

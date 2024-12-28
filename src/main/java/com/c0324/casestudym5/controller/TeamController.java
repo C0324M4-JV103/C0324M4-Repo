@@ -206,4 +206,29 @@ public class TeamController {
         return "team/info-team";
     }
 
+
+
+    @GetMapping
+    public String showTeamPage(@RequestParam(name="name", defaultValue = "", required = false) String keyword,
+                               @RequestParam(name="page", defaultValue = "0") int page,
+                               Model model) {
+        Page<TeamDTO> teamPage = teamService.getPageTeams(page, keyword);
+        model.addAttribute("teams", teamPage.getContent());
+        model.addAttribute("totalPages", teamPage.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("keyword", keyword);
+        return "/admin/team-list";
+    }
+
+    @GetMapping("/delete/{teamId}")
+    public String deleteTeam(@PathVariable("teamId") Long teamId) {
+        teamService.deleteTeam(teamId);
+        return "redirect:/admin/team";
+    }
+
+}
+
+
+
+
 }

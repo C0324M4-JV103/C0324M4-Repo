@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +12,7 @@
 </head>
 <body>
 <!-- Navbar -->
-<div th:replace="/layout :: nav"></div>
+<div th:replace="~{layout :: nav}"></div>
 <!-- Login Form -->
 <div class="vh-100">
     <div class="container-fluid h-custom">
@@ -59,7 +59,7 @@
     </div>
 </div>
 <!-- Footer -->
-<div th:replace="/layout :: footer"></div>
+<div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

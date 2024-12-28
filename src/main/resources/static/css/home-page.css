@@ -3,6 +3,11 @@ body {
     background-color: white;
     color: #4A5568;
 }
+
+#body-fixed {
+    height: 600px !important;
+}
+
 .main-title {
     color: #282781;
     text-align: center;
@@ -29,7 +34,7 @@ body {
     color: #86868d !important;
 }
 .dropdown-item {
-    color: white; /* Màu chữ mặc định trong dropdown */
+    color: white !important; /* Màu chữ mặc định trong dropdown */
     font-size: 11px !important;
 }
 
@@ -42,7 +47,7 @@ body {
 .dropdown-menu {
     width: auto;
     min-width: unset;
-    background-color: #282781;
+    background-color: #282781 !important;
     margin-top: 14px !important;
 }
 .dropdown-menu > li {
