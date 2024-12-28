@@ -13,4 +13,11 @@ public interface StudentService {
     Page<Student> getPageStudents(Pageable pageable, StudentSearchDTO search);
     List<Student> getStudents(StudentSearchDTO search);
     Student getStudent(Long id);
+    Student findStudentByUserId(Long id);
+    List<Student> findAll();
+    void save(Student student);
+    Student findById(Long id);
+    List<Student> findAllExceptCurrentStudent(Long currentStudentId);
+
+
 }

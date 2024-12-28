@@ -2,7 +2,7 @@ package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
-import com.c0324.casestudym5.repository.IClassRepository;
+import com.c0324.casestudym5.repository.ClassRepository;
 import com.c0324.casestudym5.service.StudentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class StudentController {
 
     private final StudentService studentService;
-    private final IClassRepository classRepository;
+    private final ClassRepository classRepository;
 
     @Autowired
-    public StudentController(StudentService studentService, IClassRepository classRepository) {
+    public StudentController(StudentService studentService, ClassRepository classRepository) {
         this.studentService = studentService;
         this.classRepository = classRepository;
     }
@@ -48,7 +48,7 @@ public class StudentController {
             isSearch = false;
         }
         model.addAttribute("pageTitle", "Danh sách sinh viên");
-        Pageable pageable = PageRequest.of(page, 2);
+        Pageable pageable = PageRequest.of(page, 5);
         Page<Student> students = studentService.getPageStudents(pageable, search);
         model.addAttribute("students", students);
         model.addAttribute("classes", classRepository.findAll());
