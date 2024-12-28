@@ -13,5 +13,6 @@ public interface InvitationService {
     void delete(Invitation invitation);
     boolean existsByStudentAndTeam(Student student, Team team);
     void deleteAllByStudent(Student student);
+    void inviteStudent(Long studentId, String subject, String content);
 
 }

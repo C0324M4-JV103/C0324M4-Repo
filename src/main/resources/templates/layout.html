@@ -25,7 +25,10 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">SINH VIÊN</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">ĐĂNG KÝ GVHD</a></li>
-                            <li><a class="dropdown-item" href="#">ĐĂNG KÝ NHÓM</a></li>
+                            <li th:if="${team != null}">
+                                <a class="dropdown-item" th:href="@{/team/info-team}">NHÓM CỦA TÔI</a>
+                            </li>
+                            <li><a class="dropdown-item" th:href="@{/team}">ĐĂNG KÝ NHÓM</a></li>
                             <li><a class="dropdown-item" href="#">QUẢN LÝ TIẾN ĐỘ</a></li>
                         </ul>
                     </li>
@@ -54,6 +57,7 @@
 
                 <div sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')">
                     <div class="dropdown user-profile d-flex justify-content-between align-items-center">
+                        <span sec:authentication="principal.username"></span>
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <img src="https://www.thaimediafund.or.th/wp-content/uploads/2024/07/default-avatar-profile-icon-.jpg"
                                  alt="User profile" class="rounded-circle"

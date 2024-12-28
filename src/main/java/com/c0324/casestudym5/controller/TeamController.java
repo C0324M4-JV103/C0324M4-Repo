@@ -105,7 +105,7 @@ public class TeamController {
         currentStudent.setLeader(true);
         studentService.save(currentStudent);
 
-        redirectAttributes.addFlashAttribute("successMessages", "Nhóm đã được tạo thành công!");
+        redirectAttributes.addFlashAttribute("successMessage", "Nhóm đã được tạo thành công!");
         return "redirect:/team/info-team";
     }
 
@@ -134,6 +134,13 @@ public class TeamController {
             invitation.setTeam(currentTeam);
             invitation.setInviter(currentStudent);
             invitationService.save(invitation);
+
+            // Gửi email mời tham gia nhóm
+            String subject = "Lời mời tham gia nhóm từ " + currentTeam.getName();
+            String content = "Xin chào " + invitedStudent.getUser().getName() + ",\n\n"
+                    + "Bạn đã được mời tham gia nhóm \"" + currentTeam.getName() + "\" bởi "
+                    + currentStudent.getUser().getName() + ". Vui lòng kiểm tra thông tin trên hệ thống để chấp nhận lời mời.";
+            invitationService.inviteStudent(studentId, subject, content);
 
             redirectAttributes.addFlashAttribute("successMessage", "Lời mời đã được gửi thành công!");
         } else {

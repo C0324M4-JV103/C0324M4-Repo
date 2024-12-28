@@ -44,6 +44,12 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAllExceptCurrentStudent(currentStudentId);
     }
 
+    @Override
+    public String getStudentEmailById(Long id) {
+        Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+        return student.getUser().getEmail();
+    }
+
 
     @Override
     public Page<Student> getPageStudents(Pageable pageable, StudentSearchDTO search) {
