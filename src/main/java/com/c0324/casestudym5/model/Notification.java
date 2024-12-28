@@ -4,6 +4,8 @@ package com.c0324.casestudym5.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -26,4 +28,7 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "receiver_id", referencedColumnName = "id")
     private User receiver;
+
+    @Column(columnDefinition = "TIMESTAMP")
+    private Date createdAt;
 }
