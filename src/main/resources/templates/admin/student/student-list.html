@@ -6,7 +6,7 @@
 <div th:replace="layout.html :: nav"></div>
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <form th:action="@{/student}" method="get" class="d-flex align-items-center" th:object="${search}">
+        <form th:action="@{/admin/student}" method="get" class="d-flex align-items-center" th:object="${search}">
             <input type="text" name="name" class="form-control me-3" placeholder="Tên sinh viên" th:field="*{name}">
             <input type="text" name="email" class="form-control me-3" placeholder="Email sinh viên" th:field="*{email}">
             <select class="form-select me-3" name="class" th:field="*{clazzId}">
@@ -16,7 +16,7 @@
             <button type="submit" class="btn btn-primary me-1" style="width: 400px;">
                 <i class="fas fa-search"></i> Tìm kiếm
             </button>
-            <a th:href="@{/student}" class="btn btn-danger" style="width: 500px;">
+            <a th:href="@{/admin/student}" class="btn btn-danger" style="width: 500px;">
                 <i class="fa-solid fa-x"></i> Bỏ tìm kiếm
             </a>
         </form>
@@ -51,7 +51,7 @@
             <td style="vertical-align: middle;" th:text="${s.user.email}"></td>
             <td style="vertical-align: middle;" th:text="${s.user.phoneNumber}"></td>
             <td style="vertical-align: middle; text-align: center;">
-                <a th:href="@{/student/{id}(id=${s.id})}" class="btn btn-info">
+                <a th:href="@{/admin/student/{id}(id=${s.id})}" class="btn btn-info">
                     <i class="fas fa-eye"></i>
                 </a>
                 <a th:href="@{/s/update/{id}(id=${s.id})}" class="btn btn-warning">
@@ -69,9 +69,9 @@
         <ul class="pagination justify-content-center">
             <li class="page-item" th:each="i : ${#numbers.sequence(0, students.totalPages - 1)}">
                 <a class="page-link"
-                   th:if="${!isSearch}" th:href="@{/student(page=${i+1})}" th:text="${i + 1}"></a>
+                   th:if="${!isSearch}" th:href="@{/admin/student(page=${i+1})}" th:text="${i + 1}"></a>
                 <a class="page-link"
-                   th:if="${isSearch}" th:href="@{/student(page=${i+1}, name=${search.name}, email=${search.email}, clazzId=${search.clazzId})}" th:text="${i + 1}"></a>
+                   th:if="${isSearch}" th:href="@{/admin/student(page=${i+1}, name=${search.name}, email=${search.email}, clazzId=${search.clazzId})}" th:text="${i + 1}"></a>
             </li>
         </ul>
     </nav>

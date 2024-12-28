@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface IClassRepository extends JpaRepository<Clazz, Long> {
+public interface ClassRepository extends JpaRepository<Clazz, Long> {
 }

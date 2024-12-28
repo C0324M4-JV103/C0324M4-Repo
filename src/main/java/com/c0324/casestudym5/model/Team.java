@@ -4,9 +4,15 @@ package com.c0324.casestudym5.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
 @Entity
 public class Team {
 
@@ -21,6 +27,9 @@ public class Team {
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     @JsonBackReference
     private Teacher teacher;
+
+    @OneToOne(mappedBy = "team")
+    private Topic topic;
 
     @OneToMany(mappedBy = "team")
     @JsonManagedReference
