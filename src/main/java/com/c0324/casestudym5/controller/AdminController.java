@@ -55,16 +55,7 @@ public class AdminController {
         return "admin/teacher/teacher-list";
     }
 
-    @GetMapping("/teacher/detail/{id}")
-    public String getTeacher(@PathVariable Long id, Model model) {
-        Optional<Teacher> teacher = teacherService.getTeacherById(id);
-        if (teacher.isPresent()) {
-            model.addAttribute("teacher", teacher.get());
-            return "admin/teacher/teacher-details";
-        } else {
-            return "common/404";
-        }
-    }
+
 
     // Student Functionality
     @GetMapping("/student")
@@ -96,12 +87,4 @@ public class AdminController {
         return "admin/student/student-list";
     }
 
-    @GetMapping("/student/{id}")
-    public String view(@PathVariable("id") Long id, Model model, HttpSession httpSession) {
-        Student student = studentService.getStudent(id);
-        model.addAttribute("student", student);
-        model.addAttribute("pageTitle", student.getUser().getName());
-        model.addAttribute("page", httpSession.getAttribute("page"));
-        return "admin/student/student-details";
-    }
 }
