@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý giáo viên - Thêm giáo viên</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</head>
+<body>
+<!-- Navbar -->
+<div th:replace="layout :: nav"></div>
+<div class="col-md-3">
+    <div class="text-center">
+        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="avatar img-circle img-thumbnail" alt="avatar">
+        <br>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateAvatarModal">Cập nhật ảnh</button>
+        <div th:if="${imageError}" th:text="${imageError}" class="text-danger"></div>
+    </div>
+</div>
+<!-- Add Teacher Form -->
+<div class="container mt-4">
+    <h1 class="text-primary">Thêm giáo viên</h1>
+    <hr>
+    <div class="row">
+    <form class="form-horizontal" role="form" th:action="@{/teacher/create}" th:object="${teacherDTO}" method="post">
+        <div class="form-group mb-3">
+            <label for="name" class="control-label">Tên giáo viên:</label>
+            <input class="form-control" id="name" type="text" th:field="*{teacherDTO.name}" required maxlength="50">
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{teacherDTO.name}" class="text-danger"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="degree" class="control-label">Học vị:</label>
+            <select class="form-control" id="degree" th:field="*{degree}" required>
+                <option value="MASTER">Thạc sĩ</option>
+                <option value="DOCTOR">Tiến sĩ</option>
+                <option value="PROFESSOR">Giáo sư</option>
+            </select>
+            <div th:if="${#fields.hasErrors('degree')}" th:errors="*{degree}" class="text-danger"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="faculty" class="control-label">Khoa:</label>
+            <input class="form-control" id="faculty" type="text" th:field="*{teacherDTO.faculty}" required maxlength="50">
+            <div th:if="${#fields.hasErrors('faculty')}" th:errors="*{teacherDTO.faculty}" class="text-danger"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="dob" class="control-label">Ngày sinh:</label>
+            <input class="form-control" id="dob" type="date" th:field="*{teacherDTO.dob}" required>
+            <div th:if="${#fields.hasErrors('dob')}" th:errors="*{teacherDTO.dob}" class="text-danger"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="email" class="control-label">Email:</label>
+            <input class="form-control" id="email" type="email" th:field="*{teacherDTO.email}" required maxlength="50">
+            <div th:if="${#fields.hasErrors('email')}" th:errors="*{teacherDTO.email}" class="text-danger"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="phoneNumber" class="control-label">Số điện thoại:</label>
+            <input class="form-control" id="phoneNumber" type="text" th:field="*{teacherDTO.phoneNumber}" required maxlength="50">
+            <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{teacherDTO.phoneNumber}" class="text-danger"></div>
+        </div>
+
+        <div class="form-group mb-3">
+            <label for="address" class="control-label">Địa chỉ:</label>
+            <input class="form-control" id="address" type="text" th:field="*{teacherDTO.address}" required maxlength="50">
+            <div th:if="${#fields.hasErrors('address')}" th:errors="*{teacherDTO.address}" class="text-danger"></div>
+        </div>
+
+        <div class="form-group">
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary me-2" type="submit">Thêm</button>
+                <a class="btn btn-secondary" th:href="@{/teacher/list}">Thoát</a>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+<!-- Footer -->
+<div th:replace="layout :: footer"></div>
+<div class="modal fade" id="updateAvatarModal" tabindex="-1" aria-labelledby="updateAvatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateAvatarModalLabel">Cập nhật ảnh đại diện</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/user/change-avatar}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="avatar" class="form-label">Chọn ảnh mới</label>
+                        <input type="file" class="form-control" id="avatar" name="avatar" accept=".jpg,.png,.jpeg" required>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary me-2">Cập nhật</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

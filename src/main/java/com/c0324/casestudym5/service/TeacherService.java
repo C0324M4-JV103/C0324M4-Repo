@@ -1,7 +1,12 @@
 package com.c0324.casestudym5.service;
 
+import com.c0324.casestudym5.dto.TeacherDTO;
+import com.c0324.casestudym5.model.Faculty;
 import com.c0324.casestudym5.model.Teacher;
+import com.c0324.casestudym5.model.User;
+import com.c0324.casestudym5.repository.FacultyRepository;
 import com.c0324.casestudym5.repository.TeacherRepository;
+import com.c0324.casestudym5.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,10 +20,14 @@ import java.util.Optional;
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
+    private final FacultyRepository facultyRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public TeacherService(TeacherRepository teacherRepository){
+    public TeacherService(TeacherRepository teacherRepository, FacultyRepository facultyRepository, UserRepository userRepository, FacultyRepository facultyRepository1, UserRepository userRepository1){
         this.teacherRepository = teacherRepository;
+        this.facultyRepository = facultyRepository1;
+        this.userRepository = userRepository1;
     }
 
     public Page<Teacher> getTeachersPage(int page, int size) {
@@ -45,4 +54,28 @@ public class TeacherService {
     public Optional<Teacher> getTeacherById(Long id) {
         return teacherRepository.findById(id);
     }
+
+    public Teacher createTeacher(TeacherDTO teacherDTO) {
+
+        Faculty faculty = facultyRepository.findById(teacherDTO.getFacultyId())
+                .orElseThrow(() -> new RuntimeException("Khoa không tồn tại"));
+
+        User user = userRepository.findById(teacherDTO.getUserDTO().getId())
+                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
+
+        Teacher.Degree degree;
+        try {
+            degree = Teacher.Degree.valueOf(teacherDTO.getDegree());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Học vị không hợp lệ");
+        }
+
+        Teacher teacher = new Teacher();
+        teacher.setFaculty(faculty);
+        teacher.setUser(user);
+        teacher.setDegree(degree);
+
+        return teacherRepository.save(teacher);
+    }
+
 }

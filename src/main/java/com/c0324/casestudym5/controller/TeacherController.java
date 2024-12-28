@@ -1,13 +1,19 @@
 package com.c0324.casestudym5.controller;
 
+import com.c0324.casestudym5.dto.TeacherDTO;
+import com.c0324.casestudym5.model.Faculty;
 import com.c0324.casestudym5.model.Teacher;
 import com.c0324.casestudym5.service.TeacherService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -51,6 +57,28 @@ public class TeacherController {
         }
     }
 
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
+        model.addAttribute("teacherDTO", new TeacherDTO());
+        return "/admin/teacher/teacher-create";
+    }
+
+    @PostMapping("/create")
+    public String createTeacher(@Valid @ModelAttribute("teacherDTO") TeacherDTO teacherDTO,
+                                BindingResult bindingResult,
+                                Model model) {
+        if (bindingResult.hasErrors()) {
+            return "/admin/teacher/teacher-create";
+        }
+
+        try {
+            Teacher teacher = teacherService.createTeacher(teacherDTO);
+            return "redirect:/admin/teacher/teacher-list";
+        } catch (Exception e) {
+            model.addAttribute("error", e.getMessage());
+            return "/admin/teacher/teacher-create";
+        }
+    }
 
 }
 
