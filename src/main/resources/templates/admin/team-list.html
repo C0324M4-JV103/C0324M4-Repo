@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lí nhóm sinh viên</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home-page.css">
+    <link rel="stylesheet" href="/css/team-list.css">
+</head>
+<body>
+<div th:replace="layout :: nav" ></div>
+
+<div class="container search-container">
+    <form th:action="@{/admin/team}" method="get" >
+        <label>
+            <input type="text" class="form-control me-5" name="name" placeholder="Tên nhóm" th:value="${keyword}">
+        </label>
+        <button type="submit" class="btn btn-primary me-1">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+</div>
+
+<div class="margin-bottom">
+    <div th:if="${teams.isEmpty()}" style="width: 90%; margin: 0 auto">
+        <div class="alert alert-warning text-center" role="alert">
+            Không có dữ liệu
+        </div>
+    </div>
+
+    <div th:if="${!teams.isEmpty()}" class="table-container" >
+        <table class="table table-striped table-bordered">
+            <thead class="table-dark" style="text-align: center">
+            <tr>
+                <th>STT</th>
+                <th>Tên nhóm</th>
+                <th>Số sinh viên</th>
+                <th>Thời hạn nộp</th>
+                <th>Kiểm duyệt</th>
+                <th>Chức năng</th>
+                <th>Yêu cầu</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="team, it : ${teams}">
+                <td th:text="${it.index + 1}"></td>
+                <td th:text="${team.name}"></td>
+                <td th:text="${team.memberCount}"></td>
+                <td>
+                    <span th:if="${team.deadline == null}" th:text="'---'"></span>
+                    <span th:if="${team.deadline != null}" th:text="${#dates.format(team.deadline, 'dd/MM/yyyy')}"></span>
+                </td>
+                <td>
+                    <a class="btn btn-success" th:classappend="${team.status == 0 ? '' : 'disabled'}">
+                        <span th:text="${team.status == 0 ? '&nbsp&nbsp&nbspDuyệt&nbsp&nbsp' : 'Đã duyệt'}"></span></a>
+                </td>
+                <td>
+                    <a href="#" class="btn btn-info">
+                        <i class="fas fa-eye"></i>
+                    </a>
+                    <a th:href="@{/team/delete/id(id=${team.id})}" class="btn btn-danger">
+                        <i class="fas fa-trash"></i>
+                    </a>
+                </td>
+                <td>
+                    <a href="#" class="btn btn-secondary ">Hạn cuối nộp dự án</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-center" th:if="${totalPages > 0}">
+            <ul class="pagination">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a th:if="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${currentPage - 1}}">Trước</a>
+                    <a th:unless="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${currentPage - 1} + '&name=' + ${keyword}}">Trước</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                    <a th:if="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${i}}" th:text="${i + 1}"></a>
+                    <a th:unless="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${i} + '&name=' + ${keyword}}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a th:if="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${currentPage + 1}}">Sau</a>
+                    <a th:unless="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${currentPage + 1} + '&name=' + ${keyword}}">Sau</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<div th:replace="layout :: footer" class="margin-top"></div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
