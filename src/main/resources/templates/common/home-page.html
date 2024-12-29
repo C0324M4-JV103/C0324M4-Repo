@@ -12,17 +12,17 @@
 <body>
 
 <!-- Navbar -->
-<div th:replace="layout :: nav"></div>
+<div th:replace="~{layout :: nav}"></div>
 <!-- Section -->
-<div th:replace="layout :: section"></div>
+<div th:replace="~{layout :: section}"></div>
 <!--Thông báo-->
-<div th:replace="layout :: noti"></div>
+<div th:replace="~{layout :: noti}"></div>
 <!--Giảng viên -->
-<div th:replace="layout :: teacher"></div>
+<div th:replace="~{layout :: teacher}"></div>
 <!--Dự án tiêu biểu-->
-<div th:replace="layout :: project"></div>
+<div th:replace="~{layout :: project}"></div>
 <!--Footer-->
-<div th:replace="layout :: footer"></div>
+<div th:replace="~{layout :: footer}"></div>
 
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>

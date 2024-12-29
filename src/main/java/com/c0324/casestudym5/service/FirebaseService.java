@@ -18,8 +18,8 @@ public class FirebaseService {
         this.storageClient = storageClient;
     }
 
-    public String uploadFileToFireBase(MultipartFile file){
-        String fileName = "images/"+ UUID.randomUUID() + "-" + file.getOriginalFilename();
+    public String uploadFileToFireBase(MultipartFile file, String directory) {
+        String fileName = "casestudym5/"+ directory + UUID.randomUUID() + "-" + file.getOriginalFilename();
         try {
             var blob = storageClient.bucket().create(fileName, file.getInputStream(), file.getContentType());
             blob.createAcl(com.google.cloud.storage.Acl.of(com.google.cloud.storage.Acl.User.ofAllUsers(), com.google.cloud.storage.Acl.Role.READER));
@@ -40,3 +40,4 @@ public class FirebaseService {
         }
     }
 }
+

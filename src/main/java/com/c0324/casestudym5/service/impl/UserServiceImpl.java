@@ -9,8 +9,10 @@ import com.c0324.casestudym5.repository.RoleRepository;
 import com.c0324.casestudym5.repository.UserRepository;
 import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.UserService;
+import com.c0324.casestudym5.util.AppConstants;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -65,7 +67,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getCurrentUser() {
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("No authenticated user found");
+        }
+        String currentUserEmail = authentication.getName();
         return userRepository.findByEmail(currentUserEmail);
     }
 
@@ -106,7 +112,7 @@ public class UserServiceImpl implements UserService {
                     save(currentUser);
                     firebaseService.deleteFileFromFireBase(oldAvatar.getUrl());
                 }
-                String urlImage = firebaseService.uploadFileToFireBase(avatar);
+                String urlImage = firebaseService.uploadFileToFireBase(avatar, AppConstants.URL_AVATAR);
                 MultiFile newAvatar = MultiFile.builder().url(urlImage).build();
                 currentUser.setAvatar(newAvatar);
                 save(currentUser);

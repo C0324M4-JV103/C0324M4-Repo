@@ -19,8 +19,8 @@ public class Teacher {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "faculty_id")
+    @ManyToOne
+    @JoinColumn(name = "faculty_id", referencedColumnName = "id")
     private Faculty faculty;
 
     @Enumerated(EnumType.STRING)
