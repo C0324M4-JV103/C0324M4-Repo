@@ -34,7 +34,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // configureMessageBroker: tao kho chua du lieu
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic"); // duong dan nhan kho chua
+        config.enableSimpleBroker("/socket"); // duong dan nhan kho chua
         config.setApplicationDestinationPrefixes("/app"); // Duong dan goi len Gui len kho chua
     }
 

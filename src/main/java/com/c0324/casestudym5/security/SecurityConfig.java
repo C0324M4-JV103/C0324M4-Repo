@@ -1,11 +1,6 @@
 package com.c0324.casestudym5.security;
 
-import com.c0324.casestudym5.model.MultiFile;
-import com.c0324.casestudym5.model.Role;
-import com.c0324.casestudym5.model.User;
 import com.c0324.casestudym5.service.UserService;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,8 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import java.util.Collections;
-import java.util.Date;
 
 @Configuration
 public class SecurityConfig  {
@@ -57,10 +50,13 @@ public class SecurityConfig  {
                         })
                         .permitAll()
                 )
-                .logout(LogoutConfigurer::permitAll
+                .logout(LogoutConfigurer::permitAll)
+                .sessionManagement(session -> session
+                        .maximumSessions(1)
+                        .expiredUrl("/login?expired=true")
                 )
-                .exceptionHandling(configurer ->
-                        configurer.accessDeniedPage("/access-denied")
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/access-denied")
                 );
 
         return http.build();

@@ -10,4 +10,9 @@ public class HomeController {
         return "common/home-page";
     }
 
+    @GetMapping("/user/notification")
+    public String showNotification() {
+        return "/common/notification";
+    }
+
 }

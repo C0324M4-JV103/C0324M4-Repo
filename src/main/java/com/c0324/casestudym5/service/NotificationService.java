@@ -1,12 +1,15 @@
 package com.c0324.casestudym5.service;
 
+import com.c0324.casestudym5.dto.NotificationDTO;
 import com.c0324.casestudym5.model.Notification;
 import com.c0324.casestudym5.model.User;
 import com.c0324.casestudym5.repository.NotificationRepository;
+import com.c0324.casestudym5.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,10 +27,11 @@ public class NotificationService {
 
 
     public void sendNotification(Notification notification){
-        User sender = notification.getSender();
         User receiver = notification.getReceiver();
-        notificationRepository.save(notification);
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(receiver.getEmail()), "/queue/notify", notification);
+        notification.setCreatedAt(new Date());
+        NotificationDTO response = new NotificationDTO(notification.getId(), notification.getContent(), DateTimeUtil.getTimeDifference(notification.getCreatedAt()));
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(receiver.getEmail()), "/socket/notification", response);
+//        notificationRepository.save(notification);
     }
 
     public List<Notification> getNotificationsByUserId(Long receiverId){

@@ -12,6 +12,7 @@ import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.AppConstants;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -66,7 +67,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getCurrentUser() {
-        String currentUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("No authenticated user found");
+        }
+        String currentUserEmail = authentication.getName();
         return userRepository.findByEmail(currentUserEmail);
     }
 
