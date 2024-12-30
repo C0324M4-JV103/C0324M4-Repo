@@ -28,6 +28,6 @@ public class Invitation {
     private Student inviter; // người mời
 
     @Column
-    private boolean accepted = false; // Trạng thái lời mời
+    private boolean accepted = false; // trạng thái lời mời
 
 }

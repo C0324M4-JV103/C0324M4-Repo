@@ -1,7 +1,7 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.model.Teacher;
-import com.c0324.casestudym5.service.impl.TeacherService;
+import com.c0324.casestudym5.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

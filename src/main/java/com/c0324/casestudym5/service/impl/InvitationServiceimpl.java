@@ -4,7 +4,6 @@ import com.c0324.casestudym5.model.Invitation;
 import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.model.Team;
 import com.c0324.casestudym5.repository.InvitationRepository;
-import com.c0324.casestudym5.repository.StudentRepository;
 import com.c0324.casestudym5.service.InvitationService;
 import com.c0324.casestudym5.service.MailService;
 import com.c0324.casestudym5.service.StudentService;

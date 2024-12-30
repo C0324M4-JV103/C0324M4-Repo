@@ -27,8 +27,7 @@ public class Student {
     private boolean isLeader;
 
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean invited; // Mặc định chưa được mời
-
+    private boolean invited; // Mặc định chưa mời
 
     @ManyToOne
     @JoinColumn(name = "clazz_id", referencedColumnName = "id")

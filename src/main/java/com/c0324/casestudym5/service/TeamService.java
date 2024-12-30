@@ -13,7 +13,6 @@ public interface TeamService {
     Team findById(Long teamId);
     boolean existsByName(String name);
 
-
     Page<TeamDTO> getPageTeams(int page, String keyword);
     void deleteTeam(Long teamId);
     Team getTeamById(Long id);

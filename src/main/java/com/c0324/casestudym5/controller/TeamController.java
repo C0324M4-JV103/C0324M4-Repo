@@ -144,6 +144,7 @@ public class TeamController {
                     + currentStudent.getUser().getName() + ". Vui lòng kiểm tra thông tin trên hệ thống để chấp nhận lời mời.\n\n"
                     + "Bạn có thể xem và chấp nhận lời mời tại: "
                     + "<a href=\"http://localhost:8080/team" + "\">Xem lời mời ngay!</a>";
+
             invitationService.inviteStudent(studentId, subject, content);
 
             redirectAttributes.addFlashAttribute("successMessage", "Lời mời đã được gửi thành công!");
