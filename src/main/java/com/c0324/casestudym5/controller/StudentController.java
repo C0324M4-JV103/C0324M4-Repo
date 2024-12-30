@@ -12,6 +12,9 @@ import com.c0324.casestudym5.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -53,15 +56,24 @@ public class StudentController {
     }
 
     @GetMapping("/team")
-    public String formRegisterTeam(Model model) {
-
+    public String formRegisterTeam(@RequestParam(name = "page", required = false, defaultValue = "1") int page,
+                                   @RequestParam(name = "search", required = false, defaultValue = "") String search,
+                                   Model model) {
         if (!model.containsAttribute("team")) {
             model.addAttribute("team", new TeamDTO());
         }
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
 
-        List<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId());
+        Pageable pageable = PageRequest.of(page - 1, 5);
+
+        Page<Student> availableStudents;
+        if (search != null && !search.isEmpty()) {
+            availableStudents = studentService.searchStudentsExceptCurrent(search, currentStudent.getId(), pageable);
+        } else {
+            availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
+        }
+
         // nhận lời mời từ nhiều nhóm
         List<Invitation> invitation = invitationService.findByStudent(currentStudent);
         // check xem đang ở trong nhóm nào không
@@ -73,10 +85,18 @@ public class StudentController {
         for (Student student : availableStudents) {
             student.setInvited(invitedStudentIds.contains(student.getId()));
         }
+
+        model.addAttribute("search", search);
         model.addAttribute("list", availableStudents);
         model.addAttribute("isInTeam", isInTeam);
         model.addAttribute("isLeader", isLeader);
         model.addAttribute("invitation", invitation); // hiện thông tin lời mời
+
+        // Cung cấp thông tin phân trang
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", availableStudents.getTotalPages());
+        model.addAttribute("totalItems", availableStudents.getTotalElements());
+
         return "team/team-register";
     }
 
@@ -190,10 +210,10 @@ public class StudentController {
 
 
     @GetMapping("/info-team")
-    public String teamInfo(Model model) {
+    public String teamInfo(Model model, Pageable pageable) {
         Student currentStudent = getCurrentStudent();
         Team team = currentStudent.getTeam();
-        List<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId());
+        Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
         // check xem có phải là nhóm trưởng không
         boolean isLeader = (team != null && currentStudent.isLeader());
 
