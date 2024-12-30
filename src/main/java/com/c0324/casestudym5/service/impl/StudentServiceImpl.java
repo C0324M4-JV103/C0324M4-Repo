@@ -43,7 +43,7 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> findAllExceptCurrentStudent(Long currentStudentId) {
         return studentRepository.findAllExceptCurrentStudent(currentStudentId);
     }
-    
+
     @Override
     public Page<Student> getPageStudents(Pageable pageable, StudentSearchDTO search) {
         return studentRepository.getPageStudents(pageable, search.getEmail(), search.getName(), search.getClazzId());

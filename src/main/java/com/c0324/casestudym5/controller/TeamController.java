@@ -165,9 +165,8 @@ public class TeamController {
                 student.setTeam(team);
                 student.setInvited(false);
                 studentService.save(student);
-
-                invitationService.save(invitation);
-                invitationService.delete(invitation);
+                // accept thì xóa all các lời mời khác
+                invitationService.deleteAllByStudent(student);
                 redirectAttributes.addFlashAttribute("successMessage", "Bạn đã tham gia nhóm thành công!");
 
                 return "redirect:/team/info-team";

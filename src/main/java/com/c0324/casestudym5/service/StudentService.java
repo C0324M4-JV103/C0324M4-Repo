@@ -20,7 +20,5 @@ public interface StudentService {
     List<Student> findAllExceptCurrentStudent(Long currentStudentId);
     String getStudentEmailById(Long id);
 
-    String getStudentEmailById(Long id);
-
 
 }
