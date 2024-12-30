@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
+    Team findTeamByName(String name);
+    boolean existsByName(String name);
 
     @Query("SELECT t FROM Team t WHERE t.name LIKE %:name%")
     Page<Team> searchTeamByName(Pageable pageable, String name);

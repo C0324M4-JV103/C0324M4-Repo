@@ -28,4 +28,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> getStudents(@Param("email") String email,
                               @Param("name") String name,
                               @Param("classId") Long classId);
+
+    Student findStudentByUserId(Long id);
+    @Query("select s from Student s where s.id != :currentStudentId")
+    List<Student> findAllExceptCurrentStudent(Long currentStudentId);
+
 }

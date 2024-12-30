@@ -13,8 +13,36 @@ import java.util.List;
 
 @Service
 public class StudentServiceImpl implements StudentService {
+    private final StudentRepository studentRepository;
     @Autowired
-    StudentRepository studentRepository;
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
+
+    @Override
+    public Student findStudentByUserId(Long id) {
+        return studentRepository.findStudentByUserId(id);
+    }
+
+    @Override
+    public List<Student> findAll() {
+        return studentRepository.findAll();
+    }
+
+    @Override
+    public void save(Student student) {
+        studentRepository.save(student);
+    }
+
+    @Override
+    public Student findById(Long id) {
+        return studentRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Student> findAllExceptCurrentStudent(Long currentStudentId) {
+        return studentRepository.findAllExceptCurrentStudent(currentStudentId);
+    }
 
     @Override
     public Page<Student> getPageStudents(Pageable pageable, StudentSearchDTO search) {
@@ -29,5 +57,10 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student getStudent(Long id) {
         return studentRepository.findById(id).get();
+    }
+    @Override
+    public String getStudentEmailById(Long id) {
+        Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+        return student.getUser().getEmail();
     }
 }

@@ -12,6 +12,12 @@ import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.CommonMapper;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+import com.c0324.casestudym5.dto.TeamDTO;
+import com.c0324.casestudym5.util.CommonMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,6 +41,30 @@ public class TeamServiceImpl implements TeamService {
         this.userService = userService;
     }
 
+    @Override
+    public List<Team> findAll() {
+        return teamRepository.findAll();
+    }
+
+    @Override
+    public Team save(Team team) {
+        return teamRepository.save(team);
+    }
+
+    @Override
+    public Team findByName(String name) {
+        return teamRepository.findTeamByName(name);
+    }
+
+    @Override
+    public Team findById(Long teamId) {
+        return teamRepository.findById(teamId).orElse(null);
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return teamRepository.existsByName(name);
+    }
 
     @Override
     public Page<TeamDTO> getPageTeams(int page, String keyword) {
@@ -72,4 +102,5 @@ public class TeamServiceImpl implements TeamService {
     public Team getTeamById(Long id) {
         return teamRepository.findById(id).orElse(null);
     }
+
 }

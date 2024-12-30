@@ -30,11 +30,11 @@ body {
     color: white !important; /* Màu chữ mặc định */
 }
 
-.nav-link:focus, .nav-link:hover{
+.nav-link:hover{
     color: #86868d !important;
 }
 .dropdown-item {
-    color: white !important; /* Màu chữ mặc định trong dropdown */
+    color: white ;
     font-size: 11px !important;
 }
 
@@ -45,14 +45,8 @@ body {
 }
 
 .dropdown-menu {
-    width: auto;
-    min-width: unset;
-    background-color: #282781 !important;
-    margin-top: 14px !important;
-}
-.dropdown-menu > li {
-    margin: 0;
-    border: none;
+    background-color: #282781;
+    margin-top: 15px !important;
 }
 
 .dropdown-item:hover {
@@ -217,7 +211,7 @@ swiper-slide {
 .footer {
     background-color: #282781;
     color: #ffffff;
-    padding: 60px 0;
+    padding: 10px 0;
 }
 
 .logo {
@@ -347,3 +341,86 @@ swiper-slide {
 .card:hover .card-img-top {
     transform: scale(1.2); /* zoom ảnh khi hover */
 }
+
+
+/*css của team-form*/
+.titles {
+    margin-top: 120px;
+    color: #282781;
+    font-size: 3rem;
+    font-weight: 700;
+}
+/*css của team-form*/
+
+
+/*css cho Chuông thông báo*/
+.notif-icon {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.notif-icon:hover {
+    transform: scale(1.1);
+}
+
+
+.notif-dd {
+    width: 330px;
+    padding: 0;
+    border-radius: 10px; /* Thay đổi giá trị này để điều chỉnh độ bo tròn */
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    overflow: hidden; /* Đảm bảo nội dung bên trong không tràn ra ngoài */
+}
+
+.notif-dd.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.notif-header {
+    border-bottom: 1px solid #eee;
+    padding: 5px;
+    background-color: #ffffff;
+    text-align: center;
+    color: #212020;
+    font-size: 1.8rem;
+    font-weight: 650;
+}
+
+.notif-list {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s ease;
+}
+
+.notif-list:hover {
+    background-color: #f1f1f1;
+}
+
+.notif-img img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.notif-detail p {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.2;
+}
+
+.notif-detail p b {
+    font-weight: bold;
+}
+/*css cho Chuông thông báo*/
