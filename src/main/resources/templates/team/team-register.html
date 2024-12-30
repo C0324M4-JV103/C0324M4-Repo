@@ -8,15 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
           rel="stylesheet">
     <link rel="stylesheet" href="/css/home-page.css">
-    <style>
-        .titles {
-            margin-top: 120px;
-            color: #282781;
-            font-size: 3rem;
-            font-weight: 700;
-        }
-    </style>
-    <!--    <link rel="stylesheet" href="/css/info-team.css">-->
 </head>
 <body>
 <div th:replace="~{layout :: nav}"></div>
@@ -73,7 +64,7 @@
                           th:text="${s.teamStatus}"></span>
                 </td>
                 <td th:if="${isInTeam and isLeader}">
-                    <form th:action="@{/team/invite}" method="post">
+                    <form th:action="@{/student/invite-team}" method="post">
                         <input type="hidden" name="studentId" th:value="${s.id}"/>
                         <button type="submit" class="btn btn-success" th:if="${s.team != null}" disabled>
                             <strong class="fas fa-check"></strong>
@@ -114,12 +105,12 @@
                 <td class="align-middle text-center" th:text="${i.team.name}"></td>
                 <td class="align-middle text-center" th:text="${i.inviter.user.name}"></td>
                 <td class="align-middle d-flex justify-content-center">
-                    <form th:action="@{/team/invitation/handle}" method="post" class="me-1">
+                    <form th:action="@{/student/invitation/handle}" method="post" class="me-1">
                         <input type="hidden" name="invitationId" th:value="${i.id}">
                         <input type="hidden" name="accept" value="true"/>
                         <button type="submit" class="btn btn-success">Xác nhận</button>
                     </form>
-                    <form th:action="@{/team/invitation/handle}" method="post" class="ms-1">
+                    <form th:action="@{/student/invitation/handle}" method="post" class="ms-1">
                         <input type="hidden" name="invitationId" th:value="${i.id}">
                         <input type="hidden" name="accept" value="false"/>
                         <button type="submit" class="btn btn-danger">Từ chối</button>
@@ -132,7 +123,7 @@
     </div>
 
     <div class="h-100 d-flex align-items-center justify-content-start my-5" th:if="${isInTeam}">
-        <a th:href="@{/team/info-team}" class="btn btn-lg" role="button" style="background-color: #2887d7;color: white ;text-decoration: none;">
+        <a th:href="@{/student/info-team}" class="btn btn-lg" role="button" style="background-color: #2887d7;color: white ;text-decoration: none;">
             Đi đến nhóm của bạn<i class="fas fa-arrow-right m-1" style="font-size: 1rem"></i>
         </a>
     </div>
@@ -155,7 +146,7 @@
                     <h5 class="modal-title" id="createTeamModalLabel">Tạo Nhóm Mới</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form th:action="@{/team/create}" method="post" th:object="${team}">
+                <form th:action="@{/student/create-team}" method="post" th:object="${team}">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="teamName" class="form-label">Tên Nhóm</label>
