@@ -114,8 +114,11 @@ public class UserServiceImpl implements UserService {
                 if (oldAvatar != null) {
                     currentUser.setAvatar(null);
                     save(currentUser);
-                    // firebaseService.deleteFileFromFireBase(oldAvatar.getUrl());
+                    // Delete the old avatar from firebase and database
+                     firebaseService.deleteFileFromFireBase(oldAvatar.getUrl());
+                     multiFileRepository.delete(oldAvatar);
                 }
+                //Upload image to firebase and get the url to store in the database
                 String urlImage = firebaseService.uploadFileToFireBase(avatar, AppConstants.URL_AVATAR);
                 MultiFile newAvatar = MultiFile.builder().url(urlImage).build();
                 // Save the new avatar before setting it to the user
