@@ -5,6 +5,7 @@ import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.MultiFile;
 import com.c0324.casestudym5.model.Role;
 import com.c0324.casestudym5.model.User;
+import com.c0324.casestudym5.repository.MultiFileRepository;
 import com.c0324.casestudym5.repository.RoleRepository;
 import com.c0324.casestudym5.repository.UserRepository;
 import com.c0324.casestudym5.service.FirebaseService;
@@ -110,14 +111,14 @@ public class UserServiceImpl implements UserService {
                 if(oldAvatar != null){
                     currentUser.setAvatar(null);
                     save(currentUser);
-                    firebaseService.deleteFileFromFireBase(oldAvatar.getUrl());
+//                    firebaseService.deleteFileFromFireBase(oldAvatar.getUrl());
                 }
                 String urlImage = firebaseService.uploadFileToFireBase(avatar, AppConstants.URL_AVATAR);
                 MultiFile newAvatar = MultiFile.builder().url(urlImage).build();
                 currentUser.setAvatar(newAvatar);
                 save(currentUser);
             } catch (Exception e){
-                throw new IllegalArgumentException("Lỗi tải ảnh lên");
+                System.out.println(e.getMessage());
             }
         }
     }

@@ -51,10 +51,6 @@ public class SecurityConfig  {
                         .permitAll()
                 )
                 .logout(LogoutConfigurer::permitAll)
-                .sessionManagement(session -> session
-                        .maximumSessions(1)
-                        .expiredUrl("/login?expired=true")
-                )
                 .exceptionHandling(exception -> exception
                         .accessDeniedPage("/access-denied")
                 );

@@ -31,7 +31,7 @@ public class NotificationService {
         notification.setCreatedAt(new Date());
         NotificationDTO response = new NotificationDTO(notification.getId(), notification.getContent(), DateTimeUtil.getTimeDifference(notification.getCreatedAt()));
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(receiver.getEmail()), "/socket/notification", response);
-//        notificationRepository.save(notification);
+        notificationRepository.save(notification);
     }
 
     public List<Notification> getNotificationsByUserId(Long receiverId){

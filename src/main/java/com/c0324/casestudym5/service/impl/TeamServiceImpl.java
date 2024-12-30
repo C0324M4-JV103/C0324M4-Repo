@@ -10,11 +10,13 @@ import com.c0324.casestudym5.service.NotificationService;
 import com.c0324.casestudym5.service.TeamService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.CommonMapper;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -47,11 +49,14 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
+    @Transactional
     public void deleteTeam(Long teamId, User sender) {
         Team team = teamRepository.findById(teamId).orElse(null);
         if(team != null){
+            Hibernate.initialize(team.getStudents());
             List<Student> students = team.getStudents();
             for(Student student : students){
+                student.setTeam(null);
                 Notification notification = Notification.builder()
                         .content("Nhóm của bạn đã bị xóa khỏi hệ thống")
                         .receiver(student.getUser())
@@ -59,6 +64,7 @@ public class TeamServiceImpl implements TeamService {
                         .build();
                 notificationService.sendNotification(notification);
             }
+            teamRepository.delete(team);
         }
     }
 
