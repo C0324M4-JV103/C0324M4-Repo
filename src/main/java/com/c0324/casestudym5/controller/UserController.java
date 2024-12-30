@@ -107,7 +107,7 @@ public class UserController {
             model.addAttribute("imageError", "Chỉ hỗ trợ ảnh có định dạng jpg, jpeg, png");
         }
 
-        return "admin/edit-profile-form";
+        return "redirect:/user/profile";
     }
 
 }

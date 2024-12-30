@@ -33,13 +33,15 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final MultiFileRepository multiFileRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final FirebaseService firebaseService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, FirebaseService firebaseService) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, MultiFileRepository multiFileRepository, BCryptPasswordEncoder passwordEncoder, FirebaseService firebaseService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.multiFileRepository = multiFileRepository;
         this.passwordEncoder = passwordEncoder;
         this.firebaseService = firebaseService;
     }
@@ -103,21 +105,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void changeAvatar(MultipartFile avatar) {
-       User currentUser = getCurrentUser();
-        if(!avatar.isEmpty()){
+        User currentUser = getCurrentUser();
+        if (!avatar.isEmpty()) {
             try {
                 MultiFile oldAvatar = currentUser.getAvatar();
-                if(oldAvatar != null){
+                if (oldAvatar != null) {
                     currentUser.setAvatar(null);
                     save(currentUser);
-//                    firebaseService.deleteFileFromFireBase(oldAvatar.getUrl());
+                    // firebaseService.deleteFileFromFireBase(oldAvatar.getUrl());
                 }
                 String urlImage = firebaseService.uploadFileToFireBase(avatar, AppConstants.URL_AVATAR);
                 MultiFile newAvatar = MultiFile.builder().url(urlImage).build();
+                // Save the new avatar before setting it to the user
+                multiFileRepository.save(newAvatar);
                 currentUser.setAvatar(newAvatar);
                 save(currentUser);
-            } catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }

@@ -42,4 +42,6 @@ public class UserDTO {
     @Size(min = 5, max = 50, message = "Địa có độ dài từ 5 đến 50 ký tự")
     @NotEmpty(message = "Địa chỉ không được để trống")
     private String address;
+
+    private String avatar;
 }
