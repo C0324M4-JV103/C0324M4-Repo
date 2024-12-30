@@ -31,6 +31,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     Student findStudentByUserId(Long id);
     @Query("select s from Student s where s.id != :currentStudentId")
-    List<Student> findAllExceptCurrentStudent(Long currentStudentId);
-
+    Page<Student> findAllExceptCurrentStudent(Long currentStudentId, Pageable pageable);
+    @Query("select s from Student s where s.id != :currentStudentId " +
+            "and (s.user.name like %:search% or s.code like %:search%)")
+    Page<Student> searchStudentsExceptCurrent(@Param("search") String search,
+                                              @Param("currentStudentId") Long currentStudentId, Pageable pageable);
 }
