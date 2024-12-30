@@ -5,7 +5,7 @@ import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.model.Teacher;
 import com.c0324.casestudym5.repository.ClassRepository;
 import com.c0324.casestudym5.service.StudentService;
-import com.c0324.casestudym5.service.TeacherService;
+import com.c0324.casestudym5.service.impl.TeacherService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Optional;
 
 @RequestMapping("/admin")
 @Controller

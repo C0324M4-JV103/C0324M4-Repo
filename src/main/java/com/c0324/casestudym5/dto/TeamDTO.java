@@ -17,7 +17,7 @@ public class TeamDTO {
 
     @NotBlank(message = "Tên nhóm không được để trống.")
     @Size(max = 100, message = "Tên nhóm không được dài hơn 100 ký tự.")
-    @Size(min = 5, message = "Tên nhóm ít nhất 5 ký tự.")
+    @Size(min = 5, message = "Tên nhóm phải chứa ít nhất 5 ký tự.")
     @Pattern(regexp = "^[\\p{L} ]+$", message = "Tên nhóm không được chứa ký tự đặc biệt.")
     private String name;
 

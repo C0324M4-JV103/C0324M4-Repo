@@ -18,6 +18,7 @@ public interface StudentService {
     void save(Student student);
     Student findById(Long id);
     List<Student> findAllExceptCurrentStudent(Long currentStudentId);
+    String getStudentEmailById(Long id);
 
 
 }

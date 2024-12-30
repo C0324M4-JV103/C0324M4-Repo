@@ -33,4 +33,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Query("select s from Student s where s.id != :currentStudentId")
     List<Student> findAllExceptCurrentStudent(Long currentStudentId);
 
+
 }

@@ -17,6 +17,8 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String code;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

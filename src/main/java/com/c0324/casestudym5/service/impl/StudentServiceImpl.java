@@ -43,8 +43,6 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> findAllExceptCurrentStudent(Long currentStudentId) {
         return studentRepository.findAllExceptCurrentStudent(currentStudentId);
     }
-
-
     @Override
     public Page<Student> getPageStudents(Pageable pageable, StudentSearchDTO search) {
         return studentRepository.getPageStudents(pageable, search.getEmail(), search.getName(), search.getClazzId());
@@ -58,5 +56,10 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student getStudent(Long id) {
         return studentRepository.findById(id).get();
+    }
+    @Override
+    public String getStudentEmailById(Long id) {
+        Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+        return student.getUser().getEmail();
     }
 }
