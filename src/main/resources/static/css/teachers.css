@@ -10,13 +10,6 @@ html, body {
     flex: 1;
 }
 
-footer {
-    background-color: #343a40;
-    color: white;
-    padding: 10px 0;
-    text-align: center;
-    margin-top: auto;
-}
 
 body {
     font-family: 'Quicksand', sans-serif;

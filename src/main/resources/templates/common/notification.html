@@ -50,12 +50,13 @@
 
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
-            stompClient.subscribe('/socket/notification', function (response) {
+            stompClient.subscribe('/user/socket/notification', function (response) {
                 const notification = JSON.parse(response.body);
-                const notificationItem = document.createElement('div');
-                notificationItem.classList.add('notification-item');
-                notificationItem.innerHTML = notification.content;
-                document.getElementById('notificationList').appendChild(notificationItem);
+                console.log(notification);
+                // const notificationItem = document.createElement('div');
+                // notificationItem.classList.add('notificationi-tem');
+                // notificationItem.innerHTML = notification.content;
+                // document.getElementById('notificationList').appendChild(notificationItem);
             });
         });
     });

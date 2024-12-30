@@ -5,6 +5,7 @@ import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.MultiFile;
 import com.c0324.casestudym5.model.Role;
 import com.c0324.casestudym5.model.User;
+import com.c0324.casestudym5.repository.MultiFileRepository;
 import com.c0324.casestudym5.repository.RoleRepository;
 import com.c0324.casestudym5.repository.UserRepository;
 import com.c0324.casestudym5.service.FirebaseService;
@@ -32,13 +33,15 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final MultiFileRepository multiFileRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final FirebaseService firebaseService;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, FirebaseService firebaseService) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, MultiFileRepository multiFileRepository, BCryptPasswordEncoder passwordEncoder, FirebaseService firebaseService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.multiFileRepository = multiFileRepository;
         this.passwordEncoder = passwordEncoder;
         this.firebaseService = firebaseService;
     }
@@ -102,22 +105,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void changeAvatar(MultipartFile avatar) {
-       User currentUser = getCurrentUser();
-        if(!avatar.isEmpty()){
+        User currentUser = getCurrentUser();
+        if (!avatar.isEmpty()) {
             try {
                 MultiFile oldAvatar = currentUser.getAvatar();
-                if(oldAvatar != null){
+                if (oldAvatar != null) {
                     currentUser.setAvatar(null);
                     save(currentUser);
-                    firebaseService.deleteFileFromFireBase(oldAvatar.getUrl());
+                    // Delete the old avatar from firebase and database
+                     firebaseService.deleteFileFromFireBase(oldAvatar.getUrl());
+                     multiFileRepository.delete(oldAvatar);
                 }
+                //Upload image to firebase and get the url to store in the database
                 String urlImage = firebaseService.uploadFileToFireBase(avatar, AppConstants.URL_AVATAR);
                 MultiFile newAvatar = MultiFile.builder().url(urlImage).build();
+                // Save the new avatar before setting it to the user
+                multiFileRepository.save(newAvatar);
                 currentUser.setAvatar(newAvatar);
                 save(currentUser);
-            } catch (Exception e){
-                throw new IllegalArgumentException("Lỗi tải ảnh lên");
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
         }
     }

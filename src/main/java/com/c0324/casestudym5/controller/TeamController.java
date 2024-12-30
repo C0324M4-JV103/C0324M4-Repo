@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.Map;
 
 @Controller
@@ -47,11 +48,9 @@ public class TeamController {
 
 
     @MessageMapping("/delete-team")
-    public String handleNotification(@Payload Map<String, Object> payload) {
+    public String handleNotification(@Payload Map<String, Object> payload, Principal principal) {
         Long teamId = Long.parseLong(payload.get("teamId").toString());
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User sender = userService.findByEmail(userDetails.getUsername());
+        User sender = userService.findByEmail(principal.getName());
         teamService.deleteTeam(teamId, sender);
         return "redirect:/admin/team";
     }
