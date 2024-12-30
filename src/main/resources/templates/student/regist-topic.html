@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Topic</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="/css/home-page.css">
+</head>
+<body>
+<!-- Navbar -->
+<div th:replace="~{layout :: nav}"></div>
+<!-- Register Topic Form -->
+<div class="container">
+    <h1 class="text-center">Đăng ký đề tài</h1>
+    <form th:action="@{/registTopic}" th:object="${registTeamDTO}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="topicName" class="form-label">Tên đề tài:</label>
+            <input type="text" id="topicName" th:field="*{topicName}" maxlength="50" class="form-control" required>
+            <small class="form-text">Nhập tên đề tài.</small>
+        </div>
+        <div class="mb-3">
+            <label for="topicContent" class="form-label">Nội dung đề tài:</label>
+            <textarea id="topicContent" th:field="*{topicContent}" rows="4" class="form-control" required></textarea>
+            <small class="form-text">Mô tả thông tin tổng quan của đề tài</small>
+        </div>
+        <div class="mb-3">
+            <label for="topicDescription" class="form-label">Mô tả:</label>
+            <input type="file" id="topicDescription" th:field="*{topicDescription}" accept=".xls,.xlsx,.doc,.docx,.ppt,.pptx" class="form-control">
+            <small class="form-text">Người dùng được phép chọn các file excel, word hoặc powerpoint để mô tả đề tài mô tả chi tiết cho phần tổng quan bên trên.</small>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">Đăng ký</button>
+        </div>
+    </form>
+</div>
+<!-- Footer -->
+<div th:replace="~{layout :: footer}"></div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

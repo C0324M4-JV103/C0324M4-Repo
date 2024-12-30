@@ -73,9 +73,9 @@
             <ul class="pagination justify-content-center">
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, students.totalPages - 1)}">
                     <a class="page-link"
-                       th:if="${!isSearch}" th:href="@{/student(page=${i+1})}" th:text="${i + 1}"></a>
+                       th:if="${!isSearch}" th:href="@{/admin/student(page=${i+1})}" th:text="${i + 1}"></a>
                     <a class="page-link"
-                       th:if="${isSearch}" th:href="@{/student(page=${i+1}, name=${search.name}, email=${search.email}, clazzId=${search.clazzId})}" th:text="${i + 1}"></a>
+                       th:if="${isSearch}" th:href="@{/admin/student(page=${i+1}, name=${search.name}, email=${search.email}, clazzId=${search.clazzId})}" th:text="${i + 1}"></a>
                 </li>
             </ul>
         </nav>

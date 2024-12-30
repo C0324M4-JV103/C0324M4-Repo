@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 
@@ -51,5 +53,17 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public Team getTeamById(Long id) {
         return teamRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public void registTopic(Long teamId, Long topicId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Student student = (Student) auth.getPrincipal();
+        Team team = teamRepository.findById(teamId).orElse(null);
+        if(team != null && team.getStudents().contains(student) && team.getTopic() == null && student.isLeader()){
+            teamRepository.save(team);
+            simpMessagingTemplate.convertAndSend("/topic/teams", team);
+        }
+
     }
 }

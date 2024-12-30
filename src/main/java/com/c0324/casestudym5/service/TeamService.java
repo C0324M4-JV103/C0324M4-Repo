@@ -2,13 +2,8 @@ package com.c0324.casestudym5.service;
 
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.Team;
-import com.c0324.casestudym5.repository.TeamRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public interface TeamService {
@@ -18,4 +13,6 @@ public interface TeamService {
     public void deleteTeam(Long teamId);
 
     public Team getTeamById(Long id);
+
+    public void registTopic(Long teamId, Long topicId);
 }
