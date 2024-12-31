@@ -30,7 +30,7 @@ public class StudentController {
     @GetMapping("/team")
     public String showTeam(Model model, Principal principal) {
         Student student = studentService.getStudentByUserEmail(principal.getName());
-        model.addAttribute("team", teamService.getTeamByStudentId(1L));
+        model.addAttribute("team", teamService.getTeamByStudentId(student.getId()));
         model.addAttribute("student", student);
         return "student/team";
     }

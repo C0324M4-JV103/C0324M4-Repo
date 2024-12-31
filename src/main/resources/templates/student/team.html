@@ -27,13 +27,17 @@
             font-size: 1.5rem;
             text-align: left;
         }
+
+        .album {
+            min-height: 600px;
+        }
     </style>
 </head>
 <body>
 <!-- Navbar -->
 <div th:replace="~{layout :: nav}"></div>
 <!-- Team -->
-<section class="py-4 text-center container team-title">
+<section class="py-4 text-left container team-title">
     <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto">
             <h1 class="fw-bold">Thành viên trong nhóm</h1>
@@ -45,7 +49,12 @@
 </section>
 <div class="album py-5 bg-light">
     <div class="container">
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div th:if="${team == null}" style="margin: 0 auto">
+            <div class="alert alert-warning text-center" role="alert">
+                Hãy tạo nhóm của bạn!
+            </div>
+        </div>
+        <div  th:if="${team != null}" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             <div class="col" th:each="student : ${team.students}">
                 <div class="card shadow-sm">
                     <img th:src="${student.user.avatar?.url}" class="bd-placeholder-img card-img-top"  alt="https://firebasestorage.googleapis.com/v0/b/cv-pdf-upload.appspot.com/o/casestudym5%2Favatar%2Fdefault-avatar.png?alt=media&token=a7b21608-1b68-45e0-9d6e-a5fcbcaac12e">
