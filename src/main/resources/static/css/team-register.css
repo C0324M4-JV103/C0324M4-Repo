@@ -15,7 +15,8 @@
 }
 
 .btn-icons {
-    font-size: 18px;
+    font-size: 15px;
+    font-weight: 555;
     border: none;
     background: transparent;
     padding: 0;
@@ -26,7 +27,7 @@
 }
 .btn-icons:hover {
     color: #f89956;
-    transform: scale(1.3);
+    transform: scale(1.4);
 }
 .btn-icons:disabled .fas {
     color: #494d4d;

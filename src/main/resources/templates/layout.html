@@ -401,5 +401,33 @@
         </div>
     </footer>
 </div>
+
+<!--Phân trang đăng ký nhóm sinh viên (VietLQ)-->
+<div th:fragment="paging">
+    <div class="d-flex justify-content-center" th:if="${!list.isEmpty()}">
+        <ul class="pagination rounded-pill">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page = 1)}">Trang đầu</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page=${i})}" th:text="${i}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page=${totalPages})}">Trang cuối</a>
+            </li>
+        </ul>
+    </div>
+</div>
 </body>
 </html>

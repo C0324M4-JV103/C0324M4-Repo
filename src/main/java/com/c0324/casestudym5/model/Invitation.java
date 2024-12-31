@@ -25,9 +25,6 @@ public class Invitation {
 
     @ManyToOne
     @JoinColumn(name = "inviter_id", referencedColumnName = "id")
-    private Student inviter; // người mời
-
-    @Column
-    private boolean accepted = false; // trạng thái lời mời
+    private Student inviter;
 
 }
