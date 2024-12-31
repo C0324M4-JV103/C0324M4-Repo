@@ -1,6 +1,7 @@
 package com.c0324.casestudym5.repository;
 
 import com.c0324.casestudym5.model.Student;
+import com.c0324.casestudym5.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -28,4 +29,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> getStudents(@Param("email") String email,
                               @Param("name") String name,
                               @Param("classId") Long classId);
+
+    Student findByUserEmail(String email);
 }

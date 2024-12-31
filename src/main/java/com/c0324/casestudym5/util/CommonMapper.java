@@ -1,8 +1,10 @@
 package com.c0324.casestudym5.util;
 
+import com.c0324.casestudym5.dto.RegisterTopicDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.Team;
+import com.c0324.casestudym5.model.Topic;
 import com.c0324.casestudym5.model.User;
 import org.springframework.beans.BeanUtils;
 

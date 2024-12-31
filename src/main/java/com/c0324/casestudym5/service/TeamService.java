@@ -14,5 +14,5 @@ public interface TeamService {
 
     public Team getTeamById(Long id);
 
-    public void registTopic(Long teamId, Long topicId);
+    public Team getTeamByStudentId(Long studentId);
 }

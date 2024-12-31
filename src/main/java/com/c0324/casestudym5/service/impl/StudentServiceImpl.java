@@ -30,4 +30,9 @@ public class StudentServiceImpl implements StudentService {
     public Student getStudent(Long id) {
         return studentRepository.findById(id).get();
     }
+
+    @Override
+    public Student getStudentByUserEmail(String email) {
+        return studentRepository.findByUserEmail(email);
+    }
 }
