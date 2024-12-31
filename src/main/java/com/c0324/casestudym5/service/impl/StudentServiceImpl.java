@@ -40,8 +40,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<Student> findAllExceptCurrentStudent(Long currentStudentId) {
-        return studentRepository.findAllExceptCurrentStudent(currentStudentId);
+    public Page<Student> findAllExceptCurrentStudent(Long currentStudentId, Pageable pageable) {
+        return studentRepository.findAllExceptCurrentStudent(currentStudentId, pageable);
     }
 
     @Override
@@ -62,5 +62,10 @@ public class StudentServiceImpl implements StudentService {
     public String getStudentEmailById(Long id) {
         Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
         return student.getUser().getEmail();
+    }
+
+    @Override
+    public Page<Student> searchStudentsExceptCurrent(String search, Long id, Pageable pageable) {
+        return studentRepository.searchStudentsExceptCurrent(search,id,pageable);
     }
 }

@@ -4,24 +4,17 @@
     <meta charset="UTF-8">
     <title>Đăng ký nhóm sinh viên</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link rel="stylesheet" href="/css/home-page.css">
-    <style>
-        .titles {
-            margin-top: 120px;
-            color: #282781;
-            font-size: 3rem;
-            font-weight: 700;
-        }
-    </style>
-    <!--    <link rel="stylesheet" href="/css/info-team.css">-->
+    <link rel="stylesheet" href="/css/team-register.css">
 </head>
 <body>
 <div th:replace="~{layout :: nav}"></div>
 
 <div class="container">
+
+
     <div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
         <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="warningToast">
             <div class="toast-header bg-danger text-white">
@@ -47,11 +40,26 @@
 
     <div class="titles">
         <p class="mt-5 text-center fs-2">ĐĂNG KÍ NHÓM SINH VIÊN</p>
+        <!-- Tìm kiếm -->
+        <div class="d-flex justify-content-end">
+            <b class="me-auto" style="font-weight: 700; font-size: 1.5rem;">Danh sách sinh viên có thể mời:</b>
+
+            <form th:action="@{/student/team}" method="get" class="d-flex">
+                <input class="form-control me-2 custom-search" type="search" placeholder="Tìm kiếm sinh viên theo tên hoặc MSSV..." aria-label="Tìm kiếm"
+                       th:value="${search}"
+                       name="search">
+                <button class="btn btn-outline-primary me-2" type="submit" title="Tìm kiếm">
+                    <span class="fas fa-search"></span>
+                </button>
+                <a th:href="@{/student/team}" class="btn btn-outline-danger" title="Reset">
+                    <span class="fa-solid fa-arrows-rotate"></span>
+                </a>
+            </form>
+        </div>
     </div>
 
     <div th:if="${invitation != null}">
-        <p class="text-start mb-3" style="font-weight: 700; font-size: 1.5rem">Danh sách sinh viên có thể mời:</p>
-        <table class="table table-bordered table-striped table-hover text-center">
+        <table class="table table-bordered table-striped table-hover text-center table-team">
             <thead class="thead-dark">
             <tr>
                 <th style="width:5%;">STT</th>
@@ -59,35 +67,67 @@
                 <th style="width:15%;">Mã số</th>
                 <th style="width:20%;">Ngày sinh</th>
                 <th style="width:20%;">Trạng thái</th>
-                <th th:if="${isInTeam and isLeader}" style="width:10%;">Hành động</th>
+                <th th:if="${isInTeam and isLeader}" style="width:10%;">Mời</th>
             </tr>
             </thead>
             <tbody>
+            <tr style="font-size: 1.2rem" th:if="${list.isEmpty()}">
+                <td colspan="6" class="text-center text-danger">
+                    Không tìm thấy sinh viên phù hợp với từ khóa tìm kiếm!
+                </td>
+            </tr>
             <tr th:each="s, loop : ${list}">
-                <td th:text="${loop.index + 1}"></td>
-                <td th:text="${s.user.name}"></td>
-                <td th:text="${s.code}"></td>
-                <td th:text="${#dates.format(s.user.dob, 'dd/MM/yyyy')}"></td>
-                <td>
+                <td style="width:5%;" th:text="${(currentPage - 1) * 5 + loop.index + 1}"></td>
+                <td style="width:30%;" th:text="${s.user.name}"></td>
+                <td style="width:15%;" th:text="${s.code}"></td>
+                <td style="width:20%;" th:text="${#dates.format(s.user.dob, 'dd/MM/yyyy')}"></td>
+                <td style="width:20%;">
                     <span th:class="${s.teamStatus == 'Chưa có nhóm'} ? 'text-danger' : 'text-success'"
                           th:text="${s.teamStatus}"></span>
                 </td>
-                <td th:if="${isInTeam and isLeader}">
-                    <form th:action="@{/team/invite}" method="post">
+                <td style="width:10%;" th:if="${isInTeam and isLeader}">
+                    <form th:action="@{/student/invite-team}" method="post">
                         <input type="hidden" name="studentId" th:value="${s.id}"/>
-                        <button type="submit" class="btn btn-success" th:if="${s.team != null}" disabled>
-                            <strong class="fas fa-check"></strong>
-                        </button>
-                        <button type="submit" class="btn btn-primary"
+                        <span class="text-success" th:if="${s.team != null}" disabled>
+                            <strong class="fas fa-check" style="font-size: 1.5rem"></strong>
+                        </span>
+                        <button class="btn-icons" type="submit"
                                 th:if="${s.team == null}"
-                                th:text="${s.isInvited ? 'Đã mời' : 'Mời'}"
-                                th:disabled="${s.isInvited}">
+                                th:disabled="${s.isInvited()}">
+                            <span class="fas"
+                                  th:classappend="${s.isInvited ? 'fa-spinner fa-pulse' : 'fa-share'}"></span>
                         </button>
                     </form>
                 </td>
             </tr>
             </tbody>
         </table>
+
+        <!-- Phân trang -->
+        <div class="d-flex justify-content-center" th:if="${!list.isEmpty()}">
+            <ul class="pagination rounded-pill">
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/student/team(search=${search}, page = 1)}">Trang đầu</a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage - 1})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/student/team(search=${search}, page=${i})}" th:text="${i}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage + 1})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                    <a class="page-link" th:href="@{/student/team(search=${search}, page=${totalPages})}">Trang cuối</a>
+                </li>
+            </ul>
+        </div>
     </div>
 
     <div class="row mt-3" th:if="${!isInTeam}">
@@ -114,12 +154,12 @@
                 <td class="align-middle text-center" th:text="${i.team.name}"></td>
                 <td class="align-middle text-center" th:text="${i.inviter.user.name}"></td>
                 <td class="align-middle d-flex justify-content-center">
-                    <form th:action="@{/team/invitation/handle}" method="post" class="me-1">
+                    <form th:action="@{/student/invitation/handle}" method="post" class="me-1">
                         <input type="hidden" name="invitationId" th:value="${i.id}">
                         <input type="hidden" name="accept" value="true"/>
                         <button type="submit" class="btn btn-success">Xác nhận</button>
                     </form>
-                    <form th:action="@{/team/invitation/handle}" method="post" class="ms-1">
+                    <form th:action="@{/student/invitation/handle}" method="post" class="ms-1">
                         <input type="hidden" name="invitationId" th:value="${i.id}">
                         <input type="hidden" name="accept" value="false"/>
                         <button type="submit" class="btn btn-danger">Từ chối</button>
@@ -129,10 +169,12 @@
             </tr>
             </tbody>
         </table>
+
     </div>
 
-    <div class="h-100 d-flex align-items-center justify-content-start my-5" th:if="${isInTeam}">
-        <a th:href="@{/team/info-team}" class="btn btn-lg" role="button" style="background-color: #2887d7;color: white ;text-decoration: none;">
+    <div class="h-100 d-flex align-items-center justify-content-start my-4" th:if="${isInTeam}">
+        <a th:href="@{/student/info-team}" class="btn btn-lg" role="button"
+           style="background-color: #2887d7;color: white ;text-decoration: none;">
             Đi đến nhóm của bạn<i class="fas fa-arrow-right m-1" style="font-size: 1rem"></i>
         </a>
     </div>
@@ -155,7 +197,7 @@
                     <h5 class="modal-title" id="createTeamModalLabel">Tạo Nhóm Mới</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form th:action="@{/team/create}" method="post" th:object="${team}">
+                <form th:action="@{/student/create-team}" method="post" th:object="${team}">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="teamName" class="form-label">Tên Nhóm</label>
@@ -179,7 +221,8 @@
 
 <div th:replace="~{layout :: footer}"></div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
 <script>
     var toastElement = document.querySelector('.toast');
     if (toastElement) {
@@ -187,6 +230,4 @@
         toast.show();
     }
 </script>
-</body>
-
 </html>

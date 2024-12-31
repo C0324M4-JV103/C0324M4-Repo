@@ -17,8 +17,8 @@ public interface StudentService {
     List<Student> findAll();
     void save(Student student);
     Student findById(Long id);
-    List<Student> findAllExceptCurrentStudent(Long currentStudentId);
+    Page<Student> findAllExceptCurrentStudent(Long currentStudentId, Pageable pageable);
     String getStudentEmailById(Long id);
-
+    Page<Student> searchStudentsExceptCurrent(String search, Long id, Pageable pageable);
 
 }

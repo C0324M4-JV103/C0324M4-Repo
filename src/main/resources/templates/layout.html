@@ -25,10 +25,7 @@
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">SINH VIÊN</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">ĐĂNG KÝ GVHD</a></li>
-                            <li th:if="${team != null}">
-                                <a class="dropdown-item" th:href="@{/team/info-team}">NHÓM CỦA TÔI</a>
-                            </li>
-                            <li><a class="dropdown-item" th:href="@{/team}">ĐĂNG KÝ NHÓM</a></li>
+                            <li><a class="dropdown-item" th:href="@{/student/team}">ĐĂNG KÝ NHÓM</a></li>
                             <li><a class="dropdown-item" href="#">QUẢN LÝ TIẾN ĐỘ</a></li>
                         </ul>
                     </li>
