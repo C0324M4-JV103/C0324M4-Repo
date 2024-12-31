@@ -39,7 +39,6 @@
                 <th>Tên nhóm</th>
                 <th>Số sinh viên</th>
                 <th>Thời hạn nộp</th>
-                <th>Kiểm duyệt</th>
                 <th>Chức năng</th>
                 <th>Yêu cầu</th>
             </tr>
@@ -52,10 +51,6 @@
                 <td>
                     <span th:if="${team.deadline == null}" th:text="'---'"></span>
                     <span th:if="${team.deadline != null}" th:text="${#dates.format(team.deadline, 'dd/MM/yyyy')}"></span>
-                </td>
-                <td>
-                    <a class="btn btn-success" th:classappend="${team.status == 0 ? '' : 'disabled'}">
-                        <span th:text="${team.status == 0 ? '&nbsp&nbsp&nbspDuyệt&nbsp&nbsp' : 'Đã duyệt'}"></span></a>
                 </td>
                 <td>
                     <a href="#" class="btn btn-info">
