@@ -87,9 +87,9 @@ public class TeamServiceImpl implements TeamService {
         Team team = teamRepository.findById(teamId).orElse(null);
         if(team != null){
             //Update related topics
-            Hibernate.initialize(team.getTopic());
-            Topic topic = team.getTopic();
-            topic.setTeam(null);
+//            Hibernate.initialize(team.getTopic());
+//            Topic topic = team.getTopic();
+//            topic.setTeam(null);
             //Update related students and send notification to them
             Hibernate.initialize(team.getStudents());
             List<Student> students = team.getStudents();
@@ -104,7 +104,7 @@ public class TeamServiceImpl implements TeamService {
                 notificationService.sendNotification(notification);
             }
             //Delete team
-            teamRepository.delete(team);
+//            teamRepository.delete(team);
         }
     }
 
