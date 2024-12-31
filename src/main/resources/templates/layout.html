@@ -56,11 +56,11 @@
                         <a class="nav-link dropdown notif-icon" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-bell" style="font-size: 15px"></i>
                         </a>
-                        <div class="dropdown-menu notif-dd" aria-labelledby="navbarDropdown">
+                        <div class="dropdown-menu notif-dd" aria-labelledby="navbarDropdown" th:attr="user-email=${principal.username}">
                             <div class="notif-header">
                                 <span>Thông báo</span>
                             </div>
-                            <div class="notif-content">
+                            <div class="notif-content" id="notif-content">
                                 <div class="notif-list">
                                     <div class="notif-img">
                                         <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg" alt="user">

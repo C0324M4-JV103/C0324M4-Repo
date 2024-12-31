@@ -1,12 +1,10 @@
 package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.TeamDTO;
-import com.c0324.casestudym5.model.Notification;
-import com.c0324.casestudym5.model.Student;
-import com.c0324.casestudym5.model.Team;
-import com.c0324.casestudym5.model.User;
+import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.repository.TeamRepository;
 import com.c0324.casestudym5.service.NotificationService;
+import com.c0324.casestudym5.service.StudentService;
 import com.c0324.casestudym5.service.TeamService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.CommonMapper;
@@ -33,12 +31,17 @@ public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
     private final NotificationService notificationService;
     private final UserService userService;
+    private final StudentService studentService;
 
     @Autowired
-    public TeamServiceImpl(TeamRepository teamRepository, NotificationService notificationService, UserService userService) {
+    public TeamServiceImpl(TeamRepository teamRepository,
+                           NotificationService notificationService,
+                           UserService userService,
+                           StudentService studentService) {
         this.teamRepository = teamRepository;
         this.notificationService = notificationService;
         this.userService = userService;
+        this.studentService = studentService;
     }
 
     @Override
@@ -83,17 +86,24 @@ public class TeamServiceImpl implements TeamService {
     public void deleteTeam(Long teamId, User sender) {
         Team team = teamRepository.findById(teamId).orElse(null);
         if(team != null){
+            //Update related topics
+            Hibernate.initialize(team.getTopic());
+            Topic topic = team.getTopic();
+            topic.setTeam(null);
+            //Update related students and send notification to them
             Hibernate.initialize(team.getStudents());
             List<Student> students = team.getStudents();
             for(Student student : students){
                 student.setTeam(null);
+                studentService.save(student);
                 Notification notification = Notification.builder()
-                        .content("Nhóm của bạn đã bị xóa khỏi hệ thống")
-                        .receiver(student.getUser())
+                        .content(" đã xóa nhóm " + team.getName() + " mà bạn đang tham gia")
                         .sender(sender)
+                        .receiver(student.getUser())
                         .build();
                 notificationService.sendNotification(notification);
             }
+            //Delete team
             teamRepository.delete(team);
         }
     }

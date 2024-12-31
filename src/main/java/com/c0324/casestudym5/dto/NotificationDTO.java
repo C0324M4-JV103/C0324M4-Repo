@@ -18,4 +18,8 @@ public class NotificationDTO {
 
     private String timeDifference;
 
+    private String senderName;
+
+    private String senderAvatar;
+
 }

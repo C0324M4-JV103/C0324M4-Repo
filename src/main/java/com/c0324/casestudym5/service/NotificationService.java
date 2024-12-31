@@ -4,6 +4,7 @@ import com.c0324.casestudym5.dto.NotificationDTO;
 import com.c0324.casestudym5.model.Notification;
 import com.c0324.casestudym5.model.User;
 import com.c0324.casestudym5.repository.NotificationRepository;
+import com.c0324.casestudym5.util.CommonMapper;
 import com.c0324.casestudym5.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -25,11 +26,16 @@ public class NotificationService {
         this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
+    public void save(Notification notification){
+        notificationRepository.save(notification);
+    }
+
 
     public void sendNotification(Notification notification){
         User receiver = notification.getReceiver();
         notification.setCreatedAt(new Date());
-        NotificationDTO response = new NotificationDTO(notification.getId(), notification.getContent(), DateTimeUtil.getTimeDifference(notification.getCreatedAt()));
+        save(notification);
+        NotificationDTO response = CommonMapper.toNotificationDTO(notification);
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(receiver.getEmail()), "/socket/notification", response);
         notificationRepository.save(notification);
     }
