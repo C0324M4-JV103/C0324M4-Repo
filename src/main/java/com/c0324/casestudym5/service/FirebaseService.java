@@ -24,7 +24,7 @@ public class FirebaseService {
             // Check if the directory exists by trying to list its contents
             if (storageClient.bucket().get("casestudym5/" + directory) == null) {
                 // Create a dummy file to simulate the folder
-                storageClient.bucket().create("casestudym5/" + directory + "/.keep", new byte[0]);
+                storageClient.bucket().create("casestudym5/" + directory + ".keep", new byte[0]);
             }
             var blob = storageClient.bucket().create(fileName, file.getInputStream(), file.getContentType());
             blob.createAcl(com.google.cloud.storage.Acl.of(com.google.cloud.storage.Acl.User.ofAllUsers(), com.google.cloud.storage.Acl.Role.READER));
