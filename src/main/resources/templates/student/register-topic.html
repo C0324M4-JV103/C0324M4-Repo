@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODEGYM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> <!--link các icon trong footer-->
+    <link rel="stylesheet" href="/css/login-form.css">
+    <link rel="stylesheet" href="/css/home-page.css">
+</head>
+<body>
+<!-- Navbar -->
+<div th:replace="~{layout :: nav}"></div>
+<!-- Register Topic Form -->
+<div class="vh-100">
+    <div class="container-fluid h-custom">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                <form th:action="@{/student/register-topic}" th:object="${registerTopic}" method="post" enctype="multipart/form-data">
+                    <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                        <h1 class="lead fw-normal mb-0 me-3 main-title">Register Topic</h1>
+                    </div>
+
+                    <div class="divider d-flex align-items-center my-4">
+                        <p class="text-center fw-bold mx-3 mb-0"></p>
+                    </div>
+
+                    <!-- Name input -->
+                    <div class="form-floating mb-4">
+                        <input type="text" id="name" class="form-control form-control-lg" th:field="*{name}" placeholder="Enter topic name" required/>
+                        <label class="form-label" for="name">Topic Name</label>
+                    </div>
+
+                    <!-- Content input -->
+                    <div class="form-floating mb-4">
+                        <input type="text" id="content" class="form-control form-control-lg" th:field="*{content}" placeholder="Enter content" required/>
+                        <label class="form-label" for="content">Content</label>
+                    </div>
+
+                    <!-- Description input -->
+                    <div class="form-floating mb-4">
+                        <input type="file" id="description" class="form-control form-control-lg" th:field="*{description}" placeholder="Upload description" required/>
+                        <label class="form-label" for="description">Description</label>
+                    </div>
+
+                    <!-- Image input -->
+                    <div class="form-floating mb-4">
+                        <input type="file" id="image" class="form-control form-control-lg" th:field="*{image}" placeholder="Upload image" required/>
+                        <label class="form-label" for="image">Image</label>
+                    </div>
+
+                    <div class="text-center text-lg-start mt-4 pt-2">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 w-lg-auto">Register</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-9 col-lg-6 col-xl-5 d-none d-md-block">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp" class="img-fluid" alt="Sample image">
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer -->
+<div th:replace="~{layout :: footer}"></div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

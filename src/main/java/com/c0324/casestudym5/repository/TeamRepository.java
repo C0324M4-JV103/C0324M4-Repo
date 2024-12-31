@@ -14,4 +14,6 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     @Query("SELECT t FROM Team t WHERE t.name LIKE %:name%")
     Page<Team> searchTeamByName(Pageable pageable, String name);
+
+    Team findTeamByStudentsId(Long studentId);
 }
