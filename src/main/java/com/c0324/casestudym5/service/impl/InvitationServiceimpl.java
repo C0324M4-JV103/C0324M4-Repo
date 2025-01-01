@@ -29,10 +29,6 @@ public class InvitationServiceimpl implements InvitationService {
     public boolean existsByStudentAndTeam(Student student, Team team) {
         return invitationRepository.existsByStudentAndTeam(student, team);
     }
-    @Override
-    public List<Long> findInvitedStudentIdsByTeam(Team team) {
-        return invitationRepository.findInvitedStudentIdsByTeam(team);
-    }
 
 //    @Override
 //    public void inviteStudent(Long studentId, String subject, String content) {

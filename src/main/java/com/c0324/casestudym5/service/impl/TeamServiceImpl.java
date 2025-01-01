@@ -9,6 +9,7 @@ import com.c0324.casestudym5.service.StudentService;
 import com.c0324.casestudym5.service.TeamService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.CommonMapper;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,26 +28,43 @@ import java.util.List;
 
 
 @Service
+@RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
-    private final NotificationService notificationService;
-
     private final StudentService studentService;
     private final TeacherRepository teacherRepository;
+    private final NotificationService notificationService;
+    private final UserService userService;
 
-    @Autowired
-    public TeamServiceImpl(TeamRepository teamRepository,
-                           NotificationService notificationService,
-                           StudentService studentService, TeacherRepository teacherRepository) {
-        this.teamRepository = teamRepository;
-        this.notificationService = notificationService;
-        this.studentService = studentService;
-        this.teacherRepository = teacherRepository;
+
+    @Override
+    public List<Team> findAll() {
+        return teamRepository.findAll();
     }
 
     @Override
-    public Page<TeamDTO> getPageTeams(int page, String keyword, User user) {
+    public Team save(Team team) {
+        return teamRepository.save(team);
+    }
+
+    @Override
+    public Team findByName(String name) {
+        return teamRepository.findTeamByName(name);
+    }
+
+    @Override
+    public Team findById(Long teamId) {
+        return teamRepository.findById(teamId).orElse(null);
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        return teamRepository.existsByName(name);
+    }
+
+    @Override
+    public Page<TeamDTO> getPageTeams(int page, String keyword) {
         Pageable pageable = PageRequest.of(page, 3);
         Teacher teacher = teacherRepository.findTeacherByUserEmail(user.getEmail());
         Page<Team> teams;

@@ -13,7 +13,4 @@ public interface InvitationRepository extends JpaRepository<Invitation, Long> {
     List<Invitation> findByStudent(Student student);
     boolean existsByStudentAndTeam(Student student, Team team);
     void deleteByStudent(Student student);
-    @Query("select i.student.id from Invitation i where i.team = :team")
-    List<Long> findInvitedStudentIdsByTeam(@Param("team") Team team);
-
 }

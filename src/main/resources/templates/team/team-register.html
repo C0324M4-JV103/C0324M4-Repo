@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Đăng ký nhóm sinh viên</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link rel="stylesheet" href="/css/home-page.css">
     <link rel="stylesheet" href="/css/team-register.css">
@@ -45,7 +46,8 @@
             <b class="me-auto" style="font-weight: 700; font-size: 1.5rem;">Danh sách sinh viên có thể mời:</b>
 
             <form th:action="@{/student/team}" method="get" class="d-flex">
-                <input class="form-control me-2 custom-search" type="search" placeholder="Tìm kiếm sinh viên theo tên hoặc MSSV..." aria-label="Tìm kiếm"
+                <input class="form-control me-2 custom-search" type="search"
+                       placeholder="Tìm kiếm sinh viên theo tên hoặc MSSV..." aria-label="Tìm kiếm"
                        th:value="${search}"
                        name="search">
                 <button class="btn btn-outline-primary me-2" type="submit" title="Tìm kiếm">
@@ -88,46 +90,16 @@
                 <td style="width:10%;" th:if="${isInTeam and isLeader}">
                     <form th:action="@{/student/invite-team}" method="post">
                         <input type="hidden" name="studentId" th:value="${s.id}"/>
-                        <span class="text-success" th:if="${s.team != null}" disabled>
-                            <strong class="fas fa-check" style="font-size: 1.5rem"></strong>
-                        </span>
-                        <button class="btn-icons" type="submit"
-                                th:if="${s.team == null}"
-                                th:disabled="${s.isInvited()}">
-                            <span class="fas"
-                                  th:classappend="${s.isInvited ? 'fa-spinner fa-pulse' : 'fa-share'}"></span>
-                        </button>
+                        <span class="text-success" th:if="${s.team != null}"><span class="fas fa-check" style="font-size: 1.2rem"></span></span>
+                        <button class="btn-icons" th:if="${s.team == null and !invitationService.existsByStudentAndTeam(s, currentTeam)}" type="submit">Mời</button>
+                        <button class="btn-icons" th:if="${s.team == null and invitationService.existsByStudentAndTeam(s, currentTeam)}" disabled><span class="fas fa-spinner fa-pulse"></span></button>
                     </form>
                 </td>
             </tr>
             </tbody>
         </table>
-
         <!-- Phân trang -->
-        <div class="d-flex justify-content-center" th:if="${!list.isEmpty()}">
-            <ul class="pagination rounded-pill">
-                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/student/team(search=${search}, page = 1)}">Trang đầu</a>
-                </li>
-                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                    <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage - 1})}" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
-                    th:classappend="${i == currentPage} ? 'active'">
-                    <a class="page-link" th:href="@{/student/team(search=${search}, page=${i})}" th:text="${i}"></a>
-                </li>
-                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage + 1})}" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                    <a class="page-link" th:href="@{/student/team(search=${search}, page=${totalPages})}">Trang cuối</a>
-                </li>
-            </ul>
-        </div>
+        <div th:replace="~{layout :: paging}"></div>
     </div>
 
     <div class="row mt-3" th:if="${!isInTeam}">

@@ -1,5 +1,6 @@
 package com.c0324.casestudym5.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,18 +27,18 @@ public class Student {
     @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
     private boolean isLeader;
 
-    @Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
-    private boolean invited; // Mặc định chưa mời
-
     @ManyToOne
     @JoinColumn(name = "clazz_id", referencedColumnName = "id")
+    @JsonBackReference
     private Clazz clazz;
 
     @ManyToOne
     @JoinColumn(name="team_id", referencedColumnName = "id")
+    @JsonBackReference
     private Team team;
 
     @OneToMany(mappedBy = "student")
+    @JsonBackReference
     private List<Comment> comments;
 
     public String getTeamStatus() {
