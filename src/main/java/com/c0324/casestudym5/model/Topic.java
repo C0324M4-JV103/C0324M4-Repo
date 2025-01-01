@@ -23,8 +23,12 @@ public class Topic {
     @Column(columnDefinition = "VARCHAR(50)", nullable = false, unique = true)
     private String name;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String description;
+    @OneToOne
+    @JoinColumn(name="description_id")
+    private MultiFile description;
+
+    @Column(columnDefinition = "TEXT")
+    private String content;
 
     @Column(columnDefinition = "INT DEFAULT 0")
     private Integer status;
