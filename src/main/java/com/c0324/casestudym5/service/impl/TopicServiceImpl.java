@@ -13,6 +13,8 @@ import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.TopicService;
 import com.c0324.casestudym5.util.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,7 +48,7 @@ public class TopicServiceImpl implements TopicService {
             Topic topic = new Topic();
             topic.setName(registerTopicDTO.getName());
             topic.setContent(registerTopicDTO.getContent());
-            topic.setStatus(1);
+            topic.setStatus(0);
             topic.setTeam(team);
 
             // upload image and description file to firebase
@@ -73,5 +75,10 @@ public class TopicServiceImpl implements TopicService {
         else {
             System.out.println("Error: Student is not leader or team is not exist or team already has topic");
         }
+    }
+
+    @Override
+    public Page<Topic> getAllTopics(Pageable pageable) {
+        return topicRepository.findAll(pageable);
     }
 }
