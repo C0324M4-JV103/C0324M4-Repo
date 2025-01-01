@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -144,5 +142,27 @@ public class UserServiceImpl implements UserService {
             admin.setGender(User.Gender.MALE);
             save(admin);
         }
+    }
+
+    public List<User> fillAll() {
+        return userRepository.findAll();
+    }
+
+    @Transactional
+    public void createUser(UserDTO userDTO) {
+        if (findByEmail(userDTO.getEmail()) != null) {
+            throw new IllegalArgumentException("Email đã tồn tại");
+        }
+
+        User newUser = new User();
+        newUser.setName(userDTO.getName());
+        newUser.setEmail(userDTO.getEmail());
+        newUser.setDob(userDTO.getDob());
+        newUser.setGender(User.Gender.valueOf(userDTO.getGender()));
+        newUser.setPhoneNumber(userDTO.getPhoneNumber());
+        newUser.setAddress(userDTO.getAddress());
+        newUser.setPassword("1234");
+
+        save(newUser);
     }
 }

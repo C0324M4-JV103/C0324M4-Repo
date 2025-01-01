@@ -1,33 +1,39 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.TeacherDTO;
-import com.c0324.casestudym5.model.Faculty;
-import com.c0324.casestudym5.model.Teacher;
-import com.c0324.casestudym5.service.TeacherService;
+import com.c0324.casestudym5.dto.UserDTO;
+import com.c0324.casestudym5.model.*;
+import com.c0324.casestudym5.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-<<<<<<< HEAD
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-=======
->>>>>>> c5c36bad34e37cd9c709601e710fa1400d70f1d8
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/teacher")
 public class TeacherController {
 
+    private final RoleService roleService;
     private final TeacherService teacherService;
+    private final FacultyService facultyService;
+    private final UserService userService;
+    private final MultiFileService multiFileService;
 
     @Autowired
-    public TeacherController(TeacherService teacherService) {
+    public TeacherController(TeacherService teacherService, FacultyService facultyService, UserService userService, RoleService roleService , MultiFileService multiFileService) {
         this.teacherService = teacherService;
+        this.facultyService = facultyService;
+        this.userService = userService;
+        this.roleService = roleService;
+        this.multiFileService = multiFileService;
     }
 
     @GetMapping("/detail/{id}")
@@ -41,31 +47,31 @@ public class TeacherController {
         }
     }
 
-<<<<<<< HEAD
-    @GetMapping("/create")
-    public String showCreateForm(Model model) {
-        model.addAttribute("teacherDTO", new TeacherDTO());
-        return "/admin/teacher/teacher-create";
-    }
 
-    @PostMapping("/create")
-    public String createTeacher(@Valid @ModelAttribute("teacherDTO") TeacherDTO teacherDTO,
-                                BindingResult bindingResult,
-                                Model model) {
-        if (bindingResult.hasErrors()) {
-            return "/admin/teacher/teacher-create";
+
+
+
+
+
+
+    @PostMapping("/change-avatar")
+    public String showChangeAvatarForm(@RequestParam("avatar") MultipartFile avatar, Model model) {
+        String fileName = avatar.getOriginalFilename();
+        long fileSize = avatar.getSize();
+        long maxFileSize = 5 * 1024 * 1024; // 5MB
+
+        if (fileName != null && (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg"))) {
+            if (fileSize <= maxFileSize) {
+                userService.changeAvatar(avatar);
+            } else {
+                model.addAttribute("imageError", "Kích thước ảnh không được vượt quá 5MB");
+            }
+        } else {
+            model.addAttribute("imageError", "Chỉ hỗ trợ ảnh có định dạng jpg, jpeg, png");
         }
 
-        try {
-            Teacher teacher = teacherService.createTeacher(teacherDTO);
-            return "redirect:/admin/teacher/teacher-list";
-        } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return "/admin/teacher/teacher-create";
-        }
+        return "admin/teacher/teacher-create";
     }
 
-=======
->>>>>>> c5c36bad34e37cd9c709601e710fa1400d70f1d8
 }
 

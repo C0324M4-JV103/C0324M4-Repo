@@ -55,27 +55,8 @@ public class TeacherService {
         return teacherRepository.findById(id);
     }
 
-    public Teacher createTeacher(TeacherDTO teacherDTO) {
 
-        Faculty faculty = facultyRepository.findById(teacherDTO.getFacultyId())
-                .orElseThrow(() -> new RuntimeException("Khoa không tồn tại"));
-
-        User user = userRepository.findById(teacherDTO.getUserDTO().getId())
-                .orElseThrow(() -> new RuntimeException("Người dùng không tồn tại"));
-
-        Teacher.Degree degree;
-        try {
-            degree = Teacher.Degree.valueOf(teacherDTO.getDegree());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Học vị không hợp lệ");
-        }
-
-        Teacher teacher = new Teacher();
-        teacher.setFaculty(faculty);
-        teacher.setUser(user);
-        teacher.setDegree(degree);
-
-        return teacherRepository.save(teacher);
+    public void save(Teacher teacher) {
+        teacherRepository.save(teacher);
     }
-
 }
