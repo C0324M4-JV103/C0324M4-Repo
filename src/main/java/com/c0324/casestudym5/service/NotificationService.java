@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificationService {
@@ -40,7 +41,10 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
-    public List<Notification> getNotificationsByUserId(Long receiverId){
-        return notificationRepository.findNotificationByReceiverId(receiverId);
+    public List<NotificationDTO> getTop3NotificationsByUserIdDesc(Long receiverId) {
+        List<Notification> notifications = notificationRepository.findTop3NotificationsByReceiverId(receiverId);
+        return notifications.stream()
+                .map(CommonMapper::toNotificationDTO)
+                .collect(Collectors.toList());
     }
 }
