@@ -14,7 +14,7 @@
 <div th:replace="layout :: nav" ></div>
 
 <div class="container search-container">
-    <form th:action="@{/admin/team}" method="get" >
+    <form th:action="@{/teacher/team}" method="get" >
         <label>
             <input type="text" class="form-control me-5" name="name" placeholder="Tên nhóm" th:value="${keyword}">
         </label>

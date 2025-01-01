@@ -34,7 +34,7 @@ public class SecurityConfig  {
                         .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/fonts/**" , "/logout", "/webjars/**").permitAll()
                         .requestMatchers("/user/**", "/home", "/app/**").hasAnyRole("TEACHER", "STUDENT", "ADMIN")
                         .requestMatchers("/teacher/**").hasAnyRole("TEACHER", "ADMIN")
-                        .requestMatchers("/student/**").hasAnyRole("STUDENT", "ADMIN")
+                        .requestMatchers("/student/**").hasAnyRole("STUDENT", "ADMIN", "TEACHER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

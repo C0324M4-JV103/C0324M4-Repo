@@ -34,11 +34,11 @@ public class InvitationServiceimpl implements InvitationService {
         return invitationRepository.findInvitedStudentIdsByTeam(team);
     }
 
-    @Override
-    public void inviteStudent(Long studentId, String subject, String content) {
-        String email = studentService.getStudentEmailById(studentId);
-        mailService.sendEmail(email, subject, content);
-    }
+//    @Override
+//    public void inviteStudent(Long studentId, String subject, String content) {
+//        String email = studentService.getStudentEmailById(studentId);
+//        mailService.sendEmail(email, subject, content);
+//    }
 
     @Transactional
     @Override

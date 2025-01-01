@@ -28,11 +28,16 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public Student getStudent(Long id) {
-        return studentRepository.findById(id).get();
+        return studentRepository.findById(id).orElse(null);
     }
 
     @Override
     public Student getStudentByUserEmail(String email) {
         return studentRepository.findByUserEmail(email);
+    }
+
+    @Override
+    public void save(Student student) {
+        studentRepository.save(student);
     }
 }

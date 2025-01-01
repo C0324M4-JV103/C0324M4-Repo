@@ -2,6 +2,7 @@ package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.*;
+import com.c0324.casestudym5.repository.TeacherRepository;
 import com.c0324.casestudym5.repository.TeamRepository;
 import com.c0324.casestudym5.service.NotificationService;
 import com.c0324.casestudym5.service.StudentService;
@@ -30,53 +31,29 @@ public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
     private final NotificationService notificationService;
-    private final UserService userService;
+
     private final StudentService studentService;
+    private final TeacherRepository teacherRepository;
 
     @Autowired
     public TeamServiceImpl(TeamRepository teamRepository,
                            NotificationService notificationService,
-                           UserService userService,
-                           StudentService studentService) {
+                           StudentService studentService, TeacherRepository teacherRepository) {
         this.teamRepository = teamRepository;
         this.notificationService = notificationService;
-        this.userService = userService;
         this.studentService = studentService;
+        this.teacherRepository = teacherRepository;
     }
 
     @Override
-    public List<Team> findAll() {
-        return teamRepository.findAll();
-    }
-
-    @Override
-    public Team save(Team team) {
-        return teamRepository.save(team);
-    }
-
-    @Override
-    public Team findByName(String name) {
-        return teamRepository.findTeamByName(name);
-    }
-
-    @Override
-    public Team findById(Long teamId) {
-        return teamRepository.findById(teamId).orElse(null);
-    }
-
-    @Override
-    public boolean existsByName(String name) {
-        return teamRepository.existsByName(name);
-    }
-
-    @Override
-    public Page<TeamDTO> getPageTeams(int page, String keyword) {
+    public Page<TeamDTO> getPageTeams(int page, String keyword, User user) {
         Pageable pageable = PageRequest.of(page, 3);
+        Teacher teacher = teacherRepository.findTeacherByUserEmail(user.getEmail());
         Page<Team> teams;
         if(keyword.isEmpty()){
-            teams = teamRepository.findAll(pageable);
+            teams = teamRepository.findTeamsByTeacherId(teacher.getId(), pageable);
         } else {
-            teams = teamRepository.searchTeamByName(pageable, keyword);
+            teams = teamRepository.searchTeamByNameAndTeacherId(teacher.getId(), keyword ,pageable);
         }
         return teams.map(CommonMapper::mapToTeamDTO);
     }
@@ -87,9 +64,9 @@ public class TeamServiceImpl implements TeamService {
         Team team = teamRepository.findById(teamId).orElse(null);
         if(team != null){
             //Update related topics
-//            Hibernate.initialize(team.getTopic());
-//            Topic topic = team.getTopic();
-//            topic.setTeam(null);
+            Hibernate.initialize(team.getTopic());
+            Topic topic = team.getTopic();
+            topic.setTeam(null);
             //Update related students and send notification to them
             Hibernate.initialize(team.getStudents());
             List<Student> students = team.getStudents();
@@ -104,13 +81,18 @@ public class TeamServiceImpl implements TeamService {
                 notificationService.sendNotification(notification);
             }
             //Delete team
-//            teamRepository.delete(team);
+            teamRepository.delete(team);
         }
     }
 
     @Override
     public Team getTeamById(Long id) {
         return teamRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Team getTeamByStudentId(Long studentId) {
+        return teamRepository.findTeamByStudentsId(studentId);
     }
 
 }

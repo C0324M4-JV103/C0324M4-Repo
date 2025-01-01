@@ -37,6 +37,7 @@
                             <li><a class="dropdown-item" href="/team">KIỂM DUYỆT ĐỀ TÀI</a></li>
                             <li><a class="dropdown-item" href="#">DANH SÁCH SINH VIÊN</a></li>
                             <li><a class="dropdown-item" href="#">QUẢN LÝ TIẾN ĐỘ</a></li>
+                            <li><a class="dropdown-item" th:href="@{/teacher/team}">QUẢN LÝ NHÓM SINH VIÊN</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
@@ -44,7 +45,7 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/admin/student}">QUẢN LÝ SINH VIÊN</a></li>
                             <li><a class="dropdown-item" th:href="@{/admin/teacher}">QUẢN LÝ GIÁO VIÊN</a></li>
-                            <li><a class="dropdown-item" th:href="@{/admin/team}">QUẢN LÝ NHÓM SINH VIÊN</a></li>
+
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#">LIÊN HỆ</a></li>

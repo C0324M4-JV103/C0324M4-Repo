@@ -9,11 +9,12 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
-    Team findTeamByName(String name);
-    boolean existsByName(String name);
 
-    @Query("SELECT t FROM Team t WHERE t.name LIKE %:name%")
-    Page<Team> searchTeamByName(Pageable pageable, String name);
+    @Query("SELECT t FROM Team t WHERE t.teacher.id = ?1 AND t.name LIKE %?2%")
+    Page<Team> searchTeamByNameAndTeacherId(Long teacherId, String teamName, Pageable pageable);
 
     Team findTeamByStudentsId(Long studentId);
+
+    Page<Team> findTeamsByTeacherId(Long teacherId, Pageable pageable);
+
 }
