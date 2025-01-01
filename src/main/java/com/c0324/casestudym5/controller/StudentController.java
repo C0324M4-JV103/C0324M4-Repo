@@ -71,6 +71,7 @@ public class StudentController {
         Pageable pageable = PageRequest.of(page - 1, 5);
 
         Page<Student> availableStudents;
+
         if (search != null && !search.isEmpty()) {
             availableStudents = studentService.searchStudentsExceptCurrent(search, currentStudent.getId(), pageable);
         } else {
@@ -85,9 +86,9 @@ public class StudentController {
         model.addAttribute("currentPage", page);
         model.addAttribute("isInTeam", isInTeam);
         model.addAttribute("isLeader", isLeader);
-        model.addAttribute("invitation", invitation); // hiện thông tin lời mời
+        model.addAttribute("invitation", invitation);
+        model.addAttribute("list", availableStudents);// hiện thông tin lời mời
         model.addAttribute("currentTeam", currentTeam);
-        model.addAttribute("list", availableStudents);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
 

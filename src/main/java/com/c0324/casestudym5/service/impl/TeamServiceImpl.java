@@ -87,6 +87,7 @@ public class TeamServiceImpl implements TeamService {
             List<Student> students = team.getStudents();
             for(Student student : students){
                 student.setTeam(null);
+                student.setLeader(false);
                 studentService.save(student);
                 Notification notification = Notification.builder()
                         .content(" đã xóa nhóm " + team.getName() + " mà bạn đang tham gia")
