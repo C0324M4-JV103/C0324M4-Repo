@@ -1,3 +1,4 @@
+
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.TeamDTO;
@@ -61,24 +62,13 @@ public class StudentController {
     public String formRegisterTeam(@RequestParam(name = "page", required = false, defaultValue = "1") int page,
                                    @RequestParam(name = "search", required = false, defaultValue = "") String search,
                                    Model model) {
-
         if (!model.containsAttribute("team")) {
             model.addAttribute("team", new TeamDTO());
         }
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
-
-        Pageable pageable = PageRequest.of(page - 1, 5);
-
-        Page<Student> availableStudents;
-
-        if (search != null && !search.isEmpty()) {
-            availableStudents = studentService.searchStudentsExceptCurrent(search, currentStudent.getId(), pageable);
-        } else {
-            availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
-        }
+        Page<Student> availableStudents = studentService.getAvailableStudents(page, search, currentStudent.getId());
         List<Invitation> invitation = invitationService.findByStudent(currentStudent);
-
         boolean isInTeam = (currentTeam != null);
         boolean isLeader = (currentTeam != null && currentStudent.isLeader());
 
@@ -91,7 +81,6 @@ public class StudentController {
         model.addAttribute("currentTeam", currentTeam);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
-
         return "team/team-register";
     }
 
@@ -100,7 +89,6 @@ public class StudentController {
     public String createTeam(@ModelAttribute("team") @Valid TeamDTO teamDTO,
                              BindingResult bindingResult,
                              RedirectAttributes redirectAttributes) {
-
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.team", bindingResult);
             redirectAttributes.addFlashAttribute("team", teamDTO);
@@ -113,60 +101,28 @@ public class StudentController {
             return "redirect:/student/team";
         }
         Student currentStudent = getCurrentStudent();
-
         List<Invitation> pendingInvitations = invitationService.findByStudent(currentStudent);
         if (!pendingInvitations.isEmpty()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Bạn còn lời mời tham gia nhóm chưa xử lý!");
             return "redirect:/student/team";
         }
-
-        Team newTeam = new Team();
-        newTeam.setName(teamDTO.getName());
-        newTeam.setStudents(List.of(currentStudent));
-
-        teamService.save(newTeam);
-
-        currentStudent.setTeam(newTeam);
-        currentStudent.setLeader(true);
-        studentService.save(currentStudent);
-
+        teamService.createNewTeam(teamDTO,currentStudent);
         redirectAttributes.addFlashAttribute("successMessage", "Nhóm đã được tạo thành công!");
         return "redirect:/student/info-team";
     }
 
     @PostMapping("/invite-team")
     public String inviteStudent(Long studentId, RedirectAttributes redirectAttributes) {
-
         Student invitedStudent = studentService.findById(studentId);
-
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
-
         if (currentTeam.getStudents().size() >= 5) {
             redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ 5 thành viên!");
             return "redirect:/student/team";
         }
-        // nếu chưa vào nhóm nào và chưa được mời
         if (invitedStudent.getTeam() == null && !invitationService.existsByStudentAndTeam(invitedStudent, currentTeam)) {
-            // tạo lời mời và lưu riêng cho từng nhóm
-            Invitation invitation = new Invitation();
-            invitation.setStudent(invitedStudent);
-            invitation.setTeam(currentTeam);
-            invitation.setInviter(currentStudent);
-            invitationService.save(invitation);
-            // send mail
-            String subject = "Lời mời tham gia nhóm từ " + currentTeam.getName();
-            String content = """
-                    <html>
-                    <body>
-                        <p>Xin chào %s,</p>
-                        <p>Bạn đã được mời tham gia nhóm <strong>"%s"</strong> bởi %s.</p>
-                        <p>Vui lòng kiểm tra thông tin trên hệ thống để chấp nhận lời mời.</p>
-                        <p>Bạn có thể xem và chấp nhận ngay bây giờ: <a href="http://localhost:8080/student/team">Xem lời mời ngay!</a></p>
-                    </body>
-                    </html>
-                        """.formatted(invitedStudent.getUser().getName(), currentTeam.getName(), currentStudent.getUser().getName());
-            invitationService.inviteStudent(studentId, subject, content);
+            invitationService.saveInvitation(invitedStudent, currentStudent, currentTeam);
+            invitationService.inviteStudent(studentId, currentStudent, currentTeam); // send mail
             redirectAttributes.addFlashAttribute("successMessage", "Lời mời đã được gửi thành công!");
         }
         return "redirect:/student/team";
@@ -174,17 +130,13 @@ public class StudentController {
 
     @PostMapping("/invitation/handle")
     public String handleInvitation(Long invitationId, boolean accept, RedirectAttributes redirectAttributes) {
-
         Invitation invitation = invitationService.findById(invitationId);
-
         Student student = invitation.getStudent();
         Team team = invitation.getTeam();
-
         if (accept) {
             if (team.getStudents().size() < 5) {
                 student.setTeam(team);
                 studentService.save(student);
-                // xóa khỏi db khi xác nhận
                 invitationService.deleteAllByStudent(student);
                 redirectAttributes.addFlashAttribute("successMessage", "Bạn đã tham gia nhóm thành công!");
                 return "redirect:/student/info-team";
@@ -193,28 +145,20 @@ public class StudentController {
             }
         } else {
             invitationService.delete(invitation);
-            redirectAttributes.addFlashAttribute("errorMessage", "Bạn đã từ chối lời mời!");
+            redirectAttributes.addFlashAttribute("successMessage", "Bạn đã từ chối lời mời!");
         }
         return "redirect:/student/team";
     }
 
-
     @GetMapping("/info-team")
     public String teamInfo(Model model, Pageable pageable) {
-
         Student currentStudent = getCurrentStudent();
         Team team = currentStudent.getTeam();
-
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
-
         boolean isLeader = (team != null && currentStudent.isLeader());
-
         model.addAttribute("team", team);
         model.addAttribute("list", availableStudents);
         model.addAttribute("isLeader", isLeader);
-
         return "team/team-info";
-
     }
-
 }
