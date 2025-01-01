@@ -10,11 +10,14 @@ html, body {
     flex: 1;
 }
 
+<<<<<<< HEAD
 footer {
     background-color: #343a40;
     color: white;
     margin-top: auto;
 }
+=======
+>>>>>>> 49b49008a9e04e47392a1a8936c36e54bf02fb8d
 
 body {
     font-family: 'Quicksand', sans-serif;
