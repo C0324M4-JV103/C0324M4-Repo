@@ -2,6 +2,7 @@ package com.c0324.casestudym5.service;
 
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.Team;
+import com.c0324.casestudym5.model.User;
 import org.springframework.data.domain.Page;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface TeamService {
     Team findById(Long teamId);
     boolean existsByName(String name);
 
-    void deleteTeam(Long teamId);
+    void deleteTeam(Long teamId, User sender);
 
     public Team getTeamById(Long id);
 

@@ -36,9 +36,9 @@ public class CommonMapper {
         NotificationDTO notificationDTO = new NotificationDTO();
         notificationDTO.setId(notification.getId());
         notificationDTO.setContent(notification.getContent() != null ? notification.getContent() : "No content");
-        notificationDTO.setSenderName(notification.getSender() != null && notification.getSender().getName() != null ? notification.getSender().getName() : "Unknown sender");
-        notificationDTO.setSenderAvatar(notification.getSender() != null && notification.getSender().getAvatar() != null && notification.getSender().getAvatar().getUrl() != null ? notification.getSender().getAvatar().getUrl() : AppConstants.URL_DEFAULT_AVATAR);
-        notificationDTO.setTimeDifference(notification.getCreatedAt() != null ? DateTimeUtil.getTimeDifference(notification.getCreatedAt()) : "Unknown time");
+        notificationDTO.setSenderName(notification.getSender().getName());
+        notificationDTO.setSenderAvatar(notification.getSender().getAvatar() != null ? notification.getSender().getAvatar().getUrl() : AppConstants.URL_DEFAULT_AVATAR);
+        notificationDTO.setTimeDifference(DateTimeUtil.getTimeDifference(notification.getCreatedAt()));
         return notificationDTO;
     }
 

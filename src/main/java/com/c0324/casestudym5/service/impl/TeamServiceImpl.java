@@ -7,35 +7,32 @@ import com.c0324.casestudym5.repository.TeamRepository;
 import com.c0324.casestudym5.service.NotificationService;
 import com.c0324.casestudym5.service.StudentService;
 import com.c0324.casestudym5.service.TeamService;
-import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.CommonMapper;
-import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import com.c0324.casestudym5.dto.TeamDTO;
-import com.c0324.casestudym5.util.CommonMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @Service
-@RequiredArgsConstructor
 public class TeamServiceImpl implements TeamService {
 
     private final TeamRepository teamRepository;
     private final StudentService studentService;
     private final TeacherRepository teacherRepository;
     private final NotificationService notificationService;
-    private final UserService userService;
+
+    public TeamServiceImpl(TeamRepository teamRepository, StudentService studentService, TeacherRepository teacherRepository, NotificationService notificationService) {
+        this.teamRepository = teamRepository;
+        this.studentService = studentService;
+        this.teacherRepository = teacherRepository;
+        this.notificationService = notificationService;
+    }
 
 
     @Override
@@ -64,7 +61,7 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Page<TeamDTO> getPageTeams(int page, String keyword) {
+    public Page<TeamDTO> getPageTeams(int page, String keyword, User user) {
         Pageable pageable = PageRequest.of(page, 3);
         Teacher teacher = teacherRepository.findTeacherByUserEmail(user.getEmail());
         Page<Team> teams;

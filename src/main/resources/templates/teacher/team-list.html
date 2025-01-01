@@ -69,16 +69,16 @@
         <div class="d-flex justify-content-center" th:if="${totalPages > 0}">
             <ul class="pagination">
                 <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                    <a th:if="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${currentPage - 1}}">Trước</a>
-                    <a th:unless="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${currentPage - 1} + '&name=' + ${keyword}}">Trước</a>
+                    <a th:if="${keyword == ''}" class="page-link" th:href="@{'/teacher/team?page=' + ${currentPage - 1}}">Trước</a>
+                    <a th:unless="${keyword == ''}" class="page-link" th:href="@{'/teacher/team?page=' + ${currentPage - 1} + '&name=' + ${keyword}}">Trước</a>
                 </li>
                 <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                    <a th:if="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${i}}" th:text="${i + 1}"></a>
-                    <a th:unless="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${i} + '&name=' + ${keyword}}" th:text="${i + 1}"></a>
+                    <a th:if="${keyword == ''}" class="page-link" th:href="@{'/teacher/team?page=' + ${i}}" th:text="${i + 1}"></a>
+                    <a th:unless="${keyword == ''}" class="page-link" th:href="@{'/teacher/team?page=' + ${i} + '&name=' + ${keyword}}" th:text="${i + 1}"></a>
                 </li>
                 <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                    <a th:if="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${currentPage + 1}}">Sau</a>
-                    <a th:unless="${keyword == ''}" class="page-link" th:href="@{'/admin/team?page=' + ${currentPage + 1} + '&name=' + ${keyword}}">Sau</a>
+                    <a th:if="${keyword == ''}" class="page-link" th:href="@{'/teacher/team?page=' + ${currentPage + 1}}">Sau</a>
+                    <a th:unless="${keyword == ''}" class="page-link" th:href="@{'/teacher/team?page=' + ${currentPage + 1} + '&name=' + ${keyword}}">Sau</a>
                 </li>
             </ul>
         </div>

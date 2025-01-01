@@ -13,8 +13,13 @@ import java.util.List;
 
 @Service
 public class StudentServiceImpl implements StudentService {
+
+    private final StudentRepository studentRepository;
+
     @Autowired
-    StudentRepository studentRepository;
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     @Override
     public Page<Student> getPageStudents(Pageable pageable, StudentSearchDTO search) {
@@ -39,5 +44,31 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public void save(Student student) {
         studentRepository.save(student);
+    }
+
+    @Override
+    public Student findById(Long id) {
+        return studentRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Student findStudentByUserId(Long id) {
+        return studentRepository.findStudentByUserId(id);
+    }
+
+    @Override
+    public String getStudentEmailById(Long id) {
+        Student student = studentRepository.findById(id).orElseThrow(() -> new RuntimeException("Student not found"));
+        return student.getUser().getEmail();
+    }
+
+    @Override
+    public Page<Student> findAllExceptCurrentStudent(Long currentStudentId, Pageable pageable) {
+        return studentRepository.findAllExceptCurrentStudent(currentStudentId, pageable);
+    }
+
+    @Override
+    public Page<Student> searchStudentsExceptCurrent(String search, Long id, Pageable pageable) {
+        return studentRepository.searchStudentsExceptCurrent(search,id,pageable);
     }
 }

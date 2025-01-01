@@ -17,4 +17,8 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     Page<Team> findTeamsByTeacherId(Long teacherId, Pageable pageable);
 
+    Team findTeamByName(String name);
+
+    Boolean existsByName(String name);
+
 }
