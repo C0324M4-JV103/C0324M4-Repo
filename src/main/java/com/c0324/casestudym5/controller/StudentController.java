@@ -1,11 +1,10 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.RegisterTopicDTO;
-import com.c0324.casestudym5.model.Student;
-import com.c0324.casestudym5.model.Topic;
-import com.c0324.casestudym5.service.StudentService;
-import com.c0324.casestudym5.service.TeamService;
-import com.c0324.casestudym5.service.TopicService;
+import com.c0324.casestudym5.dto.TeamDTO;
+import com.c0324.casestudym5.model.*;
+import com.c0324.casestudym5.service.*;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,10 +20,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -33,13 +33,15 @@ public class StudentController {
     private final StudentService studentService;
     private final UserService userService;
     private final TeamService teamService;
+    private final TopicService topicService;
     private final InvitationService invitationService;
 
     @Autowired
-    public StudentController(StudentService studentService, UserService userService, TeamService teamService, InvitationService invitationService) {
+    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService) {
         this.studentService = studentService;
         this.userService = userService;
         this.teamService = teamService;
+        this.topicService = topicService;
         this.invitationService = invitationService;
     }
 
@@ -121,19 +123,6 @@ public class StudentController {
             redirectAttributes.addFlashAttribute("errorMessage", "Bạn còn lời mời tham gia nhóm chưa xử lý!");
             return "redirect:/student/team";
         }
-    @GetMapping("/register-topic")
-    public String showRegisterTopicForm(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
-        if (!model.containsAttribute("registerTopic")) {
-            model.addAttribute("registerTopic", new RegisterTopicDTO());
-        }
-        Sort sort = Sort.by(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(page, size, sort);
-        Page<Topic> topicPage = topicService.findByStatus(1, pageable);
-        model.addAttribute("topics", topicPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", topicPage.getTotalPages());
-        return "student/register-topic";
-    }
 
         Team newTeam = new Team();
         newTeam.setName(teamDTO.getName());
@@ -210,7 +199,42 @@ public class StudentController {
             invitationService.delete(invitation);
             redirectAttributes.addFlashAttribute("errorMessage", "Bạn đã từ chối lời mời!");
         }
-    @PostMapping("/register-topic")
+        return "redirect:/student/team";
+    }
+
+    @GetMapping("/info-team")
+    public String teamInfo(Model model, Pageable pageable) {
+
+        Student currentStudent = getCurrentStudent();
+        Team team = currentStudent.getTeam();
+
+        Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
+
+        boolean isLeader = (team != null && currentStudent.isLeader());
+
+        model.addAttribute("team", team);
+        model.addAttribute("list", availableStudents);
+        model.addAttribute("isLeader", isLeader);
+
+        return "team/team-info";
+
+    }
+
+    @GetMapping("/register-topic")
+    public String showRegisterTopicForm(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        if (!model.containsAttribute("registerTopic")) {
+            model.addAttribute("registerTopic", new RegisterTopicDTO());
+        }
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Topic> topicPage = topicService.findByStatus(1, pageable);
+        model.addAttribute("topics", topicPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", topicPage.getTotalPages());
+        return "student/register-topic";
+    }
+
+    @PostMapping("/handle-register-topic")
     public String registerTopic(@Valid @ModelAttribute RegisterTopicDTO registerTopicDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerTopic", result);
@@ -265,25 +289,6 @@ public class StudentController {
         }
         redirectAttributes.addFlashAttribute("registerSuccess", "Đăng ký đề tài thành công");
         return "redirect:/student/team";
-    }
-
-
-    @GetMapping("/info-team")
-    public String teamInfo(Model model, Pageable pageable) {
-
-        Student currentStudent = getCurrentStudent();
-        Team team = currentStudent.getTeam();
-
-        Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
-
-        boolean isLeader = (team != null && currentStudent.isLeader());
-
-        model.addAttribute("team", team);
-        model.addAttribute("list", availableStudents);
-        model.addAttribute("isLeader", isLeader);
-
-        return "team/team-info";
-
     }
 
 }

@@ -97,3 +97,24 @@ h5 {
     display: block;
 }
 
+.add-topic {
+    font-size: 1.5rem;
+    text-align: center;
+    background: #fd6f3c;
+    border-color: #b15333;
+    margin-bottom: 3rem;
+}
+
+.add-topic:hover {
+    background: #282781;
+    border-color: #282781;
+}
+
+.text-register-topic {
+    margin-top: 5rem;
+    font-size: 1.6rem;
+    color: red;
+    font-weight: 500;
+    text-align: center;
+}
+

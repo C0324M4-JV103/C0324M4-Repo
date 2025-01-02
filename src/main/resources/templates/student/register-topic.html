@@ -19,10 +19,10 @@
     <div class="container-fluid h-custom">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                <a href="/student/team" class="btn btn-secondary mb-4">
+                <a href="/student/info-team" class="btn btn-secondary mb-4">
                     <i class="fas fa-arrow-left"></i> Trở lại
                 </a>
-                <form th:action="@{/student/register-topic}" th:object="${registerTopic}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/student/handle-register-topic}" th:object="${registerTopic}" method="post" enctype="multipart/form-data">
                     <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                         <h1 class="lead fw-normal mb-0 me-3 main-title">Đăng ký đề tài</h1>
                     </div>
@@ -108,16 +108,16 @@
     $(document).ready(function() {
         /* Check and display error messages */
         if ([[${imageError != null}]] && '[[${imageError}]]' !== '') {
-            toastr.error('[[${imageError}]]');
+            toastr.error([[${imageError}]]);
         }
         if ([[${descriptionError != null}]] && '[[${descriptionError}]]' !== '') {
-            toastr.error('[[${descriptionError}]]');
+            toastr.error([[${descriptionError}]]);
         }
         if ([[${registerError != null}]] && '[[${registerError}]]' !== '') {
-            toastr.error('[[${registerError}]]');
+            toastr.error([[${registerError}]]);
         }
         if ([[${registerSuccess != null}]] && '[[${registerSuccess}]]' !== '') {
-            toastr.success('[[${registerSuccess}]]');
+            toastr.success([[${registerSuccess}]]);
         }
     });
 </script>
