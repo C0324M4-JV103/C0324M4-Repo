@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Chi tiết đề tài</title>
+    <link rel="stylesheet" th:href="@{/css/topic.css}">
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <div class="topic-detail">
+            <img th:if="${topic.image}" th:src="${topic.image.url}" class="topic-image" alt="Topic image">
+            <div class="topic-content">
+                <h1 class="topic-title" th:text="${topic.name}">Tên đề tài</h1>
+                <div class="topic-description" th:text="${topic.content}">Nội dung đề tài</div>
+
+                <div th:if="${topic.description}" class="mt-4">
+                    <a th:href="${topic.description.url}" target="_blank" class="btn btn-download">
+                        <i class="fas fa-file-download"></i>
+                        Tải file mô tả
+                    </a>
+                </div>
+
+                <div class="topic-meta">
+                    <div class="topic-meta-item">
+                        <i class="fas fa-users"></i>
+                        <span th:if="${topic.team}" th:text="${topic.team.name}">Tên nhóm</span>
+                    </div>
+                    <div class="topic-meta-item">
+                        <i class="fas fa-check-circle"></i>
+                        <span th:if="${topic.approvedBy}" th:text="${topic.approvedBy.user.name}">Người duyệt</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

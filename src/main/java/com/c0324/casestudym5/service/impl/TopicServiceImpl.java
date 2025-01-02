@@ -15,9 +15,17 @@ import com.c0324.casestudym5.util.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import com.c0324.casestudym5.model.Teacher;
+import com.c0324.casestudym5.repository.TeacherRepository;
+
+import java.util.List;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -28,15 +36,17 @@ public class TopicServiceImpl implements TopicService {
     private final FirebaseService firebaseService;
     private final MultiFileRepository multiFileRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
+    private final TeacherRepository teacherRepository;
 
     @Autowired
-    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, SimpMessagingTemplate simpMessagingTemplate) {
+    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, SimpMessagingTemplate simpMessagingTemplate, TeacherRepository teacherRepository) {
         this.topicRepository = topicRepository;
         this.teamRepository = teamRepository;
         this.studentRepository = studentRepository;
         this.firebaseService = firebaseService;
         this.multiFileRepository = multiFileRepository;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.teacherRepository = teacherRepository;
     }
 
     @Override
@@ -84,7 +94,55 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    public Topic getTopicById(Long id) {
+        return topicRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy dự án"));
+    }
+
+    @Override
+    public List<Topic> getLatestTopics(int limit) {
+        PageRequest pageRequest = PageRequest.of(0, limit, Sort.by("id").descending());
+        return topicRepository.findByApprovedTrue(pageRequest).getContent();
+    }
+
+    @Override
+    public List<Topic> getPendingTopics() {
+        return topicRepository.findByApprovedFalse(Pageable.unpaged()).getContent();
+    }
+
+    @Override
+    @Transactional
+    public void approveTopic(Long id) {
+        Topic topic = getTopicById(id);
+        topic.setStatus(1);
+        topic.setApproved(true);
+        topic.setApprovedBy(getCurrentTeacher());
+        topicRepository.save(topic);
+    }
+
+    @Override
+    @Transactional
+    public void rejectTopic(Long id) {
+        Topic topic = getTopicById(id);
+        topic.setStatus(2);
+        topicRepository.save(topic);
+    }
+
+    @Override
+    public Page<Topic> getPendingTopicsPage(Pageable pageable) {
+        return topicRepository.findByApprovedFalse(pageable);
+    }
+
+    @Override
     public Page<Topic> findByStatus(int status, Pageable pageable) {
         return topicRepository.findByStatus(status, pageable);
     }
+}
+
+    private Teacher getCurrentTeacher() {
+        // Logic để lấy thông tin giáo viên đang đăng nhập
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return teacherRepository.findByUserEmail(auth.getName());
+    }
+
 }

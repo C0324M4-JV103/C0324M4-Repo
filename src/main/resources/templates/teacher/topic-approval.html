@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Kiểm duyệt đề tài</title>
+    <link rel="stylesheet" th:href="@{/css/topic-approval.css}">
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-5">
+        <h2 class="main-title">KIỂM DUYỆT ĐỀ TÀI</h2>
+
+        <div class="approval-table" th:if="${!topics.empty}">
+            <table>
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên đề tài</th>
+                    <th>Mã đề tài</th>
+                    <th>Nhóm thực hiện</th>
+                    <th>Duyệt đề tài</th>
+                    <th>Hủy đề tài</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="topic, stat : ${topics}">
+                    <td th:text="${stat.count}">1</td>
+                    <td th:text="${topic.name}">Tên đề tài</td>
+                    <td th:if="${topic.description}">
+                        <a th:href="${topic.description.url}" target="_blank" class="btn btn-info mb-2">
+                            Xem file mô tả
+                        </a>
+                    </td>
+                    <td th:text="${topic.team != null ? topic.team.name : ''}">Nhóm 01</td>
+                    <td>
+                        <form th:if="${topic.status == 0}" th:action="@{/teacher/topics/{id}/approve(id=${topic.id})}" method="post">
+                            <button type="submit" class="btn-approve">Duyệt</button>
+                        </form>
+                        <button th:if="${topic.status == 1}" class="btn btn-secondary light" style="pointer-events: none;">Đã duyệt</button>
+                    </td>
+                    <td>
+                        <form th:if="${topic.status == 0}" th:action="@{/teacher/topics/{id}/reject(id=${topic.id})}" method="post">
+                            <button type="submit" class="btn-reject">Hủy</button>
+                        </form>
+                        <button th:if="${topic.status == 2}" class="btn btn-secondary light" style="pointer-events: none;">Đã hủy</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="empty-state" th:if="${topics.empty}">
+            <i class="fas fa-clipboard-list fa-3x mb-3"></i>
+            <h4>Không có đề tài nào cần duyệt</h4>
+        </div>
+
+        <nav th:if="${totalPages > 1}" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/teacher/topics(page=${currentPage - 1})}">Trước</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${currentPage == i ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/teacher/topics(page=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/teacher/topics(page=${currentPage + 1})}">Sau</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+</body>
+</html>
