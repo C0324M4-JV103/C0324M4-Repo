@@ -41,7 +41,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public void registerTopic(RegisterTopicDTO registerTopicDTO, String studentEmail) {
+    public boolean registerTopic(RegisterTopicDTO registerTopicDTO, String studentEmail) {
         Student student = studentRepository.findByUserEmail(studentEmail);
         Team team = teamRepository.findTeamByStudentsId(student.getId());
         if(team != null && team.getStudents().contains(student) && team.getTopic() == null && student.isLeader()){
@@ -73,12 +73,18 @@ public class TopicServiceImpl implements TopicService {
             simpMessagingTemplate.convertAndSend("/topic/teams", team);
         }
         else {
-            System.out.println("Error: Student is not leader or team is not exist or team already has topic");
+            return false;
         }
+        return true;
     }
 
     @Override
     public Page<Topic> getAllTopics(Pageable pageable) {
         return topicRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Topic> findByStatus(int status, Pageable pageable) {
+        return topicRepository.findByStatus(status, pageable);
     }
 }

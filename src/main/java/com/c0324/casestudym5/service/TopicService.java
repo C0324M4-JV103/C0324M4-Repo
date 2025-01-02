@@ -7,7 +7,9 @@ import org.springframework.data.domain.Pageable;
 
 public interface TopicService {
 
-    void registerTopic(RegisterTopicDTO registerTopicDTO, String username);
+    boolean registerTopic(RegisterTopicDTO registerTopicDTO, String username);
 
     Page<Topic> getAllTopics(Pageable pageable);
+
+    Page<Topic> findByStatus(int status, Pageable pageable);
 }

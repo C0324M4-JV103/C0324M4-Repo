@@ -14,13 +14,13 @@
 .add-topic {
     font-size: 1.5rem;
     text-align: left;
-    background: #282781;
-    border-color: #282781;
+    background: #fd6f3c;
+    border-color: #b15333;
 }
 
 .add-topic:hover {
-    background: #fd6f3c;
-    border-color: #b15333;
+    background: #282781;
+    border-color: #282781;
 }
 
 .album {
