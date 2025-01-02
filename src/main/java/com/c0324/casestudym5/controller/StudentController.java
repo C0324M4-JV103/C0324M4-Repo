@@ -99,6 +99,14 @@ public class StudentController {
         return "team/team-register";
     }
 
+    @GetMapping("/team2")
+    public String showTeam(Model model, Principal principal) {
+        Student student = studentService.getStudentByUserEmail(principal.getName());
+        model.addAttribute("team", teamService.getTeamByStudentId(student.getId()));
+        model.addAttribute("student", student);
+        return "student/team";
+    }
+
 
     @PostMapping("/create-team")
     public String createTeam(@ModelAttribute("team") @Valid TeamDTO teamDTO,
@@ -106,7 +114,8 @@ public class StudentController {
                              RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.team", bindingResult);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.Bi" +
+                    "ndingResult.team", bindingResult);
             redirectAttributes.addFlashAttribute("team", teamDTO);
             return "redirect:/student/team";
         }
@@ -210,11 +219,9 @@ public class StudentController {
 
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
 
-        boolean isLeader = (team != null && currentStudent.isLeader());
-
         model.addAttribute("team", team);
         model.addAttribute("list", availableStudents);
-        model.addAttribute("isLeader", isLeader);
+        model.addAttribute("student", currentStudent);
 
         return "team/team-info";
 

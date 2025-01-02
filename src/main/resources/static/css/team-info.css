@@ -3,6 +3,7 @@
     gap: 40px;
     flex-wrap: wrap;
     justify-content: center;
+    min-height: 600px;
 }
 
 .card-info-team {

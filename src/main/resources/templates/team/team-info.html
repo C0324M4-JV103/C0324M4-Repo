@@ -69,14 +69,12 @@
         </div>
     </div>
 
-
-    <div>
+    <div th:if="${team != null and team.topic == null}">
         <p class="text-register-topic">Nhóm của bạn chưa đăng ký đề tài.</p>
     </div>
-
-    <div class="text-center" th:if="${isLeader and team.students.size() >= 3}">
-        <a th:href="@{/student/register-topic}" class="btn btn-primary add-topic">Đăng ký đề tài</a>
-    </div>
+    <p th:if="${team.topic == null and team.students.contains(student) and student.isLeader and team.students.size() >= 3}">
+        <a th:href="@{/student/register-topic}" class="btn btn-primary my-3 add-topic">Đăng ký đề tài</a>
+    </p>
 </div>
 
 
