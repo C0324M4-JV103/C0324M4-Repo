@@ -45,7 +45,7 @@
 
         <div class="col-md-9 personal-info">
             <h3>Thông tin cá nhân</h3>
-            <form class="form-horizontal" role="form" th:action="@{/admin/create}" th:object="${teacherDTO}" method="post">
+            <form class="form-horizontal" role="form" th:action="@{/admin/teacher/create}" th:object="${teacherDTO}" method="post">
                 <!-- Tên giáo viên -->
                 <div class="form-group mb-3">
                     <label for="name" class="control-label">Tên giáo viên:</label>
@@ -118,7 +118,6 @@
 
 <div th:replace="layout :: footer"></div>
 
-<!-- Modal cập nhật ảnh đại diện -->
 <div class="modal fade" id="updateAvatarModal" tabindex="-1" aria-labelledby="updateAvatarModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -127,7 +126,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form th:action="@{/teacher/change-avatar}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/admin/teacher/create-avatar}" method="post" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="avatar" class="form-label">Chọn ảnh mới</label>
                         <input type="file" class="form-control" id="avatar" name="avatar" accept=".jpg,.png,.jpeg" required>

@@ -14,15 +14,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-<<<<<<< HEAD
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-=======
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
->>>>>>> 49b49008a9e04e47392a1a8936c36e54bf02fb8d
+
+import java.util.Optional;
 
 
 @RequestMapping("/admin")
@@ -35,15 +32,20 @@ public class AdminController {
     private final MultiFileService multiFileService;
     private final StudentService studentService;
     private final ClassRepository classRepository;
+    private final FirebaseService firebaseService;
+
 
     @Autowired
-    public AdminController(TeacherService teacherService, StudentService studentService, ClassRepository classRepository , FacultyService facultyService, UserService userService, MultiFileService multiFileService) {
+    public AdminController(TeacherService teacherService, StudentService studentService,
+                           ClassRepository classRepository , FacultyService facultyService,
+                           UserService userService, MultiFileService multiFileService, FirebaseService firebaseService) {
         this.teacherService = teacherService;
         this.facultyService = facultyService;
         this.userService = userService;
         this.multiFileService = multiFileService;
         this.studentService = studentService;
         this.classRepository = classRepository;
+        this.firebaseService = firebaseService;
     }
 
     // Teacher Functionality
@@ -73,7 +75,7 @@ public class AdminController {
 
     }
 
-    @GetMapping("/create")
+    @GetMapping("/teacher/create")
     public String createTeacherForm(Model model) {
         model.addAttribute("user", new UserDTO());
         model.addAttribute("teacherDTO", new TeacherDTO());
@@ -82,18 +84,17 @@ public class AdminController {
         return "admin/teacher/teacher-create";
     }
 
-    @PostMapping("/create")
+    @PostMapping("/teacher/create")
     public String createTeacher(@Valid @ModelAttribute("teacherDTO") TeacherDTO teacherDTO,
                                 BindingResult bindingResult,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("faculties", facultyService.findAll());
-            return "admin/teacher/teacher-create";  // Quay lại form nếu có lỗi
+            return "admin/teacher/teacher-create";
         }
 
         try {
-            // Tiến hành tạo người dùng và giáo viên
             userService.createUser(teacherDTO.getUserDTO());
             Teacher newTeacher = new Teacher();
             newTeacher.setDegree(teacherDTO.getDegree());
@@ -119,6 +120,24 @@ public class AdminController {
         return "redirect:/admin/teacher";
     }
 
+    @PostMapping("/teacher/create-avatar")
+    public String changeTeacherAvatar(@RequestParam("avatar") MultipartFile avatar, Model model) {
+        String fileName = avatar.getOriginalFilename();
+        long fileSize = avatar.getSize();
+        long maxFileSize = 5 * 1024 * 1024; // 5MB
+
+        if (fileName != null && (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg"))) {
+            if (fileSize <= maxFileSize) {
+                userService.changeAvatar(avatar);
+            } else {
+                model.addAttribute("imageError", "Kích thước ảnh không được vượt quá 5MB");
+            }
+        } else {
+            model.addAttribute("imageError", "Chỉ hỗ trợ ảnh có định dạng jpg, jpeg, png");
+        }
+
+        return "redirect:/admin/create";
+    }
 
 
 

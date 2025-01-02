@@ -12,6 +12,7 @@ import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.AppConstants;
 import jakarta.annotation.PostConstruct;
+import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -176,7 +177,12 @@ public class UserServiceImpl implements UserService {
         newUser.setPhoneNumber(userDTO.getPhoneNumber());
         newUser.setAddress(userDTO.getAddress());
         newUser.setPassword("1234");
-
+        if (newUser.getAvatar() == null) {
+            MultiFile defaultAvatar = new MultiFile();
+            defaultAvatar.setUrl("https://vcdn1-giaitri.vnecdn.net/2024/11/26/ngoctrinh-1732630649-173263066-7092-9633-1732630716.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BbVysA0vvlsQp8vQ-EmKiA");
+            MultiFile savedAvatar = multiFileRepository.save(defaultAvatar);
+            newUser.setAvatar(savedAvatar);
+        }
         save(newUser);
     }
 }

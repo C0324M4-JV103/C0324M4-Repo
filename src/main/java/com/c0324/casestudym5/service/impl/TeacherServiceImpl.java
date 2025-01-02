@@ -1,7 +1,9 @@
 package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.model.Teacher;
+import com.c0324.casestudym5.repository.MultiFileRepository;
 import com.c0324.casestudym5.repository.TeacherRepository;
+import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,10 +17,13 @@ import java.util.Optional;
 @Service
 public class TeacherServiceImpl implements TeacherService {
     private final TeacherRepository teacherRepository;
-
+    private final FirebaseService firebaseService;
+    private final MultiFileRepository multiFileRepository;
     @Autowired
-    public TeacherServiceImpl(TeacherRepository teacherRepository) {
+    public TeacherServiceImpl(TeacherRepository teacherRepository , FirebaseService firebaseService , MultiFileRepository multiFileRepository) {
+        this.firebaseService = firebaseService;
         this.teacherRepository = teacherRepository;
+        this.multiFileRepository = multiFileRepository;
     }
 
     @Override
@@ -48,4 +53,13 @@ public class TeacherServiceImpl implements TeacherService {
     public Optional<Teacher> getTeacherById(Long id) {
         return teacherRepository.findById(id);
     }
+
+    @Override
+    public Teacher save(Teacher teacher) {
+        return teacherRepository.save(teacher);
+    }
+
+
+
+
 }
