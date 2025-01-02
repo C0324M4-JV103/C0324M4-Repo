@@ -1,5 +1,6 @@
 package com.c0324.casestudym5.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,10 +31,12 @@ public class Student {
     private boolean invited; // Mặc định chưa mời
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "clazz_id", referencedColumnName = "id")
     private Clazz clazz;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name="team_id", referencedColumnName = "id")
     private Team team;
 

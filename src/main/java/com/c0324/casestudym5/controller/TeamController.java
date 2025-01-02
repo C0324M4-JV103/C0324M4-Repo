@@ -21,7 +21,7 @@ public class TeamController {
 
     @GetMapping
     public String showTeamPage(@RequestParam(name="name", defaultValue = "", required = false) String keyword,
-                                 @RequestParam(name="page", defaultValue = "0") int page,
+                               @RequestParam(name="page", defaultValue = "0") int page,
                                Model model) {
         Page<TeamDTO> teamPage = teamService.getPageTeams(page, keyword);
         model.addAttribute("teams", teamPage.getContent());

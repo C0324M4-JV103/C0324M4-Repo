@@ -19,5 +19,7 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long> {
             "(?1 IS NULL OR u.name LIKE %?1%) OR " +             // Tìm theo tên
             "(?1 IS NULL OR u.email LIKE %?1%)")                 // Tìm theo email
     Page<Teacher> findByIdOrNameOrEmail(String searchQuery, Pageable pageable);
+
+    Teacher findByUserEmail(String email);
 }
 

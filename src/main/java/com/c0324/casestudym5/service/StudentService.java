@@ -14,4 +14,5 @@ public interface StudentService {
     List<Student> getStudents(StudentSearchDTO search);
     Student getStudent(Long id);
     Student getStudentByUserEmail(String email);
+    String getStudentEmailById(Long id);
 }
