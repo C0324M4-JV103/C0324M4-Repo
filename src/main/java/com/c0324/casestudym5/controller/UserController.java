@@ -8,7 +8,6 @@ import com.c0324.casestudym5.util.CommonMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -108,7 +107,7 @@ public class UserController {
             model.addAttribute("imageError", "Chỉ hỗ trợ ảnh có định dạng jpg, jpeg, png");
         }
 
-        return "admin/edit-profile-form";
+        return "redirect:/user/profile";
     }
 
 }
