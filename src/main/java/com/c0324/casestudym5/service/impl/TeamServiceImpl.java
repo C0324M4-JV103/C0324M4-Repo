@@ -97,7 +97,7 @@ public class TeamServiceImpl implements TeamService {
                 notificationService.sendNotification(notification);
             }
             //Delete team
-            teamRepository.delete(team);
+            teamRepository.delete(team); 
         }
     }
 
