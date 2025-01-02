@@ -4,6 +4,7 @@ import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.repository.TeacherRepository;
 import com.c0324.casestudym5.repository.TeamRepository;
+import com.c0324.casestudym5.service.InvitationService;
 import com.c0324.casestudym5.service.NotificationService;
 import com.c0324.casestudym5.service.StudentService;
 import com.c0324.casestudym5.service.TeamService;
@@ -21,13 +22,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class TeamServiceImpl implements TeamService {
-
     private final TeamRepository teamRepository;
     private final StudentService studentService;
     private final TeacherRepository teacherRepository;
     private final NotificationService notificationService;
 
-    public TeamServiceImpl(TeamRepository teamRepository, StudentService studentService, TeacherRepository teacherRepository, NotificationService notificationService) {
+    public TeamServiceImpl(TeamRepository teamRepository, StudentService studentService,
+                           TeacherRepository teacherRepository, NotificationService notificationService) {
         this.teamRepository = teamRepository;
         this.studentService = studentService;
         this.teacherRepository = teacherRepository;
@@ -109,6 +110,18 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public Team getTeamByStudentId(Long studentId) {
         return teamRepository.findTeamByStudentsId(studentId);
+    }
+
+    @Override
+    public Team createNewTeam(TeamDTO teamDTO, Student currentStudent) {
+        Team newTeam = new Team();
+        newTeam.setName(teamDTO.getName());
+        newTeam.setStudents(List.of(currentStudent));
+        teamRepository.save(newTeam);
+        currentStudent.setTeam(newTeam);
+        currentStudent.setLeader(true);
+        studentService.save(currentStudent);
+        return newTeam;
     }
 
 }
