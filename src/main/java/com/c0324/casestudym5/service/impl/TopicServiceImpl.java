@@ -90,7 +90,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Page<Topic> getAllTopics(Pageable pageable) {
-        return topicRepository.findAll(pageable);
+        return topicRepository.findByApprovedTrueAndStatus(pageable);
     }
 
     @Override
@@ -102,7 +102,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public List<Topic> getLatestTopics(int limit) {
         PageRequest pageRequest = PageRequest.of(0, limit, Sort.by("id").descending());
-        return topicRepository.findByApprovedTrue(pageRequest).getContent();
+        return topicRepository.findByApprovedTrueAndStatus(pageRequest).getContent();
     }
 
     @Override
@@ -130,7 +130,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public Page<Topic> getPendingTopicsPage(Pageable pageable) {
-        return topicRepository.findByApprovedFalse(pageable);
+        return topicRepository.findAll(pageable);
     }
 
     @Override
