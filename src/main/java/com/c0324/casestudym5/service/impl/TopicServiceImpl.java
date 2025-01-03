@@ -137,12 +137,11 @@ public class TopicServiceImpl implements TopicService {
     public Page<Topic> findByStatus(int status, Pageable pageable) {
         return topicRepository.findByStatus(status, pageable);
     }
-}
 
     private Teacher getCurrentTeacher() {
         // Logic để lấy thông tin giáo viên đang đăng nhập
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return teacherRepository.findByUserEmail(auth.getName());
+        return teacherRepository.findTeacherByUserEmail(auth.getName());
     }
 
 }

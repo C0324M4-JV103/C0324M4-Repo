@@ -4,20 +4,24 @@
       layout:decorate="~{layout}">
 <head>
     <title>Kiểm duyệt đề tài</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="/css/home-page.css">
     <link rel="stylesheet" th:href="@{/css/topic-approval.css}">
 </head>
 <body>
+<div th:replace="~{layout :: nav}"></div>
 <div layout:fragment="content">
     <div class="container mt-5">
         <h2 class="main-title">KIỂM DUYỆT ĐỀ TÀI</h2>
-
-        <div class="approval-table" th:if="${!topics.empty}">
+        <div class="approval-table" th:if="${!topics.isEmpty()}">
             <table>
                 <thead>
                 <tr>
                     <th>STT</th>
                     <th>Tên đề tài</th>
-                    <th>Mã đề tài</th>
+                    <th>Mô tả</th>
                     <th>Nhóm thực hiện</th>
                     <th>Duyệt đề tài</th>
                     <th>Hủy đề tài</th>
@@ -27,10 +31,13 @@
                 <tr th:each="topic, stat : ${topics}">
                     <td th:text="${stat.count}">1</td>
                     <td th:text="${topic.name}">Tên đề tài</td>
-                    <td th:if="${topic.description}">
+                    <td th:if="${topic.description != null}">
                         <a th:href="${topic.description.url}" target="_blank" class="btn btn-info mb-2">
                             Xem file mô tả
                         </a>
+                    </td>
+                    <td th:if="${topic.description == null}">
+                        <span class="text-muted">Chưa có mô tả</span>
                     </td>
                     <td th:text="${topic.team != null ? topic.team.name : ''}">Nhóm 01</td>
                     <td>
@@ -50,7 +57,7 @@
             </table>
         </div>
 
-        <div class="empty-state" th:if="${topics.empty}">
+        <div class="empty-state" th:if="${topics.isEmpty()}">
             <i class="fas fa-clipboard-list fa-3x mb-3"></i>
             <h4>Không có đề tài nào cần duyệt</h4>
         </div>
@@ -71,5 +78,19 @@
         </nav>
     </div>
 </div>
+<div th:replace="~{layout :: footer}"></div>
+<!--<script th:inline="javascript">-->
+<!--    /*<![CDATA[*/-->
+<!--    var fileUrl = /*[[${fileUrl}]]*/ '';-->
+<!--    if (fileUrl) {-->
+<!--        var encodedUrl = encodeURIComponent(fileUrl);-->
+<!--        document.getElementById('fileViewer').src = 'https://docs.google.com/gview?url=' + encodedUrl + '&embedded=true';-->
+<!--    } else {-->
+<!--        console.log('No file URL provided');-->
+<!--        // Xử lý trường hợp không có fileUrl, ví dụ hiển thị thông báo lỗi hoặc ẩn phần tử hiển thị file-->
+<!--    }-->
+<!--    /*]]>*/-->
+<!--</script>-->
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

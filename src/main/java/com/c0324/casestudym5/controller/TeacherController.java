@@ -1,12 +1,25 @@
 package com.c0324.casestudym5.controller;
 
+import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.Teacher;
+import com.c0324.casestudym5.model.Topic;
+import com.c0324.casestudym5.model.User;
 import com.c0324.casestudym5.service.TeacherService;
+import com.c0324.casestudym5.service.TeamService;
+import com.c0324.casestudym5.service.TopicService;
+import com.c0324.casestudym5.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -19,12 +32,11 @@ public class TeacherController {
     private final TopicService topicService;
 
     @Autowired
-    public TeacherController(TeacherService teacherService, TopicService topicService) {
-    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService) {
+    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService) {
         this.teacherService = teacherService;
-        this.topicService = topicService;
         this.teamService = teamService;
         this.userService = userService;
+        this.topicService = topicService;
     }
 
     @GetMapping("/detail/{id}")

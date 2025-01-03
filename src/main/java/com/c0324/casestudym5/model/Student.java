@@ -28,13 +28,11 @@ public class Student {
     private boolean isLeader;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name = "clazz_id", referencedColumnName = "id")
     @JsonBackReference
     private Clazz clazz;
 
     @ManyToOne
-    @JsonBackReference
     @JoinColumn(name="team_id", referencedColumnName = "id")
     @JsonBackReference
     private Team team;

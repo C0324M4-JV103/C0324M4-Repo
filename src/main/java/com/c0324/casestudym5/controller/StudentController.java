@@ -149,37 +149,16 @@ public class StudentController {
 
     @PostMapping("/invite-team")
     public String inviteStudent(Long studentId, RedirectAttributes redirectAttributes) {
-
         Student invitedStudent = studentService.findById(studentId);
-
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
-
         if (currentTeam.getStudents().size() >= 5) {
             redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ 5 thành viên!");
             return "redirect:/student/team";
         }
-        // nếu chưa vào nhóm nào và chưa được mời
         if (invitedStudent.getTeam() == null && !invitationService.existsByStudentAndTeam(invitedStudent, currentTeam)) {
-            // tạo lời mời và lưu riêng cho từng nhóm
-            Invitation invitation = new Invitation();
-            invitation.setStudent(invitedStudent);
-            invitation.setTeam(currentTeam);
-            invitation.setInviter(currentStudent);
-            invitationService.save(invitation);
-            // send mail
-            String subject = "Lời mời tham gia nhóm từ " + currentTeam.getName();
-            String content = """
-                    <html>
-                    <body>
-                        <p>Xin chào %s,</p>
-                        <p>Bạn đã được mời tham gia nhóm <strong>"%s"</strong> bởi %s.</p>
-                        <p>Vui lòng kiểm tra thông tin trên hệ thống để chấp nhận lời mời.</p>
-                        <p>Bạn có thể xem và chấp nhận ngay bây giờ: <a href="http://localhost:8080/student/team">Xem lời mời ngay!</a></p>
-                    </body>
-                    </html>
-                        """.formatted(invitedStudent.getUser().getName(), currentTeam.getName(), currentStudent.getUser().getName());
-            invitationService.inviteStudent(studentId, subject, content);
+            invitationService.saveInvitation(invitedStudent, currentStudent, currentTeam);
+            invitationService.inviteStudent(studentId, currentStudent, currentTeam); // send mail
             redirectAttributes.addFlashAttribute("successMessage", "Lời mời đã được gửi thành công!");
         }
         return "redirect:/student/team";

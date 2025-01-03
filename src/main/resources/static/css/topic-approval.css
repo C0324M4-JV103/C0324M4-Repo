@@ -120,6 +120,11 @@ button:disabled {
     color: #6c757d;
 }
 
+.approval-table {
+    margin-top: 2rem;
+    min-height: 600px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .approval-table {
