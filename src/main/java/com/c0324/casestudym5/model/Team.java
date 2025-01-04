@@ -31,6 +31,7 @@ public class Team {
     private Teacher teacher;
 
     @OneToOne(mappedBy = "team")
+    @JsonIgnore
     private Topic topic;
 
     @OneToMany(mappedBy = "team")

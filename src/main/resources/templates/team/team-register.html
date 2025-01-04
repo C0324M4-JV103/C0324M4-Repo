@@ -61,43 +61,53 @@
     </div>
 
     <div th:if="${invitation != null}">
-        <table class="table table-bordered table-striped table-hover text-center table-team">
-            <thead class="thead-dark">
-            <tr>
-                <th style="width:5%;">STT</th>
-                <th style="width:30%;">Tên</th>
-                <th style="width:15%;">Mã số</th>
-                <th style="width:20%;">Ngày sinh</th>
-                <th style="width:20%;">Trạng thái</th>
-                <th th:if="${isInTeam and isLeader}" style="width:10%;">Mời</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr style="font-size: 1.2rem" th:if="${list.isEmpty()}">
-                <td colspan="6" class="text-center text-danger">
-                    Không tìm thấy sinh viên phù hợp với từ khóa tìm kiếm!
-                </td>
-            </tr>
-            <tr th:each="s, loop : ${list}">
-                <td style="width:5%;" th:text="${(currentPage - 1) * 5 + loop.index + 1}"></td>
-                <td style="width:30%;" th:text="${s.user.name}"></td>
-                <td style="width:15%;" th:text="${s.code}"></td>
-                <td style="width:20%;" th:text="${#dates.format(s.user.dob, 'dd/MM/yyyy')}"></td>
-                <td style="width:20%;">
-                    <span th:class="${s.teamStatus == 'Chưa có nhóm'} ? 'text-danger' : 'text-success'"
-                          th:text="${s.teamStatus}"></span>
-                </td>
-                <td style="width:10%;" th:if="${isInTeam and isLeader}">
-                    <form th:action="@{/student/invite-team}" method="post">
-                        <input type="hidden" name="studentId" th:value="${s.id}"/>
-                        <span class="text-success" th:if="${s.team != null}"><span class="fas fa-check" style="font-size: 1.2rem"></span></span>
-                        <button class="btn-icons" th:if="${s.team == null and !invitationService.existsByStudentAndTeam(s, currentTeam)}" type="submit">Mời</button>
-                        <button class="btn-icons" th:if="${s.team == null and invitationService.existsByStudentAndTeam(s, currentTeam)}" disabled><span class="fas fa-spinner fa-pulse"></span></button>
-                    </form>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <div th:if="${list.isEmpty()}" style="width: 100%; margin: 0 auto">
+            <div class="alert alert-warning text-center" role="alert">
+                Không có dữ liệu
+            </div>
+        </div>
+        <div>
+            <table th:if="${!list.isEmpty()}"
+                   class="table table-bordered table-striped table-hover text-center table-team">
+                <thead class="thead-dark">
+                <tr>
+                    <th style="width:5%;">STT</th>
+                    <th style="width:30%;">Tên</th>
+                    <th style="width:15%;">Mã số</th>
+                    <th style="width:20%;">Ngày sinh</th>
+                    <th style="width:20%;">Trạng thái</th>
+                    <th th:if="${isInTeam and isLeader}" style="width:10%;">Mời</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="s, loop : ${list}">
+                    <td style="width:5%;" th:text="${(currentPage - 1) * 5 + loop.index + 1}"></td>
+                    <td style="width:30%;" th:text="${s.user.name}"></td>
+                    <td style="width:15%;" th:text="${s.code}"></td>
+                    <td style="width:20%;" th:text="${#dates.format(s.user.dob, 'dd/MM/yyyy')}"></td>
+                    <td style="width:20%;">
+                        <span th:class="${s.teamStatus == 'Chưa có nhóm'} ? 'text-danger' : 'text-success'"
+                              th:text="${s.teamStatus}"></span>
+                    </td>
+                    <td style="width:10%;" th:if="${isInTeam and isLeader}">
+                        <form th:action="@{/student/invite-team}" method="post">
+                            <input type="hidden" name="studentId" th:value="${s.id}"/>
+                            <span class="text-success" th:if="${s.team != null}"><span class="fas fa-check"
+                                                                                       style="font-size: 1.2rem"></span></span>
+                            <button class="btn-icons"
+                                    th:if="${s.team == null and !invitationService.existsByStudentAndTeam(s, currentTeam)}"
+                                    type="submit">Mời
+                            </button>
+                            <button class="btn-icons"
+                                    th:if="${s.team == null and invitationService.existsByStudentAndTeam(s, currentTeam)}"
+                                    disabled><span class="fas fa-spinner fa-pulse"></span></button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
         <!-- Phân trang -->
         <div th:replace="~{layout :: paging}"></div>
     </div>
@@ -166,16 +176,22 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createTeamModalLabel">Tạo Nhóm Mới</h5>
+                    <h3 class="modal-title" id="createTeamModalLabel" style="font-weight: 700">Tạo Nhóm Mới</h3>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form th:action="@{/student/create-team}" method="post" th:object="${team}">
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="teamName" class="form-label">Tên Nhóm</label>
+                            <label for="teamName" style="font-weight: 500" class="form-label fs-4">Tên Nhóm: </label>
                             <input type="text" class="form-control" name="teamName" id="teamName"
                                    placeholder="Nhập tên nhóm" th:field="*{name}">
-                            <div th:if="${#fields.hasErrors('name')}" class="text-danger">
+                            <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:with="showModal=true">
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                        const modal = new bootstrap.Modal(document.getElementById('createTeamModal'));
+                                        modal.show();
+                                    });
+                                </script>
                                 <div th:each="err : ${#fields.errors('name')}" th:text="${err}"></div>
                             </div>
                         </div>
@@ -189,17 +205,8 @@
         </div>
     </div>
 </div>
-
-
 <div th:replace="~{layout :: footer}"></div>
-
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
 </body>
-<script>
-    var toastElement = document.querySelector('.toast');
-    if (toastElement) {
-        var toast = new bootstrap.Toast(toastElement);
-        toast.show();
-    }
-</script>
 </html>

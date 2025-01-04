@@ -1,17 +1,16 @@
 package com.c0324.casestudym5.controller;
 
+import com.c0324.casestudym5.dto.RegisterTopicDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
-import com.c0324.casestudym5.model.Invitation;
-import com.c0324.casestudym5.model.Student;
-import com.c0324.casestudym5.model.Team;
-import com.c0324.casestudym5.model.User;
-import com.c0324.casestudym5.service.InvitationService;
-import com.c0324.casestudym5.service.StudentService;
-import com.c0324.casestudym5.service.TeamService;
-import com.c0324.casestudym5.service.UserService;
+import com.c0324.casestudym5.model.*;
+import com.c0324.casestudym5.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +20,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -31,13 +33,15 @@ public class StudentController {
     private final StudentService studentService;
     private final UserService userService;
     private final TeamService teamService;
+    private final TopicService topicService;
     private final InvitationService invitationService;
 
     @Autowired
-    public StudentController(StudentService studentService, UserService userService, TeamService teamService, InvitationService invitationService) {
+    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService) {
         this.studentService = studentService;
         this.userService = userService;
         this.teamService = teamService;
+        this.topicService = topicService;
         this.invitationService = invitationService;
     }
 
@@ -71,6 +75,7 @@ public class StudentController {
         Pageable pageable = PageRequest.of(page - 1, 5);
 
         Page<Student> availableStudents;
+
         if (search != null && !search.isEmpty()) {
             availableStudents = studentService.searchStudentsExceptCurrent(search, currentStudent.getId(), pageable);
         } else {
@@ -85,13 +90,21 @@ public class StudentController {
         model.addAttribute("currentPage", page);
         model.addAttribute("isInTeam", isInTeam);
         model.addAttribute("isLeader", isLeader);
-        model.addAttribute("invitation", invitation); // hiện thông tin lời mời
+        model.addAttribute("invitation", invitation);
+        model.addAttribute("list", availableStudents);// hiện thông tin lời mời
         model.addAttribute("currentTeam", currentTeam);
-        model.addAttribute("list", availableStudents);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
 
         return "team/team-register";
+    }
+
+    @GetMapping("/team2")
+    public String showTeam(Model model, Principal principal) {
+        Student student = studentService.getStudentByUserEmail(principal.getName());
+        model.addAttribute("team", teamService.getTeamByStudentId(student.getId()));
+        model.addAttribute("student", student);
+        return "student/team";
     }
 
 
@@ -101,7 +114,8 @@ public class StudentController {
                              RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.team", bindingResult);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.Bi" +
+                    "ndingResult.team", bindingResult);
             redirectAttributes.addFlashAttribute("team", teamDTO);
             return "redirect:/student/team";
         }
@@ -135,37 +149,16 @@ public class StudentController {
 
     @PostMapping("/invite-team")
     public String inviteStudent(Long studentId, RedirectAttributes redirectAttributes) {
-
         Student invitedStudent = studentService.findById(studentId);
-
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
-
         if (currentTeam.getStudents().size() >= 5) {
             redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ 5 thành viên!");
             return "redirect:/student/team";
         }
-        // nếu chưa vào nhóm nào và chưa được mời
         if (invitedStudent.getTeam() == null && !invitationService.existsByStudentAndTeam(invitedStudent, currentTeam)) {
-            // tạo lời mời và lưu riêng cho từng nhóm
-            Invitation invitation = new Invitation();
-            invitation.setStudent(invitedStudent);
-            invitation.setTeam(currentTeam);
-            invitation.setInviter(currentStudent);
-            invitationService.save(invitation);
-            // send mail
-            String subject = "Lời mời tham gia nhóm từ " + currentTeam.getName();
-            String content = """
-                    <html>
-                    <body>
-                        <p>Xin chào %s,</p>
-                        <p>Bạn đã được mời tham gia nhóm <strong>"%s"</strong> bởi %s.</p>
-                        <p>Vui lòng kiểm tra thông tin trên hệ thống để chấp nhận lời mời.</p>
-                        <p>Bạn có thể xem và chấp nhận ngay bây giờ: <a href="http://localhost:8080/student/team">Xem lời mời ngay!</a></p>
-                    </body>
-                    </html>
-                        """.formatted(invitedStudent.getUser().getName(), currentTeam.getName(), currentStudent.getUser().getName());
-            invitationService.inviteStudent(studentId, subject, content);
+            invitationService.saveInvitation(invitedStudent, currentStudent, currentTeam);
+            invitationService.inviteStudent(studentId, currentStudent, currentTeam); // send mail
             redirectAttributes.addFlashAttribute("successMessage", "Lời mời đã được gửi thành công!");
         }
         return "redirect:/student/team";
@@ -197,7 +190,6 @@ public class StudentController {
         return "redirect:/student/team";
     }
 
-
     @GetMapping("/info-team")
     public String teamInfo(Model model, Pageable pageable) {
 
@@ -206,14 +198,83 @@ public class StudentController {
 
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
 
-        boolean isLeader = (team != null && currentStudent.isLeader());
-
         model.addAttribute("team", team);
         model.addAttribute("list", availableStudents);
-        model.addAttribute("isLeader", isLeader);
+        model.addAttribute("student", currentStudent);
 
         return "team/team-info";
 
+    }
+
+    @GetMapping("/register-topic")
+    public String showRegisterTopicForm(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        if (!model.containsAttribute("registerTopic")) {
+            model.addAttribute("registerTopic", new RegisterTopicDTO());
+        }
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        Page<Topic> topicPage = topicService.findByStatus(1, pageable);
+        model.addAttribute("topics", topicPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", topicPage.getTotalPages());
+        return "student/register-topic";
+    }
+
+    @PostMapping("/handle-register-topic")
+    public String registerTopic(@Valid @ModelAttribute RegisterTopicDTO registerTopicDTO, BindingResult result, Principal principal, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.registerTopic", result);
+            redirectAttributes.addFlashAttribute("registerTopic", registerTopicDTO);
+            return "redirect:/student/register-topic";
+        }
+
+        MultipartFile image = registerTopicDTO.getImage();
+        MultipartFile description = registerTopicDTO.getDescription();
+        long maxFileSizeImage = 5 * 1024 * 1024; // 5MB
+        long maxFileSizeDescription = 15 * 1024 * 1024; // 15MB
+
+        // Check size and format of image
+        if (image != null && !image.isEmpty()) {
+            String imageName = image.getOriginalFilename();
+            long imageSize = image.getSize();
+            if (imageName != null && (imageName.endsWith(".jpg") || imageName.endsWith(".png") || imageName.endsWith(".jpeg"))) {
+                if (imageSize > maxFileSizeImage) {
+                    redirectAttributes.addFlashAttribute("imageError", "Kích thước ảnh không được vượt quá 5MB");
+                    redirectAttributes.addFlashAttribute("registerTopic", registerTopicDTO);
+                    return "redirect:/student/register-topic";
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("imageError", "Chỉ hỗ trợ ảnh có định dạng jpg, jpeg, png");
+                redirectAttributes.addFlashAttribute("registerTopic", registerTopicDTO);
+                return "redirect:/student/register-topic";
+            }
+        }
+
+        // Check size and format of description
+        if (description != null && !description.isEmpty()) {
+            String descriptionName = description.getOriginalFilename();
+            long descriptionSize = description.getSize();
+            if (descriptionName != null && (descriptionName.endsWith(".xls") || descriptionName.endsWith(".xlsx") || descriptionName.endsWith(".doc") || descriptionName.endsWith(".docx") || descriptionName.endsWith(".ppt") || descriptionName.endsWith(".pptx"))) {
+                if (descriptionSize > maxFileSizeDescription) {
+                    redirectAttributes.addFlashAttribute("descriptionError", "Kích thước tệp mô tả không được vượt quá 15MB");
+                    redirectAttributes.addFlashAttribute("registerTopic", registerTopicDTO);
+                    return "redirect:/student/register-topic";
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("descriptionError", "Chỉ hỗ trợ tệp có định dạng xls, xlsx, doc, docx, ppt, pptx");
+                redirectAttributes.addFlashAttribute("registerTopic", registerTopicDTO);
+                return "redirect:/student/register-topic";
+            }
+        }
+
+        boolean isRegistered = topicService.registerTopic(registerTopicDTO, principal.getName());
+        if (!isRegistered) {
+            redirectAttributes.addFlashAttribute("registerError", "Đăng ký đề tài thất bại");
+            redirectAttributes.addFlashAttribute("registerTopic", registerTopicDTO);
+            return "redirect:/student/register-topic";
+        }
+        redirectAttributes.addFlashAttribute("registerSuccess", "Đăng ký đề tài thành công");
+        return "redirect:/student/info-team";
     }
 
 }

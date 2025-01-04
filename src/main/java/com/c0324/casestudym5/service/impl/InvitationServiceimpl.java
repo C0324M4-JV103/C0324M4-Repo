@@ -31,8 +31,25 @@ public class InvitationServiceimpl implements InvitationService {
     }
 
     @Override
-    public void inviteStudent(Long studentId, String subject, String content) {
+    public void inviteStudent(Long studentId, Student currentStudent, Team currentTeam) {
+        // Lấy email của sinh viên được mời
         String email = studentService.getStudentEmailById(studentId);
+        Student invitedStudent = studentService.findById(studentId);
+
+        // Tạo subject và content cho email
+        String subject = "Lời mời tham gia nhóm từ " + currentTeam.getName();
+        String content = """
+            <html>
+            <body>
+                <p>Xin chào %s,</p>
+                <p>Bạn đã được mời tham gia nhóm <strong>"%s"</strong> bởi %s.</p>
+                <p>Vui lòng kiểm tra thông tin trên hệ thống để chấp nhận lời mời.</p>
+                <p>Bạn có thể xem và chấp nhận ngay bây giờ: <a href="http://localhost:8080/student/team">Xem lời mời ngay!</a></p>
+            </body>
+            </html>
+            """.formatted(invitedStudent.getUser().getName(), currentTeam.getName(), currentStudent.getUser().getName());
+
+        // Gửi email
         mailService.sendEmail(email, subject, content);
     }
 
@@ -55,6 +72,15 @@ public class InvitationServiceimpl implements InvitationService {
     @Override
 
     public void save(Invitation invitation) {
+        invitationRepository.save(invitation);
+    }
+
+    @Override
+    public void saveInvitation(Student invitedStudent, Student currentStudent, Team currentTeam) {
+        Invitation invitation = new Invitation();
+        invitation.setStudent(invitedStudent);
+        invitation.setTeam(currentTeam);
+        invitation.setInviter(currentStudent);
         invitationRepository.save(invitation);
     }
     @Override

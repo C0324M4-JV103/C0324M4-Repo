@@ -3,6 +3,7 @@
     gap: 40px;
     flex-wrap: wrap;
     justify-content: center;
+    min-height: 450px;
 }
 
 .card-info-team {
@@ -95,5 +96,39 @@ h5 {
     text-overflow: ellipsis; /* Hiển thị dấu ba chấm (...) khi tràn */
     width: 100%;
     display: block;
+}
+
+.add-topic {
+    font-size: 1.5rem;
+    text-align: center;
+    background: #fd6f3c;
+    border-color: #b15333;
+    margin-bottom: 3rem;
+}
+
+.add-topic:hover {
+    background: #282781;
+    border-color: #282781;
+}
+
+.text-register-topic {
+    margin-top: 5rem;
+    font-size: 1.6rem;
+    color: red;
+    font-weight: 500;
+    text-align: center;
+}
+
+.topic-info {
+    border-radius: 0.25rem;
+    margin-bottom: 3rem;
+}
+
+.topic-info a {
+    color: white;
+}
+
+.topic-info a:hover {
+    color: white;
 }
 
