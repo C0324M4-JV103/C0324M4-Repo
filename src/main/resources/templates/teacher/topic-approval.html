@@ -17,6 +17,9 @@
             min-width: 100px; /* Đặt độ rộng tối thiểu cho các nút */
             text-align: center;
         }
+        .table-responsive {
+            min-height: 500px;
+        }
     </style>
 </head>
 <body>
@@ -35,8 +38,8 @@
             <tr>
                 <th>STT</th>
                 <th>Tên đề tài</th>
+                <th>Mô tả</th>
                 <th>Nhóm thực hiện</th>
-                <th>Xem file mô tả</th>
                 <th>Duyệt đề tài</th>
                 <th>Hủy đề tài</th>
             </tr>
@@ -45,11 +48,14 @@
             <tr th:each="topic, stat : ${topics}">
                 <td th:text="${stat.count}">1</td>
                 <td th:text="${topic.name}">Tên đề tài</td>
-                <td th:text="${topic.team != null ? topic.team.name : ''}">Nhóm 01</td>
+                <td th:text="${topic.team != null ? topic.team.name : 'Không có nhóm'}">Nhóm 01</td>
                 <td th:if="${topic.description}">
                     <a th:href="${topic.description.url}">
                         <i class="fa fa-download"></i>
                     </a>
+                </td>
+                <td th:if="${topic.description == null}">
+                    <span class="text-muted">Chưa có mô tả</span>
                 </td>
                 <td>
                     <form th:if="${topic.status == 0}" th:action="@{/teacher/topics/{id}/approve(id=${topic.id})}"
@@ -72,21 +78,21 @@
             </tr>
             </tbody>
         </table>
+        <nav class="py-4">
+            <ul class="pagination justify-content-center"  th:if="${totalPages >= 1}">
+                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/teacher/topics(page=${currentPage - 1})}">Trước</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${currentPage == i ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/teacher/topics(page=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/teacher/topics(page=${currentPage + 1})}">Sau</a>
+                </li>
+            </ul>
+        </nav>
     </div>
-    <nav class="py-4">
-        <ul class="pagination justify-content-center"  th:if="${totalPages >= 1}">
-            <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
-                <a class="page-link" th:href="@{/teacher/topics(page=${currentPage - 1})}">Trước</a>
-            </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                th:classappend="${currentPage == i ? 'active' : ''}">
-                <a class="page-link" th:href="@{/teacher/topics(page=${i})}" th:text="${i + 1}"></a>
-            </li>
-            <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
-                <a class="page-link" th:href="@{/teacher/topics(page=${currentPage + 1})}">Sau</a>
-            </li>
-        </ul>
-    </nav>
 </div>
 <div th:replace="~{layout :: footer}"></div>
 

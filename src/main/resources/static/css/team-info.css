@@ -3,7 +3,7 @@
     gap: 40px;
     flex-wrap: wrap;
     justify-content: center;
-    min-height: 600px;
+    min-height: 450px;
 }
 
 .card-info-team {
@@ -117,5 +117,18 @@ h5 {
     color: red;
     font-weight: 500;
     text-align: center;
+}
+
+.topic-info {
+    border-radius: 0.25rem;
+    margin-bottom: 3rem;
+}
+
+.topic-info a {
+    color: white;
+}
+
+.topic-info a:hover {
+    color: white;
 }
 

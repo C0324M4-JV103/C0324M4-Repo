@@ -274,7 +274,7 @@ public class StudentController {
             return "redirect:/student/register-topic";
         }
         redirectAttributes.addFlashAttribute("registerSuccess", "Đăng ký đề tài thành công");
-        return "redirect:/student/team";
+        return "redirect:/student/info-team";
     }
 
 }
