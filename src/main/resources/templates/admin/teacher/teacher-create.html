@@ -10,21 +10,6 @@
     <link rel="stylesheet" href="/css/teachers.css">
     <link rel="stylesheet" href="/css/home-page.css">
 </head>
-<script>
-    function triggerFileInput() {
-        document.getElementById('fileInput').click();
-    }
-</script>
-<style>
-    body { margin-top: 20px; }
-    .avatar {
-        width: 200px;
-        height: 200px;
-    }
-    .modal-body {
-        padding: 20px;
-    }
-</style>
 <body>
 <!-- Navbar -->
 <div th:replace="layout :: nav"></div>
@@ -34,34 +19,25 @@
     <hr>
     <div class="row">
 
-        <div class="col-md-3">
-            <div class="text-center">
-                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" class="avatar img-circle img-thumbnail" alt="avatar">
-                <br>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateAvatarModal">Cập nhật ảnh</button>
-                <div th:if="${imageError}" th:text="${imageError}" class="text-danger"></div>
-            </div>
-        </div>
-
         <div class="col-md-9 personal-info">
             <h3>Thông tin cá nhân</h3>
-            <form class="form-horizontal" role="form" th:action="@{/admin/teacher/create}" th:object="${teacherDTO}" method="post">
+            <form class="form-horizontal" role="form" th:action="@{/admin/teacher/create}" th:object="${teacherDTO}" method="post" enctype="multipart/form-data">
                 <!-- Tên giáo viên -->
                 <div class="form-group mb-3">
                     <label for="name" class="control-label">Tên giáo viên:</label>
-                    <input class="form-control" id="name" type="text" th:field="*{userDTO.name}">
-                    <div th:if="${#fields.hasErrors('userDTO.name')}" th:errors="*{userDTO.name}" class="text-danger"></div>
+                    <input class="form-control" id="name" type="text" th:field="*{name}">
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
                 </div>
                 <!-- Ngày sinh -->
                 <div class="form-group mb-3">
                     <label for="dob" class="control-label">Ngày sinh:</label>
-                    <input class="form-control" id="dob" type="date" th:field="*{userDTO.dob}">
-                    <div th:if="${#fields.hasErrors('userDTO.dob')}" th:errors="*{userDTO.dob}" class="text-danger"></div>
+                    <input class="form-control" id="dob" type="date" th:field="*{dob}">
+                    <div th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="text-danger"></div>
                 </div>
                 <!-- Giới tính -->
                 <div class="form-group mb-3">
                     <label for="gender" class="control-label">Giới tính:</label>
-                    <select class="form-control" id="gender" th:field="*{userDTO.gender}">
+                    <select class="form-control" id="gender" th:field="*{gender}">
                         <option th:value="MALE" th:text="'Nam'"></option>
                         <option th:value="FEMALE" th:text="'Nữ'"></option>
                     </select>
@@ -70,20 +46,20 @@
                 <!-- Email -->
                 <div class="form-group mb-3">
                     <label for="email" class="control-label">Email:</label>
-                    <input class="form-control" id="email" type="text" th:field="*{userDTO.email}">
-                    <div th:if="${#fields.hasErrors('userDTO.email')}" th:errors="*{userDTO.email}" class="text-danger"></div>
+                    <input class="form-control" id="email" type="text" th:field="*{email}">
+                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
                 </div>
                 <!-- Số điện thoại -->
                 <div class="form-group mb-3">
                     <label for="phoneNumber" class="control-label">Số điện thoại:</label>
-                    <input class="form-control" id="phoneNumber" type="text" th:field="*{userDTO.phoneNumber}">
-                    <div th:if="${#fields.hasErrors('userDTO.phoneNumber')}" th:errors="*{userDTO.phoneNumber}" class="text-danger"></div>
+                    <input class="form-control" id="phoneNumber" type="text" th:field="*{phoneNumber}">
+                    <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger"></div>
                 </div>
                 <!-- Địa chỉ -->
                 <div class="form-group mb-3">
                     <label for="address" class="control-label">Địa chỉ:</label>
-                    <input class="form-control" id="address" type="text" th:field="*{userDTO.address}">
-                    <div th:if="${#fields.hasErrors('userDTO.address')}" th:errors="*{userDTO.address}" class="text-danger"></div>
+                    <input class="form-control" id="address" type="text" th:field="*{address}">
+                    <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-danger"></div>
                 </div>
                 <!-- Học vị -->
                 <div class="form-group mb-3">
@@ -102,7 +78,10 @@
                         <option th:each="faculty : ${faculties}" th:value="${faculty.id}" th:text="${faculty.name}"></option>
                     </select>
                 </div>
-
+                <div class="form-group mb-3">
+                    <label for="avatar" class="control-label">Ảnh đại diện:</label>
+                    <input class="form-control" id="avatar" type="file" th:field="*{avatar}" accept=".jpg,.png,.jpeg">
+                </div>
                 <!-- Thêm giáo viên -->
                 <div class="form-group">
                     <div class="col-md-8 d-flex justify-content-end">
@@ -117,29 +96,6 @@
 <hr>
 
 <div th:replace="layout :: footer"></div>
-
-<div class="modal fade" id="updateAvatarModal" tabindex="-1" aria-labelledby="updateAvatarModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateAvatarModalLabel">Cập nhật ảnh đại diện</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form th:action="@{/admin/teacher/create-avatar}" method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="avatar" class="form-label">Chọn ảnh mới</label>
-                        <input type="file" class="form-control" id="avatar" name="avatar" accept=".jpg,.png,.jpeg" required>
-                    </div>
-                    <div class="d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary me-2">Cập nhật</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>

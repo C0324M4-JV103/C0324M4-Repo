@@ -130,6 +130,24 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void createUser(UserDTO userDTO) {
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new IllegalArgumentException("Email đã tồn tại.");
+        }
+        User currentUser = getCurrentUser();
+        currentUser.setName(userDTO.getName());
+        currentUser.setEmail(userDTO.getEmail());
+        currentUser.setDob(userDTO.getDob());
+        currentUser.setGender(User.Gender.valueOf(userDTO.getGender()));
+        currentUser.setPhoneNumber(userDTO.getPhoneNumber());
+        currentUser.setAddress(userDTO.getAddress());
+        save(currentUser);
+    }
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     private Collection<SimpleGrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
@@ -161,28 +179,5 @@ public class UserServiceImpl implements UserService {
 
     public List<User> fillAll() {
         return userRepository.findAll();
-    }
-
-    @Transactional
-    public void createUser(UserDTO userDTO) {
-        if (findByEmail(userDTO.getEmail()) != null) {
-            throw new IllegalArgumentException("Email đã tồn tại");
-        }
-
-        User newUser = new User();
-        newUser.setName(userDTO.getName());
-        newUser.setEmail(userDTO.getEmail());
-        newUser.setDob(userDTO.getDob());
-        newUser.setGender(User.Gender.valueOf(userDTO.getGender()));
-        newUser.setPhoneNumber(userDTO.getPhoneNumber());
-        newUser.setAddress(userDTO.getAddress());
-        newUser.setPassword("1234");
-        if (newUser.getAvatar() == null) {
-            MultiFile defaultAvatar = new MultiFile();
-            defaultAvatar.setUrl("https://vcdn1-giaitri.vnecdn.net/2024/11/26/ngoctrinh-1732630649-173263066-7092-9633-1732630716.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=BbVysA0vvlsQp8vQ-EmKiA");
-            MultiFile savedAvatar = multiFileRepository.save(defaultAvatar);
-            newUser.setAvatar(savedAvatar);
-        }
-        save(newUser);
     }
 }

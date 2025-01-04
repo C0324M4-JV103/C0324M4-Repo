@@ -87,6 +87,7 @@ public class AdminController {
     @PostMapping("/teacher/create")
     public String createTeacher(@Valid @ModelAttribute("teacherDTO") TeacherDTO teacherDTO,
                                 BindingResult bindingResult,
+                                @RequestParam("avatar") MultipartFile avatar,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
@@ -95,48 +96,22 @@ public class AdminController {
         }
 
         try {
-            userService.createUser(teacherDTO.getUserDTO());
-            Teacher newTeacher = new Teacher();
-            newTeacher.setDegree(teacherDTO.getDegree());
-
-            Optional<Faculty> facultyOptional = facultyService.findById(teacherDTO.getFacultyId());
-            if (facultyOptional.isEmpty()) {
-                model.addAttribute("error", "Khoa không hợp lệ.");
+            if (userService.existsByEmail(teacherDTO.getEmail())) {
+                bindingResult.rejectValue("email", "error.teacherDTO", "Email đã tồn tại.");
                 model.addAttribute("faculties", facultyService.findAll());
                 return "admin/teacher/teacher-create";
             }
+            teacherService.createNewTeacher(teacherDTO, avatar);
 
-            newTeacher.setFaculty(facultyOptional.get());
-            newTeacher.setUser(userService.findByEmail(teacherDTO.getUserDTO().getEmail()));
-            teacherService.save(newTeacher);
-
-            redirectAttributes.addFlashAttribute("toastMessage", "Tạo giáo viên thành công!");
+            redirectAttributes.addFlashAttribute("toastMessage", "Thêm sinh viên thành công!");
             redirectAttributes.addFlashAttribute("toastType", "success");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình tạo giáo viên.");
+            redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình thêm sinh viên.");
             redirectAttributes.addFlashAttribute("toastType", "danger");
+            e.printStackTrace();
         }
 
         return "redirect:/admin/teacher";
-    }
-
-    @PostMapping("/teacher/create-avatar")
-    public String changeTeacherAvatar(@RequestParam("avatar") MultipartFile avatar, Model model) {
-        String fileName = avatar.getOriginalFilename();
-        long fileSize = avatar.getSize();
-        long maxFileSize = 5 * 1024 * 1024; // 5MB
-
-        if (fileName != null && (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg"))) {
-            if (fileSize <= maxFileSize) {
-                userService.changeAvatar(avatar);
-            } else {
-                model.addAttribute("imageError", "Kích thước ảnh không được vượt quá 5MB");
-            }
-        } else {
-            model.addAttribute("imageError", "Chỉ hỗ trợ ảnh có định dạng jpg, jpeg, png");
-        }
-
-        return "redirect:/admin/create";
     }
 
 
