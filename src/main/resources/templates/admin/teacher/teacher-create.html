@@ -38,9 +38,11 @@
                 <div class="form-group mb-3">
                     <label for="gender" class="control-label">Giới tính:</label>
                     <select class="form-control" id="gender" th:field="*{gender}">
+                        <option value="">Chọn giới tính</option>
                         <option th:value="MALE" th:text="'Nam'"></option>
                         <option th:value="FEMALE" th:text="'Nữ'"></option>
                     </select>
+                    <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger"></div>
                 </div>
 
                 <!-- Email -->
@@ -65,22 +67,28 @@
                 <div class="form-group mb-3">
                     <label for="degree" class="control-label">Học vị:</label>
                     <select class="form-control" id="degree" th:field="*{degree}">
+                        <option value="">Chọn học vị</option>
                         <option th:value="MASTER">Thạc sĩ</option>
                         <option th:value="DOCTOR">Tiến sĩ</option>
                         <option th:value="PROFESSOR">Giáo sư</option>
                     </select>
+                    <div th:if="${#fields.hasErrors('degree')}" th:errors="*{degree}" class="text-danger"></div>
                 </div>
                 <!-- Khoa -->
                 <div class="form-group mb-3">
                     <label for="faculty" class="control-label">Khoa:</label>
                     <select class="form-control" id="faculty" th:field="*{facultyId}">
-                        <option value="" disabled selected>Chọn khoa</option>
+                        <option value="">Chọn khoa</option>
                         <option th:each="faculty : ${faculties}" th:value="${faculty.id}" th:text="${faculty.name}"></option>
                     </select>
+                    <div th:if="${#fields.hasErrors('facultyId')}" th:errors="*{facultyId}" class="text-danger"></div>
+
                 </div>
                 <div class="form-group mb-3">
                     <label for="avatar" class="control-label">Ảnh đại diện:</label>
                     <input class="form-control" id="avatar" type="file" th:field="*{avatar}" accept=".jpg,.png,.jpeg">
+                    <div th:if="${#fields.hasErrors('avatar')}" th:errors="*{avatar}" class="text-danger"></div>
+
                 </div>
                 <!-- Thêm giáo viên -->
                 <div class="form-group">

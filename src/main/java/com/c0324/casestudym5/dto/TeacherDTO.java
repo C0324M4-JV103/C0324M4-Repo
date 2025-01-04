@@ -50,6 +50,7 @@ public class TeacherDTO {
     @NotNull(message = "Khoa không được để trống")
     private Long facultyId;
 
+    @NotNull(message = "Ảnh không được để trống")
     private MultipartFile avatar;
 
     private MultipartFile multipartFile;
