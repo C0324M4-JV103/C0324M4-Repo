@@ -59,7 +59,6 @@ public class InvitationServiceimpl implements InvitationService {
         notificationService.sendNotification(notification);
     }
 
-
     @Transactional
     @Override
     public void deleteAllByStudent(Student student) {
@@ -70,19 +69,14 @@ public class InvitationServiceimpl implements InvitationService {
     public void delete(Invitation invitation) {
         invitationRepository.delete(invitation);
     }
-
     @Override
-
     public Invitation findById(Long id) {
         return invitationRepository.findById(id).orElse(null);
     }
     @Override
-
     public void save(Invitation invitation) {
         invitationRepository.save(invitation);
     }
-
-
     @Override
     public List<Invitation> findByStudent(Student student) {
         return invitationRepository.findByStudent(student);

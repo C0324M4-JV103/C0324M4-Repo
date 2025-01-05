@@ -1,0 +1,40 @@
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+.team-title {
+    margin-top: 3rem;
+    color: #343a40;
+}
+
+.add-topic {
+    font-size: 1.5rem;
+    text-align: left;
+    background: #fd6f3c;
+    border-color: #b15333;
+}
+
+.add-topic:hover {
+    background: #282781;
+    border-color: #282781;
+}
+
+.album {
+    min-height: 600px;
+}
+
+.topic-view-btn {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+    background: #282781;
+    margin-top: 1rem;
+}
+
+.topic-view-btn:hover {
+    background: #fd6f3c;
+    border-color: #b15333;
+}

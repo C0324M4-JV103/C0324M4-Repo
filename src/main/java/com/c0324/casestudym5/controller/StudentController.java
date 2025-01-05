@@ -22,7 +22,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -154,8 +153,6 @@ public class StudentController {
         }
         return "redirect:/student/team";
     }
-
-
 
     @GetMapping("/info-team")
     public String teamInfo(Model model, Pageable pageable, Principal principal) {
