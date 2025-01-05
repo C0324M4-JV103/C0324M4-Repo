@@ -14,23 +14,24 @@
     height: 300px;
 }
 
-.btn-icons {
+.btn-common {
+    font-weight: bold;
+    width: 70px;
     font-size: 15px;
-    font-weight: 555;
+    border-radius: 50px;
     border: none;
-    background: transparent;
-    padding: 0;
     cursor: pointer;
-    color: #182b8c;
-    transition: transform 0.3s ease, color 0.3s ease;
+}
 
+.btn-icons {
+    background-color: #50a251;
+    color: white;
 }
-.btn-icons:hover {
-    color: #f89956;
-    transform: scale(1.4);
-}
-.btn-icons:disabled .fas {
-    color: #494d4d;
+
+.btn-disable {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
 }
 
 .custom-search {

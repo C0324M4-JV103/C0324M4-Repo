@@ -15,5 +15,4 @@ public interface InvitationService {
     boolean existsByStudentAndTeam(Student student, Team team);
     void deleteAllByStudent(Student student);
     void inviteStudent(Long studentId, Student currentStudent, Team currentTeam); // send mail
-    void saveInvitation(Student invitedStudent, Student currentStudent, Team currentTeam);
 }

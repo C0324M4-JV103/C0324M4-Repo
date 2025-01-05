@@ -1,0 +1,23 @@
+INSERT INTO user (address, dob, email, gender, name, password, phone_number)
+VALUES
+    ('Hanoi', '2025-01-03', 'teacher@cc.cc', 'FEMALE', 'Cô Giáo', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student1@cc.cc', 'FEMALE', 'Ngọc Lan', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student2@cc.cc', 'FEMALE', 'Hà My', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student3@cc.cc', 'FEMALE', 'Thanh Hương', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student4@cc.cc', 'FEMALE', 'Thùy Linh', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student5@cc.cc', 'FEMALE', 'Khánh Vy', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student6@cc.cc', 'FEMALE', 'Bảo Anh', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student7@cc.cc', 'FEMALE', 'Thu Trang', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student8@cc.cc', 'FEMALE', 'Minh Hà', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student9@cc.cc', 'FEMALE', 'Lan Phương', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student10@cc.cc', 'FEMALE', 'Hoàng Yến', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student11@cc.cc', 'FEMALE', 'Thu Hằng', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student12@cc.cc', 'FEMALE', 'Hồng Nhung', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student13@cc.cc', 'FEMALE', 'Ngọc Anh', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student14@cc.cc', 'FEMALE', 'Bích Ngọc', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student15@cc.cc', 'FEMALE', 'Thanh Tú', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student16@cc.cc', 'FEMALE', 'Quỳnh Hoa', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student17@cc.cc', 'FEMALE', 'Thu Quỳnh', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student18@cc.cc', 'FEMALE', 'Phương Thảo', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student19@cc.cc', 'FEMALE', 'Hải Yến', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789'),
+    ('Hanoi', '2025-01-03', 'student20@cc.cc', 'FEMALE', 'Kim Oanh', '$2a$10$RqGriJnkDkaKR6wZGEEpMeWGbDOOtH.pueiwbacYSVgGR4hwhOOtO', '123456789');

@@ -1,6 +1,6 @@
 package com.c0324.casestudym5.service;
 
-import com.c0324.casestudym5.dto.RegisterTeamDTO;
+
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.model.Team;

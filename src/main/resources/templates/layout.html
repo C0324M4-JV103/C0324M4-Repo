@@ -63,7 +63,7 @@
                                     <div class="notif-detail">
                                         <p>
                                             <b th:text="${notif.senderName}"></b>
-                                            <span th:text="${notif.content}"></span>
+                                            <span th:utext="${notif.content}"></span>
                                         </p>
                                         <p>
                                             <small th:text="${notif.timeDifference}"></small>
@@ -90,7 +90,7 @@
                                                                     style="font-size: 25px; font-weight: 700">THÔNG TIN CÁ NHÂN</a></li>
                             <hr class="divider">
                             <li><a class="dropdown-item" th:href="@{/user/change-password}"
-                                                                    style="font-size: 25px; font-weight: 700">ĐỔI MẬT KHẨU</a></li>
+                                   style="font-size: 25px; font-weight: 700">ĐỔI MẬT KHẨU</a></li>
                             <hr class="divider">
                             <li><a class="dropdown-item" th:href="@{/logout}" style="font-size: 25px; font-weight: 700">ĐĂNG XUẤT</a></li>
                         </ul>

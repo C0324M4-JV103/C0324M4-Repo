@@ -31,11 +31,8 @@ public class HomeController {
 
     @GetMapping(value = {"/", "/home"})
     public String homePage(Model model, Principal principal) {
-
         User currentUser = userService.findByEmail(principal.getName());
-
         List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
-
         model.addAttribute("notifications", notifications);
 
         return "common/home-page";
