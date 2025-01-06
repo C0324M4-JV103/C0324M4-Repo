@@ -49,4 +49,10 @@ public class Topic {
 
     @OneToMany(mappedBy = "topic")
     private Set<PhaseReport> reports;
+
+    private boolean approved = false;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private Teacher approvedBy;
 }
