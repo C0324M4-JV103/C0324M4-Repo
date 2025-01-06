@@ -1,10 +1,93 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+    <meta charset="UTF-8">
+    <title>Quản lý sinh viên - Thêm sinh viên</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/teachers.css">
+    <link rel="stylesheet" href="/css/home-page.css">
 </head>
 <body>
-$END$
+<!-- Navbar -->
+<div th:replace="layout :: nav"></div>
+
+<div class="container bootstrap snippets bootdey">
+    <h1 class="text-primary">Thêm sinh viên</h1>
+    <hr>
+    <div class="row">
+        <div class="col-md-12 personal-info">
+            <h3>Thông tin cá nhân</h3>
+            <form class="form-horizontal" role="form" th:action="@{/admin/create-student}" th:object="${studentDTO}" method="post" enctype="multipart/form-data">
+                <!-- Tên sinh viên -->
+                <div class="form-group mb-3">
+                    <label for="name" class="control-label">Tên sinh viên:</label>
+                    <input class="form-control" id="name" type="text" th:field="*{name}">
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
+                </div>
+                <!-- Ngày sinh -->
+                <div class="form-group mb-3">
+                    <label for="dob" class="control-label">Ngày sinh:</label>
+                    <input class="form-control" id="dob" type="date" th:field="*{dob}">
+                    <div th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="text-danger"></div>
+                </div>
+                <!-- Giới tính -->
+                <div class="form-group mb-3">
+                    <label for="gender" class="control-label">Giới tính:</label>
+                    <select class="form-control" id="gender" th:field="*{gender}">
+                        <option value=''>Chọn Giới tính</option>
+                        <option th:value="MALE" th:text="'Nam'"></option>
+                        <option th:value="FEMALE" th:text="'Nữ'"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger"></div>
+                </div>
+                <!-- Email -->
+                <div class="form-group mb-3">
+                    <label for="email" class="control-label">Email:</label>
+                    <input class="form-control" id="email" type="text" th:field="*{email}">
+                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
+                </div>
+                <!-- Số điện thoại -->
+                <div class="form-group mb-3">
+                    <label for="phoneNumber" class="control-label">Số điện thoại:</label>
+                    <input class="form-control" id="phoneNumber" type="text" th:field="*{phoneNumber}">
+                    <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger"></div>
+                </div>
+                <!-- Địa chỉ -->
+                <div class="form-group mb-3">
+                    <label for="address" class="control-label">Địa chỉ:</label>
+                    <input class="form-control" id="address" type="text" th:field="*{address}">
+                    <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-danger"></div>
+                </div>
+                <!-- Lớp học -->
+                <div class="form-group mb-3">
+                    <label for="clazzId" class="control-label">Lớp học:</label>
+                    <select class="form-control" id="clazzId" th:field="*{clazzId}">
+                        <option value=''>Chọn lớp</option>
+                        <option th:each="c : ${clazzes}" th:text="${c.name}" th:value="${c.id}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('clazzId')}" th:errors="*{clazzId}" class="text-danger"></div>
+                </div>
+                <!-- Ảnh đại diện -->
+                <div class="form-group mb-3">
+                    <label for="avatar" class="control-label">Ảnh đại diện:</label>
+                    <input class="form-control" id="avatar" type="file" th:field="*{avatar}" accept=".jpg,.png,.jpeg">
+                </div>
+                <!-- Thêm sinh viên -->
+                <div class="form-group">
+                    <div class="col-md-8 d-flex justify-content-end">
+                        <button class="btn btn-primary me-2" type="submit">Thêm</button>
+                        <a class="btn btn-secondary" th:href="@{/admin/student}">Thoát</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<hr>
+<div th:replace="layout :: footer"></div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

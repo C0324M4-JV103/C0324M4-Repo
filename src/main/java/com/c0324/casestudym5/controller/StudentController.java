@@ -216,5 +216,4 @@ public class StudentController {
         return "team/team-info";
 
     }
-
 }

@@ -1,10 +1,12 @@
 package com.c0324.casestudym5.service;
 
 
+import com.c0324.casestudym5.dto.StudentDTO;
 import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,4 +22,5 @@ public interface StudentService {
     String getStudentEmailById(Long id);
     Page<Student> findAllExceptCurrentStudent(Long currentStudentId, Pageable pageable);
     Page<Student> searchStudentsExceptCurrent(String search, Long id, Pageable pageable);
+    void createNewStudent(StudentDTO studentDTO, MultipartFile avatar) throws Exception;
 }

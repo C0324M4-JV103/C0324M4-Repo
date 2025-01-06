@@ -22,4 +22,8 @@ public interface UserService extends UserDetailsService {
     void updateProfile(UserDTO user);
 
     void changeAvatar(MultipartFile avatar);
+
+    void createUser(UserDTO userDTO);
+
+    boolean existsByEmail(String email);
 }

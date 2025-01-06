@@ -27,6 +27,7 @@ public class UserDTO {
 
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", message = "Email không hợp lệ")
     @NotEmpty(message = "Email không được để trống")
+
     private String email;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

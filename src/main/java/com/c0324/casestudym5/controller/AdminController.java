@@ -1,21 +1,33 @@
 package com.c0324.casestudym5.controller;
 
+import com.c0324.casestudym5.dto.StudentDTO;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
-import com.c0324.casestudym5.model.Student;
-import com.c0324.casestudym5.model.Teacher;
+import com.c0324.casestudym5.dto.UserDTO;
+import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.repository.ClassRepository;
+import com.c0324.casestudym5.repository.MultiFileRepository;
+import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.StudentService;
 import com.c0324.casestudym5.service.TeacherService;
+import com.c0324.casestudym5.service.UserService;
+import com.c0324.casestudym5.service.impl.ClazzService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 
 @RequestMapping("/admin")
@@ -25,12 +37,20 @@ public class AdminController {
     private final TeacherService teacherService;
     private final StudentService studentService;
     private final ClassRepository classRepository;
+    private final ClazzService clazzService;
+    private final UserService userService;
+    private final FirebaseService firebaseService;
+    private final MultiFileRepository multiFileRepository;
 
     @Autowired
-    public AdminController(TeacherService teacherService, StudentService studentService, ClassRepository classRepository) {
+    public AdminController(TeacherService teacherService, StudentService studentService, ClassRepository classRepository, ClazzService clazzService, UserService userService, FirebaseService firebaseService, MultiFileRepository multiFileRepository) {
         this.teacherService = teacherService;
         this.studentService = studentService;
         this.classRepository = classRepository;
+        this.clazzService = clazzService;
+        this.userService = userService;
+        this.firebaseService = firebaseService;
+        this.multiFileRepository = multiFileRepository;
     }
 
     // Teacher Functionality
@@ -75,7 +95,7 @@ public class AdminController {
             isSearch = false;
         }
         model.addAttribute("pageTitle", "Danh sách sinh viên");
-        Pageable pageable = PageRequest.of(page, 2);
+        Pageable pageable = PageRequest.of(page, 5);
         Page<Student> students = studentService.getPageStudents(pageable, search);
         model.addAttribute("students", students);
         model.addAttribute("classes", classRepository.findAll());
@@ -85,4 +105,48 @@ public class AdminController {
         return "admin/student/student-list";
     }
 
+    // Student Create
+    @GetMapping("/create-student")
+    public String createStudentForm(Model model) {
+        model.addAttribute("user", new UserDTO());
+        model.addAttribute("studentDTO", new StudentDTO());
+        model.addAttribute("clazzes", clazzService.getAllClazzes());
+        return "admin/student/student-create";
+    }
+
+    @PostMapping("/create-student")
+    public String createStudent(@Valid @ModelAttribute("studentDTO") StudentDTO studentDTO,
+                                BindingResult bindingResult,
+                                @RequestParam("avatar") MultipartFile avatar,
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("clazzes", clazzService.getAllClazzes());
+            return "admin/student/student-create";
+        }
+
+        try {
+            if (userService.existsByEmail(studentDTO.getEmail())) {
+                bindingResult.rejectValue("email", "error.studentDTO", "Email đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-create";
+            }
+            studentService.createNewStudent(studentDTO, avatar); // Gọi CreateNewStudent từ studentService
+
+            redirectAttributes.addFlashAttribute("toastMessage", "Thêm sinh viên thành công!");
+            redirectAttributes.addFlashAttribute("toastType", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình thêm sinh viên.");
+            redirectAttributes.addFlashAttribute("toastType", "danger");
+            e.printStackTrace();
+        }
+
+        return "redirect:/admin/student";
+    }
+
 }
+
+
+
+
+

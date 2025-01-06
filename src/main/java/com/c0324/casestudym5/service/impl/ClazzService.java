@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClazzService {
@@ -20,4 +21,6 @@ public class ClazzService {
     public Clazz saveClazz(Clazz clazz) {
         return clazzRepository.save(clazz);
     }
+
+    public Optional<Clazz> findById(Long id) { return clazzRepository.findById(id); }
 }
