@@ -8,15 +8,38 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 @Service
 public class MailService {
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
+    private final BlockingQueue<MimeMessage> queue;
 
     @Autowired
     public MailService(JavaMailSender mailSender, TemplateEngine templateEngine) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
+        this.queue = new LinkedBlockingQueue<>();
+        this.start();
+    }
+
+    private void start() {
+        Thread newThread = new Thread(() -> {
+            while (true) {
+                try {
+                    MimeMessage message = queue.take();
+                    mailSender.send(message);
+                } catch (InterruptedException e) {
+                    break;
+                } catch (Throwable e) {
+                    System.err.println("Send mail error: " + e);
+                }
+            }
+        });
+        newThread.setName("mail-sender");
+        newThread.start();
     }
 
     public void sendEmail(String to, String subject, String content) {
@@ -39,7 +62,6 @@ public class MailService {
             helper.setTo(to);
             helper.setSubject(subject);
 
-            // Create the email content using Thymeleaf
             Context context = new Context();
             context.setVariable("senderName", senderName);
             context.setVariable("teacherName", teacherName);
@@ -47,8 +69,8 @@ public class MailService {
             context.setVariable("teamName", teamName);
             String content = templateEngine.process("common/register-topic-mail", context);
 
-            helper.setText(content, true); // set true to send HTML content
-            mailSender.send(message);
+            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
+            queue.add(message);
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
         }
