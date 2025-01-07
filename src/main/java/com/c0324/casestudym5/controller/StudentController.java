@@ -1,5 +1,6 @@
 package com.c0324.casestudym5.controller;
 
+import com.c0324.casestudym5.dto.NotificationDTO;
 import com.c0324.casestudym5.dto.RegisterTopicDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.*;
@@ -38,7 +39,7 @@ public class StudentController {
     private final NotificationService notificationService;
 
     @Autowired
-    public StudentController(StudentService studentService, UserService userService, TeamService teamService, InvitationService invitationService, NotificationService notificationService) {
+    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService, NotificationService notificationService) {
         this.studentService = studentService;
         this.userService = userService;
         this.teamService = teamService;
@@ -93,15 +94,6 @@ public class StudentController {
 
         return "team/team-register";
     }
-
-    @GetMapping("/team2")
-    public String showTeam(Model model, Principal principal) {
-        Student student = studentService.getStudentByUserEmail(principal.getName());
-        model.addAttribute("team", teamService.getTeamByStudentId(student.getId()));
-        model.addAttribute("student", student);
-        return "student/team";
-    }
-
 
     @PostMapping("/create-team")
     public String createTeam(@ModelAttribute("team") @Valid TeamDTO teamDTO,
