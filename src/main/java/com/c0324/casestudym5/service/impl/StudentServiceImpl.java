@@ -1,5 +1,8 @@
 package com.c0324.casestudym5.service.impl;
 
+import com.c0324.casestudym5.dto.StudentDTO;
+import com.c0324.casestudym5.model.MultiFile;
+import com.c0324.casestudym5.model.Role;
 import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.model.User;
@@ -9,6 +12,7 @@ import com.c0324.casestudym5.service.StudentService;
 import com.c0324.casestudym5.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,7 +31,6 @@ public class StudentServiceImpl implements StudentService {
     private final RoleRepository roleRepository;
     private final FirebaseService firebaseService;
     private final UserRepository userRepository;
-    private final UserService userService;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
@@ -36,7 +39,6 @@ public class StudentServiceImpl implements StudentService {
         this.multiFileRepository = multiFileRepository;
         this.roleRepository = roleRepository;
         this.firebaseService = firebaseService;
-        this.userService = userService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }

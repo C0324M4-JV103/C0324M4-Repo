@@ -20,7 +20,7 @@ public interface StudentService {
     Student findById(Long id);
     Student findStudentByUserId(Long id);
     String getStudentEmailById(Long id);
+    Page<Student> getAvailableStudents(int page, String search, Long currentStudentId);
     Page<Student> findAllExceptCurrentStudent(Long currentStudentId, Pageable pageable);
-    Page<Student> searchStudentsExceptCurrent(String search, Long id, Pageable pageable);
     void createNewStudent(StudentDTO studentDTO, MultipartFile avatar) throws Exception;
 }
