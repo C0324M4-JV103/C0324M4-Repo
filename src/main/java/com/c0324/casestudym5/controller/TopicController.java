@@ -23,7 +23,7 @@ public class TopicController {
 
     @GetMapping("/topics")
     public String getTopics(@RequestParam(defaultValue = "0") int page, Model model) {
-        PageRequest pageRequest = PageRequest.of(page, 4, Sort.by("id").descending());
+        PageRequest pageRequest = PageRequest.of(page, 12, Sort.by("id").descending());
         Page<Topic> topics = topicService.getAllTopics(pageRequest);
         model.addAttribute("topics", topics);
         model.addAttribute("currentPage", page);
