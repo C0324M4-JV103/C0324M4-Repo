@@ -88,12 +88,12 @@ public class StudentController {
         model.addAttribute("invitation", invitation);
         model.addAttribute("list", availableStudents);// hiện thông tin lời mời
         model.addAttribute("currentTeam", currentTeam);
-        model.addAttribute("notifications", notifications);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
 
         return "team/team-register";
     }
+
 
     @PostMapping("/create-team")
     public String createTeam(@ModelAttribute("team") @Valid TeamDTO teamDTO,
@@ -125,9 +125,12 @@ public class StudentController {
 
     @PostMapping("/invite-team")
     public String inviteStudent(Long studentId, RedirectAttributes redirectAttributes) {
+
         Student invitedStudent = studentService.findById(studentId);
+
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
+
         if (currentTeam.getStudents().size() >= 5) {
             redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ 5 thành viên!");
             return "redirect:/student/team";
@@ -162,10 +165,11 @@ public class StudentController {
             }
         } else {
             invitationService.delete(invitation);
-            redirectAttributes.addFlashAttribute("successMessage", "Bạn đã từ chối lời mời!");
+            redirectAttributes.addFlashAttribute("errorMessage", "Bạn đã từ chối lời mời!");
         }
         return "redirect:/student/team";
     }
+
 
     @GetMapping("/info-team")
     public String teamInfo(Model model, Pageable pageable, Principal principal) {
