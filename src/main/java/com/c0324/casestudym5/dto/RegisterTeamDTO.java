@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class RegistTeamDTO {
+public class RegisterTeamDTO {
     private String topicName;
     private String topicContent;
     private MultipartFile topicDescription;
