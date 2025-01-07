@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface UserService extends UserDetailsService {
 
     UserDetails loadUserByUsername(String userName);
@@ -22,6 +24,8 @@ public interface UserService extends UserDetailsService {
     void updateProfile(UserDTO user);
 
     void changeAvatar(MultipartFile avatar);
+
+    List<User> fillAll();
 
     void createUser(UserDTO userDTO);
 

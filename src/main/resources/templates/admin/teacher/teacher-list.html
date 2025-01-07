@@ -11,17 +11,46 @@
     <link rel="stylesheet" href="/css/home-page.css">
 </head>
 <body>
+
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        <!-- Success Toast -->
+        <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Thành công</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" th:text="${toastMessage}"></div>
+        </div>
+
+        <!-- Error Toast -->
+        <div th:if="${toastMessage != null and toastType == 'danger'}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-danger text-white">
+                <strong class="me-auto">Cảnh báo</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" th:text="${toastMessage}"></div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            var toastElList = document.querySelectorAll('.toast');
+            var toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl));
+            toastList.forEach(toast => toast.show());
+        };
+    </script>
+
 <!-- Navbar -->
 <div th:replace="layout :: nav"></div>
 <div id="body-fixed"  class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <form action="/teacher/list" method="get" class="d-flex align-items-center">
+        <form action="/admin/teacher" method="get" class="d-flex align-items-center">
             <input type="text" name="searchQuery" class="form-control me-3" placeholder="Tìm kiếm theo ID, Tên hoặc Email">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i>
             </button>
         </form>
-        <a href="/teacher/create" class="btn btn-success">
+        <a href="/admin/teacher/create" class="btn btn-success">
             <i class="fas fa-plus"></i> Thêm Giáo viên
         </a>
     </div>

@@ -17,6 +17,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.Map;
@@ -50,6 +51,31 @@ public class TeacherController {
         }
     }
 
+
+
+
+
+
+
+
+    @PostMapping("/change-avatar")
+    public String showChangeAvatarForm(@RequestParam("avatar") MultipartFile avatar, Model model) {
+        String fileName = avatar.getOriginalFilename();
+        long fileSize = avatar.getSize();
+        long maxFileSize = 5 * 1024 * 1024; // 5MB
+
+        if (fileName != null && (fileName.endsWith(".jpg") || fileName.endsWith(".png") || fileName.endsWith(".jpeg"))) {
+            if (fileSize <= maxFileSize) {
+                userService.changeAvatar(avatar);
+            } else {
+                model.addAttribute("imageError", "Kích thước ảnh không được vượt quá 5MB");
+            }
+        } else {
+            model.addAttribute("imageError", "Chỉ hỗ trợ ảnh có định dạng jpg, jpeg, png");
+        }
+
+        return "admin/teacher/teacher-create";
+    }
     @GetMapping("/team")
     public String showTeamPage(@RequestParam(name="name", defaultValue = "", required = false) String keyword,
                                @RequestParam(name="page", defaultValue = "0") int page,

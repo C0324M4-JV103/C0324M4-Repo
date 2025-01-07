@@ -10,6 +10,12 @@ html, body {
     flex: 1;
 }
 
+footer {
+    background-color: #343a40;
+    color: white;
+    margin-top: auto;
+}
+
 
 body {
     font-family: 'Quicksand', sans-serif;
