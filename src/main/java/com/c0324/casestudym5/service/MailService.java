@@ -41,14 +41,19 @@ public class MailService {
         newThread.setName("mail-sender");
         newThread.start();
     }
-
-    public void sendEmail(String to, String subject, String content) {
+    public void sendMailInvitedTeamToStudent(String to, String subject, String recipientName, String senderName , String teamName) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
+            // Create the email content using Thymeleaf
+            Context context = new Context();
+            context.setVariable("recipientName", recipientName);
+            context.setVariable("senderName", senderName);
+            context.setVariable("teamName", teamName);
+            String content = templateEngine.process("common/invited-team-mail", context);
+            helper.setText(content, true); // set true to send HTML content
             mailSender.send(message);
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);

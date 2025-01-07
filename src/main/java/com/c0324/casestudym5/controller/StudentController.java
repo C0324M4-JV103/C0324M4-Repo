@@ -11,12 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -31,14 +35,16 @@ public class StudentController {
     private final TeamService teamService;
     private final TopicService topicService;
     private final InvitationService invitationService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService) {
+    public StudentController(StudentService studentService, UserService userService, TeamService teamService, InvitationService invitationService, NotificationService notificationService) {
         this.studentService = studentService;
         this.userService = userService;
         this.teamService = teamService;
         this.topicService = topicService;
         this.invitationService = invitationService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/{id}")
@@ -60,23 +66,15 @@ public class StudentController {
     @GetMapping("/team")
     public String formRegisterTeam(@RequestParam(name = "page", required = false, defaultValue = "1") int page,
                                    @RequestParam(name = "search", required = false, defaultValue = "") String search,
-                                   Model model) {
-
+                                   Model model, Principal principal) {
+        Student currentStudent = getCurrentStudent();
+        Team currentTeam = currentStudent.getTeam();
+        User currentUser = userService.findByEmail(principal.getName());
+        List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
         if (!model.containsAttribute("team")) {
             model.addAttribute("team", new TeamDTO());
         }
-        Student currentStudent = getCurrentStudent();
-        Team currentTeam = currentStudent.getTeam();
-
-        Pageable pageable = PageRequest.of(page - 1, 5);
-
-        Page<Student> availableStudents;
-
-        if (search != null && !search.isEmpty()) {
-            availableStudents = studentService.searchStudentsExceptCurrent(search, currentStudent.getId(), pageable);
-        } else {
-            availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
-        }
+        Page<Student> availableStudents = studentService.getAvailableStudents(page, search, currentStudent.getId());
         List<Invitation> invitation = invitationService.findByStudent(currentStudent);
 
         boolean isInTeam = (currentTeam != null);
@@ -89,6 +87,7 @@ public class StudentController {
         model.addAttribute("invitation", invitation);
         model.addAttribute("list", availableStudents);// hiện thông tin lời mời
         model.addAttribute("currentTeam", currentTeam);
+        model.addAttribute("notifications", notifications);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
 
@@ -110,8 +109,7 @@ public class StudentController {
                              RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("org.springframework.validation.Bi" +
-                    "ndingResult.team", bindingResult);
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.team", bindingResult);
             redirectAttributes.addFlashAttribute("team", teamDTO);
             return "redirect:/student/team";
         }
@@ -128,17 +126,7 @@ public class StudentController {
             redirectAttributes.addFlashAttribute("errorMessage", "Bạn còn lời mời tham gia nhóm chưa xử lý!");
             return "redirect:/student/team";
         }
-
-        Team newTeam = new Team();
-        newTeam.setName(teamDTO.getName());
-        newTeam.setStudents(List.of(currentStudent));
-
-        teamService.save(newTeam);
-
-        currentStudent.setTeam(newTeam);
-        currentStudent.setLeader(true);
-        studentService.save(currentStudent);
-
+        teamService.createNewTeam(teamDTO, currentStudent);
         redirectAttributes.addFlashAttribute("successMessage", "Nhóm đã được tạo thành công!");
         return "redirect:/student/info-team";
     }
@@ -152,10 +140,11 @@ public class StudentController {
             redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ 5 thành viên!");
             return "redirect:/student/team";
         }
-        if (invitedStudent.getTeam() == null && !invitationService.existsByStudentAndTeam(invitedStudent, currentTeam)) {
-            invitationService.saveInvitation(invitedStudent, currentStudent, currentTeam);
-            invitationService.inviteStudent(studentId, currentStudent, currentTeam); // send mail
+        try {
+            invitationService.inviteStudent(studentId, currentStudent, currentTeam);
             redirectAttributes.addFlashAttribute("successMessage", "Lời mời đã được gửi thành công!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đã xảy ra lỗi khi gửi lời mời: " + e.getMessage());
         }
         return "redirect:/student/team";
     }
@@ -181,23 +170,22 @@ public class StudentController {
             }
         } else {
             invitationService.delete(invitation);
-            redirectAttributes.addFlashAttribute("errorMessage", "Bạn đã từ chối lời mời!");
+            redirectAttributes.addFlashAttribute("successMessage", "Bạn đã từ chối lời mời!");
         }
         return "redirect:/student/team";
     }
 
     @GetMapping("/info-team")
-    public String teamInfo(Model model, Pageable pageable) {
-
+    public String teamInfo(Model model, Pageable pageable, Principal principal) {
         Student currentStudent = getCurrentStudent();
         Team team = currentStudent.getTeam();
-
+        User currentUser = userService.findByEmail(principal.getName());
+        List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
 
         model.addAttribute("team", team);
         model.addAttribute("list", availableStudents);
-        model.addAttribute("student", currentStudent);
-
+        model.addAttribute("notifications", notifications);
         return "team/team-info";
 
     }
