@@ -1,21 +1,26 @@
 package com.c0324.casestudym5.controller;
 
+import com.c0324.casestudym5.dto.StudentDTO;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
+import com.c0324.casestudym5.dto.TeacherDTO;
+import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.model.Teacher;
 import com.c0324.casestudym5.repository.ClassRepository;
-import com.c0324.casestudym5.service.StudentService;
-import com.c0324.casestudym5.service.TeacherService;
+import com.c0324.casestudym5.service.*;
+import com.c0324.casestudym5.service.impl.ClazzService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @RequestMapping("/admin")
@@ -25,26 +30,20 @@ public class AdminController {
     private final TeacherService teacherService;
     private final FacultyService facultyService;
     private final UserService userService;
-    private final MultiFileService multiFileService;
     private final StudentService studentService;
     private final ClassRepository classRepository;
     private final ClazzService clazzService;
-    private final UserService userService;
-    private final FirebaseService firebaseService;
-    private final MultiFileRepository multiFileRepository;
 
     @Autowired
-    public AdminController(TeacherService teacherService, StudentService studentService, ClassRepository classRepository, ClazzService clazzService, UserService userService, FirebaseService firebaseService, MultiFileRepository multiFileRepository) {
+    public AdminController(TeacherService teacherService, FacultyService facultyService,
+                           StudentService studentService, ClassRepository classRepository,
+                           ClazzService clazzService, UserService userService) {
         this.teacherService = teacherService;
         this.facultyService = facultyService;
-        this.userService = userService;
-        this.multiFileService = multiFileService;
         this.studentService = studentService;
         this.classRepository = classRepository;
         this.clazzService = clazzService;
         this.userService = userService;
-        this.firebaseService = firebaseService;
-        this.multiFileRepository = multiFileRepository;
     }
 
     // Teacher Functionality
@@ -108,7 +107,7 @@ public class AdminController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình thêm sinh viên.");
             redirectAttributes.addFlashAttribute("toastType", "danger");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         return "redirect:/admin/teacher";
@@ -180,7 +179,7 @@ public class AdminController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình thêm sinh viên.");
             redirectAttributes.addFlashAttribute("toastType", "danger");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         return "redirect:/admin/student";
