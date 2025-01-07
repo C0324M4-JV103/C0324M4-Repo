@@ -8,20 +8,18 @@ import com.c0324.casestudym5.service.*;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -46,6 +44,12 @@ public class StudentController {
         this.topicService = topicService;
         this.invitationService = invitationService;
         this.notificationService = notificationService;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder dataBinder) {
+        StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+        dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
     @GetMapping("/{id}")
@@ -90,6 +94,7 @@ public class StudentController {
         model.addAttribute("currentTeam", currentTeam);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
+        model.addAttribute("notifications", notifications);
 
         return "team/team-register";
     }
@@ -125,12 +130,8 @@ public class StudentController {
 
     @PostMapping("/invite-team")
     public String inviteStudent(Long studentId, RedirectAttributes redirectAttributes) {
-
-        Student invitedStudent = studentService.findById(studentId);
-
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
-
         if (currentTeam.getStudents().size() >= 5) {
             redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ 5 thành viên!");
             return "redirect:/student/team";
@@ -179,6 +180,7 @@ public class StudentController {
         List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
 
+        model.addAttribute("student", currentStudent);;
         model.addAttribute("team", team);
         model.addAttribute("list", availableStudents);
         model.addAttribute("notifications", notifications);

@@ -286,7 +286,6 @@
                     <div class="card-body">
                         <h5 class="card-title" th:text="${topic.name}">Tên dự án</h5>
                         <p class="card-text" th:text="${#strings.isEmpty(topic.content) ? '' : (#strings.length(topic.content) <= 100 ? topic.content : #strings.substring(topic.content, 0, 100) + '...')}">Nội dung dự án</p>
-                        <p class="card-text" th:if="${!#strings.isEmpty(topic.content) && #strings.length(topic.content) <= 100}" th:text="${topic.content}">Nội dung dự án</p>
                         <div class="mt-auto">
                             <a th:href="@{/topics/{id}(id=${topic.id})}" class="btn btn-primary">Xem chi tiết</a>
                         </div>
