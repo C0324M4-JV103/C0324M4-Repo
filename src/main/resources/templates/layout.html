@@ -42,7 +42,7 @@
                         </ul>
                     </li>
                     <li class="nav-item dropdown" sec:authorize="hasRole('TEACHER')">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">GIÁO VIÊN</a>
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">GIÁO VIÊN</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#">ĐĂNG THÔNG BÁO</a></li>
                             <li><a class="dropdown-item" href="/topics">DANH SÁCH ĐỀ TÀI</a></li>
@@ -102,7 +102,7 @@
                                                                     style="font-size: 25px; font-weight: 700">THÔNG TIN CÁ NHÂN</a></li>
                             <hr class="divider">
                             <li><a class="dropdown-item" th:href="@{/user/change-password}"
-                                                                    style="font-size: 25px; font-weight: 700">ĐỔI MẬT KHẨU</a></li>
+                                   style="font-size: 25px; font-weight: 700">ĐỔI MẬT KHẨU</a></li>
                             <hr class="divider">
                             <li><a class="dropdown-item" th:href="@{/logout}" style="font-size: 25px; font-weight: 700">ĐĂNG XUẤT</a></li>
                         </ul>
@@ -286,7 +286,8 @@
                     <img th:if="${topic.image}" th:src="${topic.image.url}" class="card-img" alt="Topic image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${topic.name}">Tên dự án</h5>
-                        <p class="card-text" th:text="${topic.content}">Nội dung dự án</p>
+                        <p class="card-text" th:text="${#strings.substring(topic.content, 0, 100)} + '...'" th:unless="${#strings.length(topic.content) <= 100}">Nội dung dự án</p>
+                        <p class="card-text" th:text="${topic.content}" th:if="${#strings.length(topic.content) <= 100}">Nội dung dự án</p>
                         <div class="mt-auto">
                             <a th:href="@{/topics/{id}(id=${topic.id})}" class="btn btn-primary">Xem chi tiết</a>
                         </div>
