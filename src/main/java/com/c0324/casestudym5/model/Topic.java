@@ -50,7 +50,8 @@ public class Topic {
     @OneToMany(mappedBy = "topic")
     private Set<PhaseReport> reports;
 
-    private boolean approved = false;
+    @Column(columnDefinition = "INT DEFAULT 0")
+    private int approved ;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")

@@ -127,7 +127,7 @@ public class TopicServiceImpl implements TopicService {
     public void approveTopic(Long id) {
         Topic topic = getTopicById(id);
         topic.setStatus(1);
-        topic.setApproved(true);
+        topic.setStatus(AppConstants.APPROVED);
         topic.setApprovedBy(getCurrentTeacher());
         topicRepository.save(topic);
     }

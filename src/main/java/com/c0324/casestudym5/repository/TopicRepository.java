@@ -15,6 +15,6 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     Page<Topic> findByApprovedTrue(Pageable pageable);
     Page<Topic> findByApprovedFalse(Pageable pageable);
     List<Topic> findByApprovedFalse();
-    @Query("select t from Topic t where t.approved = true and t.status = 1")
+    @Query("select t from Topic t where t.status = 1 and t.status = 1")
     Page<Topic> findByApprovedTrueAndStatus(Pageable pageable);
 }
