@@ -21,7 +21,6 @@
             <i class="fas fa-arrow-left m-0" style="font-size: 1rem"></i> Trở về
         </a>
     </div>
-
     <div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
         <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="warningToast">
             <div class="toast-header bg-danger text-white">
@@ -69,11 +68,9 @@
         </div>
     </div>
 
-
     <div>
         <p class="my-5" style="font-size: 1.6rem; color: red; font-weight: 500; text-align: center;">Nhóm của bạn chưa đăng ký đề tài.</p>
     </div>
-
     <div th:if="${isLeader and team.students.size() >= 3}">
         <div>
             <button class="btn-register">Đăng kí đề tài</button>
@@ -81,9 +78,11 @@
     </div>
 </div>
 
-
 <div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
 <script th:src="@{/js/toast-noti.js}"></script>
 </body>
 </html>
