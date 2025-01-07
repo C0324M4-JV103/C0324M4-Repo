@@ -68,12 +68,18 @@
         </div>
     </div>
 
-    <div>
-        <p class="my-5" style="font-size: 1.6rem; color: red; font-weight: 500; text-align: center;">Nhóm của bạn chưa đăng ký đề tài.</p>
+    <div th:if="${team != null and team.topic == null}">
+        <p class="text-register-topic">Nhóm của bạn chưa đăng ký đề tài.</p>
     </div>
-    <div th:if="${student.isLeader and team.students.size() >= 3}">
-        <div>
-            <button class="btn-register">Đăng kí đề tài</button>
+    <p class="text-center" th:if="${team.topic == null and team.students.contains(student) and student.isLeader and team.students.size() >= 3}">
+        <a th:href="@{/student/register-topic}" class="btn btn-primary my-3 add-topic">Đăng ký đề tài</a>
+    </p>
+    <div th:if="${team.topic != null}">
+        <div class="topic-info p-3 text-center">
+            <h3>Đề tài đã đăng ký</h3>
+            <a th:href="@{/topics/{id}(id=${team.topic.id})}" class="btn add-topic btn-lg mt-3" role="button" style="text-decoration: none;">
+                <i class="fas fa-arrow-right m-0" style="font-size: 1rem"></i> Xem đề tài của nhóm
+            </a>
         </div>
     </div>
 </div>

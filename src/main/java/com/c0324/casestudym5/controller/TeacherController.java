@@ -51,13 +51,6 @@ public class TeacherController {
         }
     }
 
-
-
-
-
-
-
-
     @PostMapping("/change-avatar")
     public String showChangeAvatarForm(@RequestParam("avatar") MultipartFile avatar, Model model) {
         String fileName = avatar.getOriginalFilename();
