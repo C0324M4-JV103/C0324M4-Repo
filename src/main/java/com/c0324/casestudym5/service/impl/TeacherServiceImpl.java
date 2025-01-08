@@ -112,4 +112,48 @@ public class TeacherServiceImpl implements TeacherService {
         newTeacher.setDegree(teacherDTO.getDegree());
         teacherRepository.save(newTeacher);
     }
+
+    @Override
+    public void editTeacher(Long id, TeacherDTO teacherDTO, MultipartFile avatar) throws Exception {
+        Optional<Teacher> optionalTeacher = teacherRepository.findById(id);
+        if (!optionalTeacher.isPresent()) {
+            throw new Exception("Teacher not found");
+        }
+
+        Teacher existingTeacher = optionalTeacher.get();
+        User existingUser = existingTeacher.getUser();
+
+        existingUser.setName(teacherDTO.getName());
+        existingUser.setEmail(teacherDTO.getEmail());
+        existingUser.setDob(teacherDTO.getDob());
+        existingUser.setGender(User.Gender.valueOf(teacherDTO.getGender()));
+        existingUser.setPhoneNumber(teacherDTO.getPhoneNumber());
+        existingUser.setAddress(teacherDTO.getAddress());
+
+        if (avatar != null && !avatar.isEmpty()) {
+            String urlImage = firebaseService.uploadFileToFireBase(avatar, "avatars");
+            if (urlImage == null) {
+                throw new Exception("Failed to upload avatar");
+            }
+
+            MultiFile newAvatar = MultiFile.builder().url(urlImage).build();
+            multiFileRepository.save(newAvatar);
+            existingUser.setAvatar(newAvatar);
+        }
+
+        existingTeacher.setDegree(teacherDTO.getDegree());
+        userRepository.save(existingUser);
+        teacherRepository.save(existingTeacher);
+    }
+
+    @Override
+    public void deleteTeacherById(Long id) throws Exception {
+        Optional<Teacher> teacherOptional = teacherRepository.findById(id);
+        if (!teacherOptional.isPresent()) {
+            throw new Exception("Không tìm thấy giáo viên với ID: " + id);
+        }
+        teacherRepository.deleteById(id);
+    }
+
+
 }

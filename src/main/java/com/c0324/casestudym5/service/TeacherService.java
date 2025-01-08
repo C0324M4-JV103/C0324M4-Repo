@@ -17,5 +17,7 @@ public interface TeacherService {
     Optional<Teacher> getTeacherById(Long id);
     Teacher save(Teacher teacher);
     void createNewTeacher(TeacherDTO teacherDTO, MultipartFile avatar) throws Exception;
+    void editTeacher(Long id, TeacherDTO teacherDTO, MultipartFile avatar) throws Exception;
+    void deleteTeacherById(Long id) throws Exception;
 
 }

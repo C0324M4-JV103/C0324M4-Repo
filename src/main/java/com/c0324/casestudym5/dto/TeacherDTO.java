@@ -54,4 +54,15 @@ public class TeacherDTO {
     private MultipartFile avatar;
 
     private MultipartFile multipartFile;
+
+    public TeacherDTO(Teacher teacher) {
+        this.id = teacher.getId();
+        this.name = teacher.getUser().getName();
+        this.email = teacher.getUser().getEmail();
+        this.dob = teacher.getUser().getDob();
+        this.gender = teacher.getUser().getGender().name();
+        this.phoneNumber = teacher.getUser().getPhoneNumber();
+        this.address = teacher.getUser().getAddress();
+        this.degree = teacher.getDegree();
+    }
 }
