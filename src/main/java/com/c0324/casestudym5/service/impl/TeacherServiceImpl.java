@@ -88,6 +88,7 @@ public class TeacherServiceImpl implements TeacherService {
         newUser.setPhoneNumber(teacherDTO.getPhoneNumber());
         newUser.setAddress(teacherDTO.getAddress());
 
+
         // Lấy link ảnh
         String urlImage = firebaseService.uploadFileToFireBase(avatar, "avatars");
         if (urlImage == null) {
@@ -110,6 +111,7 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher newTeacher = new Teacher();
         newTeacher.setUser(newUser);
         newTeacher.setDegree(teacherDTO.getDegree());
+        newTeacher.setFaculty(newTeacher.getFaculty());
         teacherRepository.save(newTeacher);
     }
 
@@ -152,8 +154,11 @@ public class TeacherServiceImpl implements TeacherService {
         if (!teacherOptional.isPresent()) {
             throw new Exception("Không tìm thấy giáo viên với ID: " + id);
         }
+        Teacher teacher = teacherOptional.get();
+        User user = teacher.getUser();
         teacherRepository.deleteById(id);
+        if (user != null) {
+            userRepository.delete(user);
+        }
     }
-
-
 }
