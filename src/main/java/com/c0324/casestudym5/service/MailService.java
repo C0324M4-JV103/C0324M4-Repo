@@ -60,6 +60,26 @@ public class MailService {
         }
     }
 
+    public void sendMailApprovedToTeam(String to, String subject, String teamName, String teacherName, String topicName, String action) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(to);
+            helper.setSubject(subject);
+            // Create the email content using Thymeleaf
+            Context context = new Context();
+            context.setVariable("teamName", teamName);
+            context.setVariable("teacherName", teacherName);
+            context.setVariable("topicName", topicName);
+            context.setVariable("action", action);
+            String content = templateEngine.process("common/topic-notification-mail", context);
+            helper.setText(content, true); // set true to send HTML content
+            mailSender.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
+        }
+    }
+
     public void sendRegisterTopicEmail(String to, String subject, String senderName, String teacherName, String topicName, String teamName) {
         try {
             MimeMessage message = mailSender.createMimeMessage();

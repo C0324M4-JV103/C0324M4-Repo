@@ -182,6 +182,7 @@ public class StudentController {
 
         model.addAttribute("student", currentStudent);;
         model.addAttribute("team", team);
+        model.addAttribute("student", currentStudent);
         model.addAttribute("list", availableStudents);
         model.addAttribute("notifications", notifications);
         return "team/team-info";

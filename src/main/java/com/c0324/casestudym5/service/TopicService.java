@@ -13,6 +13,8 @@ public interface TopicService {
 
     Page<Topic> getAllTopics(Pageable pageable);
 
+    List<Topic> getTopicCurrentStudent(Long id);
+
     Page<Topic> findByStatus(int status, Pageable pageable);
 
     Topic getTopicById(Long id);

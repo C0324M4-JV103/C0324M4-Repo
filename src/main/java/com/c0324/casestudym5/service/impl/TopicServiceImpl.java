@@ -6,10 +6,7 @@ import com.c0324.casestudym5.repository.MultiFileRepository;
 import com.c0324.casestudym5.repository.StudentRepository;
 import com.c0324.casestudym5.repository.TeamRepository;
 import com.c0324.casestudym5.repository.TopicRepository;
-import com.c0324.casestudym5.service.FirebaseService;
-import com.c0324.casestudym5.service.MailService;
-import com.c0324.casestudym5.service.NotificationService;
-import com.c0324.casestudym5.service.TopicService;
+import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.util.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -34,10 +31,12 @@ public class TopicServiceImpl implements TopicService {
     private final MultiFileRepository multiFileRepository;
     private final NotificationService notificationService;
     private final TeacherRepository teacherRepository;
+    private final StudentService studentService;
     private final MailService mailService;
 
     @Autowired
-    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService, TeacherRepository teacherRepository, MailService mailService) {
+
+    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService, TeacherRepository teacherRepository, com.c0324.casestudym5.service.StudentService studentService, MailService mailService) {
         this.topicRepository = topicRepository;
         this.teamRepository = teamRepository;
         this.studentRepository = studentRepository;
@@ -45,15 +44,17 @@ public class TopicServiceImpl implements TopicService {
         this.multiFileRepository = multiFileRepository;
         this.notificationService = notificationService;
         this.teacherRepository = teacherRepository;
+        this.studentService = studentService;
         this.mailService = mailService;
     }
+
 
     @Override
     @Transactional
     public boolean registerTopic(RegisterTopicDTO registerTopicDTO, String studentEmail) {
         Student student = studentRepository.findByUserEmail(studentEmail);
         Team team = teamRepository.findTeamByStudentsId(student.getId());
-        if(team != null && team.getStudents().contains(student) && team.getTopic() == null && student.isLeader()){
+        if (team != null && team.getStudents().contains(student) && team.getTopic() == null && student.isLeader()) {
             Topic topic = new Topic();
             topic.setName(registerTopicDTO.getName());
             topic.setContent(registerTopicDTO.getContent());
@@ -93,8 +94,7 @@ public class TopicServiceImpl implements TopicService {
                 notification.setContent("đã đăng ký đề tài và chờ sự bạn phê duyệt");
                 notificationService.sendNotification(notification);
             }
-        }
-        else {
+        } else {
             return false;
         }
         return true;
@@ -119,30 +119,68 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<Topic> getPendingTopics() {
-        return topicRepository.findByApprovedFalse(Pageable.unpaged()).getContent();
+        return topicRepository.findByApprovedTrueAndStatus(Pageable.unpaged()).getContent();
     }
 
     @Override
     @Transactional
     public void approveTopic(Long id) {
+
         Topic topic = getTopicById(id);
-        topic.setStatus(1);
-        topic.setStatus(AppConstants.APPROVED);
+        topic.setApproved(AppConstants.APPROVED);
         topic.setApprovedBy(getCurrentTeacher());
         topicRepository.save(topic);
+
+        Long teamId = topic.getTeam().getId();
+        List<Student> students = studentRepository.findStudentsByTeamId(teamId);
+        if (students != null) {
+            String action = " đã được Giáo viên phê duyệt.";
+            String subject = "Thông báo kiểm duyệt đề tài của giáo viên ";
+            for (Student student : students) {
+                mailService.sendMailApprovedToTeam(student.getUser().getEmail(), subject, student.getTeam().getName(), topic.getApprovedBy().getUser().getName(), student.getTeam().getTopic().getName(), action);
+                // Send notification to the team
+                Notification notification = new Notification();
+                notification.setSender(topic.getApprovedBy().getUser());
+                notification.setReceiver(student.getUser());
+                notification.setContent("đã phê duyệt đề tài " + topic.getName() + " của nhóm bạn.");
+                notificationService.sendNotification(notification);
+            }
+        }
     }
 
     @Override
     @Transactional
     public void rejectTopic(Long id) {
         Topic topic = getTopicById(id);
-        topic.setStatus(2);
+        topic.setApproved(AppConstants.REJECTED);
+        topic.setStatus(AppConstants.UNAPPROVED);
         topicRepository.save(topic);
+
+        Long teamId = topic.getTeam().getId();
+        List<Student> students = studentRepository.findStudentsByTeamId(teamId);
+        if (students != null) {
+            String action = " đã được Giáo viên xem xét và không được thông qua.";
+            String subject = "Thông báo kiểm duyệt đề tài của giáo viên ";
+            for (Student student : students) {
+                mailService.sendMailApprovedToTeam(student.getUser().getEmail(), subject, student.getTeam().getName(), topic.getApprovedBy().getUser().getName(), student.getTeam().getTopic().getName(), action);
+                //Send notification to the team
+                Notification notification = new Notification();
+                notification.setSender(topic.getApprovedBy().getUser());
+                notification.setReceiver(student.getUser());
+                notification.setContent("đã từ chối đề tài " + topic.getName() + " của nhóm bạn.");
+                notificationService.sendNotification(notification);
+            }
+        }
     }
 
     @Override
     public Page<Topic> getPendingTopicsPage(Pageable pageable) {
         return topicRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Topic> getTopicCurrentStudent(Long id) {
+        return topicRepository.findByTeam_Id(id);
     }
 
     @Override
