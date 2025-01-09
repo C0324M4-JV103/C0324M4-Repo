@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:ath="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,7 @@
 
 </head>
 <body>
+
 <div class="container mt-5">
     <h2 class="text-center mb-4" style="color: #282781;">Chi tiết Sinh viên</h2>
     <a th:href="@{/admin/student}" class="btn btn-secondary mb-4">
@@ -20,7 +21,7 @@
     <div class="card shadow-lg">
         <div class="card-header">Thông tin cá nhân</div>
         <div class="card-body">
-            <img src="https://cdn-icons-png.flaticon.com/512/168/168726.png" alt="Avatar" class="avatar">
+            <img th:src="${student.user.avatar != null ? student.user.avatar.url : ''}" alt="Avatar" class="avatar">
             <div class="info">
                 <div class="info-row">
                     <span class="info-label">ID:</span>

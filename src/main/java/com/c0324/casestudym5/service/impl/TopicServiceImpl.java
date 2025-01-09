@@ -82,15 +82,16 @@ public class TopicServiceImpl implements TopicService {
             // Send notification to the teacher
             User teacher = student.getTeam().getTeacher().getUser();
             if (teacher != null) {
+                // Send email to the teacher
+                String subject = team.getName() + " - Thông báo đăng ký đề tài";
+                mailService.sendRegisterTopicEmail(teacher.getEmail(), subject, student.getUser().getName(), teacher.getName(), topic.getName(), team.getName());
+
+                // Send notification to the teacher
                 Notification notification = new Notification();
                 notification.setSender(student.getUser());
                 notification.setReceiver(teacher);
                 notification.setContent("đã đăng ký đề tài và chờ sự bạn phê duyệt");
                 notificationService.sendNotification(notification);
-
-                // Send email to the teacher
-                String subject = "Thông báo đăng ký đề tài";
-                mailService.sendRegisterTopicEmail(teacher.getEmail(), subject, student.getUser().getName(), teacher.getName(), topic.getName(), team.getName());
             }
         }
         else {
@@ -126,7 +127,7 @@ public class TopicServiceImpl implements TopicService {
     public void approveTopic(Long id) {
         Topic topic = getTopicById(id);
         topic.setStatus(1);
-        topic.setApproved(true);
+        topic.setStatus(AppConstants.APPROVED);
         topic.setApprovedBy(getCurrentTeacher());
         topicRepository.save(topic);
     }

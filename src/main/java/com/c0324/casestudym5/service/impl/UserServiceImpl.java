@@ -12,6 +12,7 @@ import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.AppConstants;
 import jakarta.annotation.PostConstruct;
+import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -23,9 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -131,6 +130,24 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void createUser(UserDTO userDTO) {
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new IllegalArgumentException("Email đã tồn tại.");
+        }
+        User currentUser = getCurrentUser();
+        currentUser.setName(userDTO.getName());
+        currentUser.setEmail(userDTO.getEmail());
+        currentUser.setDob(userDTO.getDob());
+        currentUser.setGender(User.Gender.valueOf(userDTO.getGender()));
+        currentUser.setPhoneNumber(userDTO.getPhoneNumber());
+        currentUser.setAddress(userDTO.getAddress());
+        save(currentUser);
+    }
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
     private Collection<SimpleGrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getName().toString()))
@@ -158,5 +175,9 @@ public class UserServiceImpl implements UserService {
             admin.setGender(User.Gender.MALE);
             save(admin);
         }
+    }
+
+    public List<User> fillAll() {
+        return userRepository.findAll();
     }
 }

@@ -57,7 +57,6 @@
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/admin/student}">QUẢN LÝ SINH VIÊN</a></li>
                             <li><a class="dropdown-item" th:href="@{/admin/teacher}">QUẢN LÝ GIÁO VIÊN</a></li>
-                            <li><a class="dropdown-item" th:href="@{/admin/team}">QUẢN LÝ NHÓM SINH VIÊN</a></li>
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#">LIÊN HỆ</a></li>
@@ -289,8 +288,7 @@
                     <img th:if="${topic.image}" th:src="${topic.image.url}" class="card-img" alt="Topic image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${topic.name}">Tên dự án</h5>
-                        <p class="card-text" th:text="${#strings.substring(topic.content, 0, 100)} + '...'" th:unless="${#strings.length(topic.content) <= 100}">Nội dung dự án</p>
-                        <p class="card-text" th:text="${topic.content}" th:if="${#strings.length(topic.content) <= 100}">Nội dung dự án</p>
+                        <p class="card-text" th:text="${#strings.isEmpty(topic.content) ? '' : (#strings.length(topic.content) <= 100 ? topic.content : #strings.substring(topic.content, 0, 100) + '...')}">Nội dung dự án</p>
                         <div class="mt-auto">
                             <a th:href="@{/topics/{id}(id=${topic.id})}" class="btn btn-primary">Xem chi tiết</a>
                         </div>
