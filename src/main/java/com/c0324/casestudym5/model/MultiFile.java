@@ -1,10 +1,12 @@
 package com.c0324.casestudym5.model;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 @Setter
 @Entity

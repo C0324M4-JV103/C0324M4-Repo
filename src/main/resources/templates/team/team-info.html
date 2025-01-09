@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>INFOR TEAM</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="/css/home-page.css">
+    <link rel="stylesheet" href="/css/team-info.css">
+    <style>
+
+    </style>
+</head>
+<body>
+<div th:replace="~{layout :: nav}"></div>
+
+<div class="container">
+    <div class="h-100 d-flex align-items-center justify-content-start" style="margin-top: 100px">
+        <a th:href="@{/student/team}" class="btn btn-secondary btn-lg" role="button" style="text-decoration: none;">
+            <i class="fas fa-arrow-left m-0" style="font-size: 1rem"></i> Trở về
+        </a>
+    </div>
+    <div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="warningToast">
+            <div class="toast-header bg-danger text-white">
+                <strong class="me-auto">Thất bại</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <span th:text="${errorMessage}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${successMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+            <div class="toast-header bg-success text-white">
+                <strong class="me-auto">Thành công</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <span th:text="${successMessage}"></span>
+            </div>
+        </div>
+    </div>
+    <div class="info-section">
+        <p>Thông tin nhóm: <span th:text="${team.name}"></span></p>
+        <h3 class="mb-5">Số lượng thành viên: <span th:text="${team.students.size()}"></span>/5</h3>
+    </div>
+
+    <div class="card-info-team-container">
+        <div th:each="s : ${team.students}">
+            <div class="card-info-team">
+                <img src="https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-anh-the-dep-e1664379835782.jpg"
+                     alt="image" width="100" height="100">
+                <h5 class="mt-3 no-wrap" th:text="${s.user.name}"></h5>
+                <p class="text-start">
+                    <span class="fas fa-id-card me-1"></span><strong>MSSV: </strong> <span th:text="${s.code}"></span>
+                </p>
+                <p class="text-start">
+                    <span class="fas fa-calendar-alt me-1"></span><strong>Ngày sinh: </strong> <span th:text="${#dates.format(s.user.dob, 'dd/MM/yyyy')}"></span>
+                </p>
+
+                <span th:if="${s.isLeader}" class="leader-tag">Nhóm Trưởng</span>
+                <span th:unless="${s.isLeader}" class="member-tag">Thành viên</span>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${team != null and team.topic == null}">
+        <p class="text-register-topic">Nhóm của bạn chưa đăng ký đề tài.</p>
+    </div>
+    <p class="text-center" th:if="${team.topic == null and team.students.contains(student) and student.isLeader and team.students.size() >= 3}">
+        <a th:href="@{/student/register-topic}" class="btn btn-primary my-3 add-topic">Đăng ký đề tài</a>
+    </p>
+    <div th:if="${team.topic != null}">
+        <div class="topic-info p-3 text-center">
+            <h3>Đề tài đã đăng ký</h3>
+            <a th:href="@{/topics/{id}(id=${team.topic.id})}" class="btn add-topic btn-lg mt-3" role="button" style="text-decoration: none;">
+                <i class="fas fa-arrow-right m-0" style="font-size: 1rem"></i> Xem đề tài của nhóm
+            </a>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout :: footer}"></div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
+</body>
+</html>

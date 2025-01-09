@@ -1,5 +1,6 @@
 package com.c0324.casestudym5.model;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class Role {
 
     public Role(RoleName roleName) {
     }
+
 
     public enum RoleName {
         ROLE_ADMIN, ROLE_TEACHER, ROLE_STUDENT

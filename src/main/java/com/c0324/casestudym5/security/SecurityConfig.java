@@ -1,11 +1,6 @@
 package com.c0324.casestudym5.security;
 
-import com.c0324.casestudym5.model.MultiFile;
-import com.c0324.casestudym5.model.Role;
-import com.c0324.casestudym5.model.User;
 import com.c0324.casestudym5.service.UserService;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,8 +10,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import java.util.Collections;
-import java.util.Date;
 
 @Configuration
 public class SecurityConfig  {
@@ -38,8 +31,10 @@ public class SecurityConfig  {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationSuccessHandler customAuthenticationSuccessHandler) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/fonts/**" ,"/register", "/logout", "/webjars/**").permitAll()
-                        .requestMatchers("/user/**", "/home", "/app/**").hasRole("USER")
+                        .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/fonts/**" , "/logout", "/webjars/**").permitAll()
+                        .requestMatchers("/user/**", "/home", "/app/**").hasAnyRole("TEACHER", "STUDENT", "ADMIN")
+                        .requestMatchers("/teacher/**").hasAnyRole("TEACHER", "ADMIN")
+                        .requestMatchers("/student/**").hasAnyRole("STUDENT", "ADMIN", "TEACHER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
@@ -48,12 +43,16 @@ public class SecurityConfig  {
                         .usernameParameter("email")
                         .loginProcessingUrl("/authenticateUser")
                         .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            String email = request.getParameter("email");
+                            request.getSession().setAttribute("email", email);
+                            response.sendRedirect("/login?error=true");
+                        })
                         .permitAll()
                 )
-                .logout(LogoutConfigurer::permitAll
-                )
-                .exceptionHandling(configurer ->
-                        configurer.accessDeniedPage("/access-denied")
+                .logout(LogoutConfigurer::permitAll)
+                .exceptionHandling(exception -> exception
+                        .accessDeniedPage("/access-denied")
                 );
 
         return http.build();

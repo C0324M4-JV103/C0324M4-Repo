@@ -4,6 +4,18 @@ body {
     color: #4A5568;
 }
 
+#body-fixed {
+    height: 600px !important;
+}
+
+.main-title {
+    color: #282781;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 5rem 0;
+}
+
 .navbar {
     background-color: #282781; /* Màu nền của navbar */
     border: 1px solid #242472; /* Đường viền */
@@ -18,11 +30,12 @@ body {
     color: white !important; /* Màu chữ mặc định */
 }
 
-.nav-link:hover {
-    color: #f15a29 !important;
+.nav-link:hover{
+    color: #86868d !important;
 }
 .dropdown-item {
-    color: white; /* Màu chữ mặc định trong dropdown */
+    color: white ;
+    font-size: 11px !important;
 }
 
 .nav-item a {
@@ -36,12 +49,13 @@ body {
     margin-top: 15px !important;
 }
 
-
 .dropdown-item:hover {
     background-color: rgba(40, 39, 129, 0.7); /* Nền trong suốt 70% */
     color: #c8bcbc; /* Màu chữ khi hover */
     cursor: pointer; /* Thêm hiệu ứng con trỏ */
 }
+
+/*section*/
 
 .hero-image {
     height: 700px;
@@ -99,42 +113,105 @@ hr.divider {
 }
 
 /*thông báo css*/
-.timestamp {
-    background-color: #ff9459;
-    color: white;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 14px;
-    width: 140px;
-    text-align: center;
+swiper-container {
+    width: 100%;
+    padding: 2rem 0;
 }
 
-.notification-item {
+swiper-slide {
+    text-align: center;
+    font-size: 18px;
     display: flex;
-    align-items: start;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    justify-content: center;
+    align-items: center;
 }
 
-.notification-content {
-    flex: 1;
-    padding-top: 4px;
+.announcement-card {
+    height: 350px;
+    width: auto;
+    border-color: transparent;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
 }
 
-.main-title {
-    color: #282781;
+.announcement-image-container {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+}
+
+.announcement-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.announcement-image-container:hover .announcement-image {
+    transform: scale(1.3);
+}
+
+.card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.announcement-meta {
+    display: flex;
+    justify-content: space-between;
+}
+
+.announcement-tag {
+    font-size: 0.9rem;
+    color: #ff4444;
+    font-weight: 550;
+}
+
+.announcement-date {
+    color: #110101;
+    font-size: 0.9rem;
+    font-weight: 550;
+}
+
+.announcement-title {
+    font-size: 1.3rem;
+    line-height: 1.4;
+    font-weight: 700;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-decoration: none;
+}
+.announcement-title:hover {
+    color: #282781 ;
+    text-decoration: underline;
+}
+
+.view-details {
+    font-size: 1.3rem;
+    color: #ff4444;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.view-details:hover {
+    color: #cc0000;
+}
+.btn-load-more {
     text-align: center;
-    font-size: 3rem;
-    font-weight: bold;
-    margin: 8rem 0;
+    margin-top: 25px;
 }
-
 /*footer css*/
 
 .footer {
     background-color: #282781;
     color: #ffffff;
-    padding: 60px 0;
+    padding: 10px 0;
 }
 
 .logo {
@@ -196,15 +273,32 @@ hr.divider {
     text-align: left; /* Căn giữa các biểu tượng */
 }
 
-.social-icons a, i {
-    font-size: 30px; /* Kích thước icon */
-    color: #ece9e9; /* Màu sắc ban đầu của icon */
-    margin: 0 12px; /* Khoảng cách giữa các icon */
+.social-icons a {
+    font-size: 25px;
+    margin: 0 10px; /* Tạo khoảng cách giữa các biểu tượng */
+    color: #ece9e9; /* Màu mặc định */
+    transition: color 0.3s; /* Tạo hiệu ứng chuyển màu mượt mà */
     text-decoration: none;
 }
 
-.social-icons i:hover {
-    color: #ff6523;
+.social-icons a:hover {
+    color: inherit; /* Đảm bảo hover chỉ ảnh hưởng đến màu */
+}
+
+.social-icons a:nth-child(1):hover {
+    color: #4267B2; /* Facebook: màu xanh dương */
+}
+
+.social-icons a:nth-child(2):hover {
+    color: #0077B5; /* LinkedIn: màu xanh nhạt */
+}
+
+.social-icons a:nth-child(3):hover {
+    color: #FF0000; /* YouTube: màu đỏ */
+}
+
+.social-icons a:nth-child(4):hover {
+    color: #000000; /* TikTok: màu đen */
 }
 
 /*  teacher css*/
@@ -240,10 +334,102 @@ hr.divider {
 }
 
 .card:hover {
-    transform: translateY(-25px); /* Hiệu ứng nâng lên khi hover */
+    transform: translateY(-10px); /* Hiệu ứng nâng lên khi hover */
     box-shadow: 0 20px 40px rgba(110, 144, 255, 0.2); /* bóng đổ khi hover */
 }
 
 .card:hover .card-img-top {
     transform: scale(1.2); /* zoom ảnh khi hover */
 }
+
+
+/*css của team-form*/
+.titles {
+    margin-top: 120px;
+    color: #282781;
+    font-size: 3rem;
+    font-weight: 700;
+}
+/*css của team-form*/
+
+
+/*css cho Chuông thông báo*/
+.notif-icon {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.notif-icon:hover {
+    transform: scale(1.1);
+}
+
+
+.notif-dd {
+    width: 330px;
+    padding: 0;
+    border-radius: 10px; /* Thay đổi giá trị này để điều chỉnh độ bo tròn */
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    overflow: hidden; /* Đảm bảo nội dung bên trong không tràn ra ngoài */
+}
+
+.notif-dd.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.notif-header {
+    border-bottom: 1px solid #eee;
+    padding: 5px;
+    background-color: #ffffff;
+    text-align: center;
+    color: #212020;
+    font-size: 1.8rem;
+    font-weight: 650;
+}
+
+.notif-list {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s ease;
+}
+
+.notif-list:hover {
+    background-color: #f1f1f1;
+}
+
+.notif-img img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.notif-detail p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.notif-detail p b {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.notif-detail p small {
+    display: block; /* Đưa thời gian xuống dòng mới */
+    margin-top: 6px; /* Khoảng cách giữa nội dung và thời gian */
+    color: #888;
+    font-size: 0.8rem;
+}
+/*css cho Chuông thông báo*/
