@@ -47,9 +47,6 @@ public class Topic {
     @OneToMany(mappedBy = "topic")
     private Set<Phase> phases;
 
-    @OneToMany(mappedBy = "topic")
-    private Set<PhaseReport> reports;
-
     @Column(columnDefinition = "INT DEFAULT 0")
     private int approved ;
 
