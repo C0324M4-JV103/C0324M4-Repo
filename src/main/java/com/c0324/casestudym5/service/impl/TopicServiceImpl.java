@@ -6,10 +6,7 @@ import com.c0324.casestudym5.repository.MultiFileRepository;
 import com.c0324.casestudym5.repository.StudentRepository;
 import com.c0324.casestudym5.repository.TeamRepository;
 import com.c0324.casestudym5.repository.TopicRepository;
-import com.c0324.casestudym5.service.FirebaseService;
-import com.c0324.casestudym5.service.MailService;
-import com.c0324.casestudym5.service.NotificationService;
-import com.c0324.casestudym5.service.TopicService;
+import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.util.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,9 +32,10 @@ public class TopicServiceImpl implements TopicService {
     private final NotificationService notificationService;
     private final TeacherRepository teacherRepository;
     private final MailService mailService;
-
+    private final PhaseService phaseService;
     @Autowired
-    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService, TeacherRepository teacherRepository, MailService mailService) {
+    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService,
+                            TeacherRepository teacherRepository, MailService mailService, PhaseService phaseService) {
         this.topicRepository = topicRepository;
         this.teamRepository = teamRepository;
         this.studentRepository = studentRepository;
@@ -46,7 +44,10 @@ public class TopicServiceImpl implements TopicService {
         this.notificationService = notificationService;
         this.teacherRepository = teacherRepository;
         this.mailService = mailService;
+        this.phaseService = phaseService;
     }
+
+
 
     @Override
     @Transactional
@@ -130,6 +131,9 @@ public class TopicServiceImpl implements TopicService {
         topic.setStatus(AppConstants.APPROVED);
         topic.setApprovedBy(getCurrentTeacher());
         topicRepository.save(topic);
+
+        phaseService.createPhasesForTopic(topic);
+
     }
 
     @Override

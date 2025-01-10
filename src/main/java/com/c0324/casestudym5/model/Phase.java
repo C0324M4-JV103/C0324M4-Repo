@@ -3,7 +3,11 @@ package com.c0324.casestudym5.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -26,9 +30,26 @@ public class Phase {
     private Integer phaseNumber;
 
     @Column(columnDefinition = "INT DEFAULT 0", nullable = false)
+    private Integer phaseProgressPercent;
+
+    @Column(columnDefinition = "INT DEFAULT 0", nullable = false)
     private Integer status;
 
-    @OneToMany(mappedBy = "phase")
-    private Set<PhaseReport> reports;
+    private LocalDate startDate;
+    
+    private LocalDate endDate;
+
+    @OneToOne
+    private MultiFile reportFile;
+
+    @Column(columnDefinition = "TEXT")
+    private String reportContent;
+
+    public void setPhaseDates(LocalDate approvedDate) {
+
+        this.startDate = approvedDate.plusDays(phaseNumber);
+        this.endDate = this.startDate.plusDays(6);
+
+    }
 
 }

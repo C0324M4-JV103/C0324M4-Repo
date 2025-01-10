@@ -140,6 +140,10 @@ public class StudentServiceImpl implements StudentService {
 
     }
 
+    @Override
+    public List<Student> findStudentsByTeamId(Long teamId) {
+        return studentRepository.findStudentsByTeamId(teamId);
+    }
 
 
 }
