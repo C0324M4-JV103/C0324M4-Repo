@@ -58,11 +58,20 @@ public class TopicServiceImpl implements TopicService {
             topic.setName(registerTopicDTO.getName());
             topic.setContent(registerTopicDTO.getContent());
             topic.setStatus(0);
+            topic.setApproved(AppConstants.PENDING);
             topic.setTeam(team);
 
+            String url_image, url_description;
             // upload image and description file to firebase
-            String url_image = firebaseService.uploadFileToFireBase(registerTopicDTO.getImage(), AppConstants.URL_TOPIC);
-            String url_description = firebaseService.uploadFileToFireBase(registerTopicDTO.getDescription(), AppConstants.URL_TOPIC);
+            try {
+                if (registerTopicDTO.getImage().isEmpty() || registerTopicDTO.getDescription().isEmpty()) {
+                    return false;
+                }
+                url_image = firebaseService.uploadFileToFireBase(registerTopicDTO.getImage(), AppConstants.URL_TOPIC);
+                url_description = firebaseService.uploadFileToFireBase(registerTopicDTO.getDescription(), AppConstants.URL_TOPIC);
+            } catch (Exception e) {
+                return false;
+            }
 
             // save image and description to database
             MultiFile image = new MultiFile();
@@ -137,6 +146,7 @@ public class TopicServiceImpl implements TopicService {
     public void rejectTopic(Long id) {
         Topic topic = getTopicById(id);
         topic.setStatus(2);
+        topic.setApproved(AppConstants.REJECTED);
         topicRepository.save(topic);
     }
 
