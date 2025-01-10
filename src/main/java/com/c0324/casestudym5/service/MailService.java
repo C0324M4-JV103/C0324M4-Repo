@@ -80,4 +80,25 @@ public class MailService {
             throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
         }
     }
+
+    public void sendDeleteTeamEmail(String to, String subject, String senderName, String studentName, String teamName) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(to);
+            helper.setSubject(subject);
+
+            Context context = new Context();
+            context.setVariable("senderName", senderName);
+            context.setVariable("studentName", studentName);
+            context.setVariable("teamName", teamName);
+            String content = templateEngine.process("common/delete-team-email", context);
+
+            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
+            queue.add(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
+        }
+
+    }
 }

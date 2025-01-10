@@ -4,10 +4,7 @@ import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.repository.TeacherRepository;
 import com.c0324.casestudym5.repository.TeamRepository;
-import com.c0324.casestudym5.service.InvitationService;
-import com.c0324.casestudym5.service.NotificationService;
-import com.c0324.casestudym5.service.StudentService;
-import com.c0324.casestudym5.service.TeamService;
+import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.util.CommonMapper;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
@@ -26,13 +23,15 @@ public class TeamServiceImpl implements TeamService {
     private final StudentService studentService;
     private final TeacherRepository teacherRepository;
     private final NotificationService notificationService;
+    private final MailService mailService;
 
     public TeamServiceImpl(TeamRepository teamRepository, StudentService studentService,
-                           TeacherRepository teacherRepository, NotificationService notificationService) {
+                           TeacherRepository teacherRepository, NotificationService notificationService, MailService mailService) {
         this.teamRepository = teamRepository;
         this.studentService = studentService;
         this.teacherRepository = teacherRepository;
         this.notificationService = notificationService;
+        this.mailService = mailService;
     }
 
 
@@ -86,16 +85,23 @@ public class TeamServiceImpl implements TeamService {
             //Update related students and send notification to them
             Hibernate.initialize(team.getStudents());
             List<Student> students = team.getStudents();
+            String subject = "Thông báo xóa nhóm - " + team.getName();
             for(Student student : students){
                 student.setTeam(null);
                 student.setLeader(false);
                 studentService.save(student);
+
+                //Send email to student
+                mailService.sendDeleteTeamEmail(student.getUser().getEmail(), subject, sender.getName(), student.getUser().getName(), team.getName());
+
+                //Send notification to student
                 Notification notification = Notification.builder()
                         .content(" đã xóa nhóm " + team.getName() + " mà bạn đang tham gia")
                         .sender(sender)
                         .receiver(student.getUser())
                         .build();
                 notificationService.sendNotification(notification);
+
             }
             //Delete team
             teamRepository.delete(team); 
