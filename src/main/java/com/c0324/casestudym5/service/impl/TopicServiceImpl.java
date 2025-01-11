@@ -2,7 +2,10 @@ package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.RegisterTopicDTO;
 import com.c0324.casestudym5.model.*;
-import com.c0324.casestudym5.repository.*;
+import com.c0324.casestudym5.repository.MultiFileRepository;
+import com.c0324.casestudym5.repository.StudentRepository;
+import com.c0324.casestudym5.repository.TeamRepository;
+import com.c0324.casestudym5.repository.TopicRepository;
 import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.MailService;
 import com.c0324.casestudym5.service.NotificationService;
@@ -17,11 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import com.c0324.casestudym5.repository.TeacherRepository;
 
-import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -33,11 +34,12 @@ public class TopicServiceImpl implements TopicService {
     private final MultiFileRepository multiFileRepository;
     private final NotificationService notificationService;
     private final TeacherRepository teacherRepository;
+    private final StudentService studentService;
     private final MailService mailService;
-    private final PhaseRepository phaseRepository;
 
     @Autowired
-    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService, TeacherRepository teacherRepository, MailService mailService, PhaseRepository phaseRepository) {
+
+    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService, TeacherRepository teacherRepository, com.c0324.casestudym5.service.StudentService studentService, MailService mailService) {
         this.topicRepository = topicRepository;
         this.teamRepository = teamRepository;
         this.studentRepository = studentRepository;
@@ -45,8 +47,8 @@ public class TopicServiceImpl implements TopicService {
         this.multiFileRepository = multiFileRepository;
         this.notificationService = notificationService;
         this.teacherRepository = teacherRepository;
+        this.studentService = studentService;
         this.mailService = mailService;
-        this.phaseRepository = phaseRepository;
     }
 
     @Override
@@ -157,18 +159,57 @@ public class TopicServiceImpl implements TopicService {
         topic.setPhases(phases);
 
         topicRepository.save(topic);
+
+        Long teamId = topic.getTeam().getId();
+        List<Student> students = studentRepository.findStudentsByTeamId(teamId);
+        if (students != null) {
+            String action = " đã được Giáo viên phê duyệt.";
+            String subject = "Thông báo kiểm duyệt đề tài của giáo viên ";
+            for (Student student : students) {
+                mailService.sendMailApprovedToTeam(student.getUser().getEmail(), subject, student.getTeam().getName(), topic.getApprovedBy().getUser().getName(), student.getTeam().getTopic().getName(), action);
+                // Send notification to the team
+                Notification notification = new Notification();
+                notification.setSender(topic.getApprovedBy().getUser());
+                notification.setReceiver(student.getUser());
+                notification.setContent("đã phê duyệt đề tài " + topic.getName() + " của nhóm bạn.");
+                notificationService.sendNotification(notification);
+            }
+        }
     }
 
     @Override
     @Transactional
     public void rejectTopic(Long id) {
         Topic topic = getTopicById(id);
-        topicRepository.delete(topic);
+        topic.setApproved(AppConstants.REJECTED);
+        topic.setStatus(AppConstants.UNAPPROVED);
+        topicRepository.save(topic);
+
+        Long teamId = topic.getTeam().getId();
+        List<Student> students = studentRepository.findStudentsByTeamId(teamId);
+        if (students != null) {
+            String action = " đã được Giáo viên xem xét và không được thông qua.";
+            String subject = "Thông báo kiểm duyệt đề tài của giáo viên ";
+            for (Student student : students) {
+                mailService.sendMailApprovedToTeam(student.getUser().getEmail(), subject, student.getTeam().getName(), topic.getApprovedBy().getUser().getName(), student.getTeam().getTopic().getName(), action);
+                //Send notification to the team
+                Notification notification = new Notification();
+                notification.setSender(topic.getApprovedBy().getUser());
+                notification.setReceiver(student.getUser());
+                notification.setContent("đã từ chối đề tài " + topic.getName() + " của nhóm bạn.");
+                notificationService.sendNotification(notification);
+            }
+        }
     }
 
     @Override
     public Page<Topic> getPendingTopicsPage(Pageable pageable) {
         return topicRepository.findAll(pageable);
+    }
+
+    @Override
+    public List<Topic> getTopicCurrentStudent(Long id) {
+        return topicRepository.findByTeam_Id(id);
     }
 
     @Override

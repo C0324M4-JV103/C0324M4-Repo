@@ -23,4 +23,7 @@ public interface StudentService {
     Page<Student> getAvailableStudents(int page, String search, Long currentStudentId);
     Page<Student> findAllExceptCurrentStudent(Long currentStudentId, Pageable pageable);
     void createNewStudent(StudentDTO studentDTO, MultipartFile avatar) throws Exception;
+    List<Student> findStudentsByTeamId(Long teamId);
+
+    Object findStudentsByTopicIdAndTeamId(Long topicId, Long teamId);
 }
