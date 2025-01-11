@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiến độ đề tài</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home-page.css">
+</head>
+<body>
+<!-- Navbar -->
+<div th:replace="~{layout :: nav}"></div>
+<!-- Toast message -->
+<div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="warningToast">
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Thất bại</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <span th:text="${errorMessage}"></span>
+        </div>
+    </div>
+</div>
+
+<div th:if="${successMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <span th:text="${successMessage}"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row d-flex justify-content-center align-items-center h-100">
+    <div class="col-12 col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+        <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+            <h1 class="lead fw-normal mb-0 me-3 main-title">Báo cáo tiến độ đề tài</h1>
+        </div>
+
+        <div class="divider d-flex align-items-center my-4">
+            <p class="text-center fw-bold mx-3 mb-0"></p>
+        </div>
+
+        <form th:action="@{/topics/handle-progress-report/{id}(id=${topic.id})}" th:object="${reportTopic}" method="post" enctype="multipart/form-data">
+
+            <div class="form-floating mb-4">
+                <p id="topicName" class="form-control form-control-lg" th:text="${topic.name}"></p>
+                <label class="form-label" for="topicName">Tên đề tài</label>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input type="file" id="file" class="form-control form-control-lg" th:field="*{reportFile}" required/>
+                <label class="form-label" for="file">File báo cáo</label>
+            </div>
+
+            <!-- Progress Bar -->
+            <p class="fw-bold" th:text="|Giai đoạn ${phaseNumber}|"></p>
+            <div class="progress mb-4">
+                <div class="progress-bar" role="progressbar" th:style="'width: ' + *{phaseProgressPercent} + '%'" th:aria-valuenow="*{phaseProgressPercent}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+
+
+            <div class="form-floating mb-4">
+                <input type="text" id="content" class="form-control form-control-lg" th:field="*{reportContent}" placeholder="Nhập nội dung báo cáo" required/>
+                <label class="form-label" for="content">Nội dung báo cáo</label>
+            </div>
+
+            <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
+                <button type="submit" class="btn btn-primary btn-lg">Báo cáo</button>
+            </div>
+            <a th:href="@{/student/info-team}" class="btn btn-secondary btn-lg" role="button" style="text-decoration: none;">
+                <i class="fas fa-arrow-left m-0" style="font-size: 1rem"></i> Trở về
+            </a>
+        </form>
+    </div>
+</div>
+
+<!-- Footer -->
+<div th:replace="~{layout :: footer}"></div>
+<!-- JS Plugin -->
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
+</body>
+</html>

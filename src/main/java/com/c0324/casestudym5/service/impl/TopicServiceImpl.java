@@ -2,10 +2,7 @@ package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.RegisterTopicDTO;
 import com.c0324.casestudym5.model.*;
-import com.c0324.casestudym5.repository.MultiFileRepository;
-import com.c0324.casestudym5.repository.StudentRepository;
-import com.c0324.casestudym5.repository.TeamRepository;
-import com.c0324.casestudym5.repository.TopicRepository;
+import com.c0324.casestudym5.repository.*;
 import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.MailService;
 import com.c0324.casestudym5.service.NotificationService;
@@ -20,9 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.c0324.casestudym5.repository.TeacherRepository;
 
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -35,9 +34,10 @@ public class TopicServiceImpl implements TopicService {
     private final NotificationService notificationService;
     private final TeacherRepository teacherRepository;
     private final MailService mailService;
+    private final PhaseRepository phaseRepository;
 
     @Autowired
-    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService, TeacherRepository teacherRepository, MailService mailService) {
+    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService, TeacherRepository teacherRepository, MailService mailService, PhaseRepository phaseRepository) {
         this.topicRepository = topicRepository;
         this.teamRepository = teamRepository;
         this.studentRepository = studentRepository;
@@ -46,6 +46,7 @@ public class TopicServiceImpl implements TopicService {
         this.notificationService = notificationService;
         this.teacherRepository = teacherRepository;
         this.mailService = mailService;
+        this.phaseRepository = phaseRepository;
     }
 
     @Override
@@ -138,6 +139,23 @@ public class TopicServiceImpl implements TopicService {
         topic.setStatus(1);
         topic.setStatus(AppConstants.APPROVED);
         topic.setApprovedBy(getCurrentTeacher());
+
+        // Create and set start date, end date for each phase; strategy: 1 week for each phase; get start date from the next day the topic is approved
+        Set<Phase> phases = new HashSet<>();
+        LocalDate startDate = LocalDate.now().plusDays(1);
+        for (int i = 1; i <= 4; i++) {
+            Phase phase = new Phase();
+            phase.setTopic(topic);
+            phase.setPhaseNumber(i);
+            phase.setStatus(0);
+            phase.setStartDate(startDate);
+            phase.setEndDate(startDate.plusWeeks(1));
+            startDate = phase.getEndDate().plusDays(1);
+            phaseRepository.save(phase);
+            phases.add(phase);
+        }
+        topic.setPhases(phases);
+
         topicRepository.save(topic);
     }
 
@@ -145,9 +163,7 @@ public class TopicServiceImpl implements TopicService {
     @Transactional
     public void rejectTopic(Long id) {
         Topic topic = getTopicById(id);
-        topic.setStatus(2);
-        topic.setApproved(AppConstants.REJECTED);
-        topicRepository.save(topic);
+        topicRepository.delete(topic);
     }
 
     @Override
