@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title>PROGRESS</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiến độ</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
@@ -14,18 +13,11 @@
 <body>
 <div th:replace="~{layout :: nav}"></div>
 
-<div class="info-team text-center" th:if="${topic.status == 1}">
-    <h4>CHI TIẾT TIẾN ĐỘ</h4>
-    <p style="font-size: 1.2rem; font-weight: 600">Nhóm: <span th:text="${team.name}"></span></p>
-    <h3 class="fst-italic">Tên đề tài: <span th:text="${topic.name}"></span></h3>
+<div class="info-team text-center">
+    <p style="font-size: 2rem; font-weight: 700">Nhóm: <span th:text="${team.name}"></span></p>
+    <p style="font-size: 1.5rem; font-weight: 555">Tên đề tài: <span th:text="${topic.name}"></span></p>
 </div>
-<div class="container">
-
-    <div class="h-100 d-flex align-items-center justify-content-start">
-        <a th:href="@{#}" class="btn btn-outline-secondary btn-lg text-decoration-none fw-bold" role="button">
-            Quay lại
-        </a>
-    </div>
+<div class="container" th:if="${topic.status == 1}">
 
     <p class="fw-bold text-center fs-4">Thành viên trong nhóm</p>
 
@@ -55,7 +47,8 @@
     <div th:each="phase : ${phases}">
         <div class="phase-row">
             <button class="phase-button" th:text="'BÁO CÁO GIAI ĐOẠN ' + ${phase.phaseNumber}"
-                    th:disabled="${phase.status == 0}">BÁO CÁO GIAI ĐOẠN</button>
+                    th:disabled="${phase.status == 0}">BÁO CÁO GIAI ĐOẠN
+            </button>
             <div class="phase-info">
                 <div class="date-range">
                     Giai đoạn <span th:text="${phase.phaseNumber}"></span>: Từ
@@ -63,14 +56,15 @@
                     <span class="highlight-date" th:text="${phase.endDate}"></span>
 
                     <span class="status-badge"
-                          th:classappend="${phase.status == 1 ? 'badge-primary' : (phase.status == 0 ? 'badge-secondary' : 'badge-success')}"
+                          th:classappend="${phase.status == 1 ? 'badge-danger' : (phase.status == 0 ? 'badge-secondary' : 'badge-success')}"
                           th:text="${phase.status == 1 ? 'Đang thực hiện' : (phase.status == 0 ? 'Chưa mở' : 'Hoàn thành')}"></span>
                 </div>
                 <div class="progress">
-                    <div class="progress-bar"
-                         th:classappend="${phase.status == 0 ? 'progress-bar-gray' : (phase.status == 1 ? 'progress-bar-blue' : 'progress-bar-green')}"
+                    <div class="progress-bar progress-bar-striped progress-bar-animated"
+                         th:classappend="${phase.status == 0 ? 'bg-secondary' : (phase.status == 1 ? 'bg-danger' : 'bg-info')}"
                          role="progressbar"
-                         th:style="'width: ' + (phase.status == 0 ? '0%' : (phase.status == 1 ? '50%' : '100%'))"></div>
+                         th:style="'width: ' + ${phase.status == 0 ? '0%' : (phase.status == 1 ? '1%' : '100%')}">
+                    </div>
                 </div>
             </div>
         </div>
@@ -131,7 +125,6 @@
 <div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
-
 <script>
     // Initialize CKEditor for feedback form
     CKEDITOR.replace('editor', {
@@ -139,7 +132,5 @@
         versionCheck: false
     });
 </script>
-
-
 </body>
 </html>
