@@ -142,12 +142,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public List<Student> findStudentsByTeamId(Long teamId) {
-        return List.of();
-    }
-
-    @Override
-    public Object findStudentsByTopicIdAndTeamId(Long topicId, Long teamId) {
-        return null;
+        return studentRepository.findStudentsByTeamId(teamId);
     }
 
 

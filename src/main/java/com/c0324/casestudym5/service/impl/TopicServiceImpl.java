@@ -31,7 +31,6 @@ public class TopicServiceImpl implements TopicService {
     private final MultiFileRepository multiFileRepository;
     private final NotificationService notificationService;
     private final TeacherRepository teacherRepository;
-    private final StudentService studentService;
     private final MailService mailService;
 
     @Autowired
@@ -46,7 +45,10 @@ public class TopicServiceImpl implements TopicService {
         this.teacherRepository = teacherRepository;
         this.studentService = studentService;
         this.mailService = mailService;
+        this.phaseService = phaseService;
     }
+
+
 
 
     @Override

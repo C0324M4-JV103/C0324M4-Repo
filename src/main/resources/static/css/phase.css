@@ -1,0 +1,144 @@
+.card-info-team-container {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: 450px;
+}
+
+.card-info-team {
+    width: 215px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 10px;
+}
+
+.card-info-team img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.phase-button {
+    background-color: #0088cc;
+    border: none;
+    color: white;
+    padding: 12px 20px;
+    width: 180px;
+    text-align: center;
+    border-radius: 25px;
+    margin-right: 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.phase-button:hover {
+    background-color: #006699;
+}
+
+.phase-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.phase-info {
+    flex-grow: 1;
+}
+
+.progress {
+    height: 24px;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    transition: width 0.5s ease;
+}
+
+.progress-bar-gray {
+    background-color: #6c757d; /* Màu xám cho trạng thái Chưa mở */
+}
+
+.progress-bar-blue {
+    background-image: linear-gradient(to right, #0088cc, #00aaff); /* Màu xanh cho trạng thái Đang thực hiện */
+}
+
+.progress-bar-green {
+    background: conic-gradient(#28a745 0% 100%, transparent 100%); /* Thanh tiến độ xoắn ốc */
+}
+
+.status-badge.badge-secondary {
+    background-color: #6c757d; /* Màu xám cho trạng thái Chưa mở */
+    color: white;
+}
+
+.status-badge.badge-primary {
+    background-color: #007bff; /* Màu xanh lam cho trạng thái Đang thực hiện */
+    color: white;
+}
+
+.status-badge.badge-success {
+    background-color: #28a745; /* Màu xanh lá cho trạng thái Hoàn thành */
+    color: white;
+}
+
+.status-badge {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-left: 8px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.date-range {
+    color: #004085;
+    font-size: 16px;
+    font-weight: normal;
+    margin-bottom: 8px;
+}
+
+.highlight-date {
+    font-weight: bold;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h2 {
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.info-team {
+    margin-top: 110px;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.1);
+    color: #130a0a;
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+    padding: 20px; /* Khoảng cách bên trong */
+    margin-bottom: 20px; /* Khoảng cách bên ngoài */
+    background-color: #ffffff; /* Màu nền nhạt */
+}
+
+.info-team h4, p, h3 {
+    font-weight: 700;
+}
+
+.editor-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.avatar {
+    border-radius: 50%;
+}
+

@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +25,7 @@ public class Phase {
     @JoinColumn(name = "topic_id", referencedColumnName = "id")
     private Topic topic;
 
-    @Column(nullable = false)
+    @Column(columnDefinition = "INT", nullable = false)
     private Integer phaseNumber;
 
     @Column(columnDefinition = "INT DEFAULT 0", nullable = false)
@@ -40,5 +43,12 @@ public class Phase {
 
     @Column(columnDefinition = "TEXT")
     private String reportContent;
+
+    public void setPhaseDates(LocalDate approvedDate) {
+
+        this.startDate = approvedDate.plusDays(phaseNumber);
+        this.endDate = this.startDate.plusDays(6);
+
+    }
 
 }
