@@ -17,13 +17,13 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class InvitationServiceimpl implements InvitationService {
+public class InvitationServiceImpl implements InvitationService {
     private final InvitationRepository invitationRepository;
     private final StudentService studentService;
     private final MailService mailService;
     private final NotificationService notificationService;
     @Autowired
-    public InvitationServiceimpl(InvitationRepository invitationRepository, StudentService studentService, MailService mailService, NotificationService notificationService) {
+    public InvitationServiceImpl(InvitationRepository invitationRepository, StudentService studentService, MailService mailService, NotificationService notificationService) {
         this.invitationRepository = invitationRepository;
         this.studentService = studentService;
         this.mailService = mailService;
