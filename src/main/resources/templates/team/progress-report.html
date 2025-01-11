@@ -8,6 +8,7 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/home-page.css">
+    <link rel="stylesheet" href="/css/progress-report.css">
 </head>
 <body>
 <!-- Navbar -->
@@ -38,7 +39,7 @@
 </div>
 
 <div class="row d-flex justify-content-center align-items-center h-100">
-    <div class="col-12 col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+    <div class="col-12 col-md-12 col-lg-8 col-xl-6 offset-xl-1">
         <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
             <h1 class="lead fw-normal mb-0 me-3 main-title">Báo cáo tiến độ đề tài</h1>
         </div>
@@ -60,23 +61,31 @@
             </div>
 
             <!-- Progress Bar -->
-            <p class="fw-bold" th:text="|Giai đoạn ${phaseNumber}|"></p>
-            <div class="progress mb-4">
-                <div class="progress-bar" role="progressbar" th:style="'width: ' + *{phaseProgressPercent} + '%'" th:aria-valuenow="*{phaseProgressPercent}" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <p class="fw-bold mb-0" th:text="|Giai đoạn ${phaseNumber} (Vui lòng tự đánh giá tiến độ giai đoạn)|"></p>
+                <p class="fw-bold mb-0" id="progressPercent" th:text="${phaseProgressPercent != null ? phaseProgressPercent : 0} + '%'"></p>
             </div>
-
+            <!-- Progress Bar -->
+            <div class="progress mb-4">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" role="progressbar"
+                     th:style="'width: ' + (${phaseProgressPercent} != null ? *{phaseProgressPercent} : 0) + '%'"
+                     th:aria-valuenow="${phaseProgressPercent} != null ? *{phaseProgressPercent} : 0"
+                     aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <input type="range" id="progressRange" min="0" max="100"
+                   th:value="${phaseProgressPercent} != null ? *{phaseProgressPercent} : 0" class="form-range">
 
             <div class="form-floating mb-4">
-                <input type="text" id="content" class="form-control form-control-lg" th:field="*{reportContent}" placeholder="Nhập nội dung báo cáo" required/>
+                <textarea id="content" class="form-control form-control-lg custom-height" th:field="*{reportContent}" placeholder="Nhập nội dung báo cáo" required></textarea>
                 <label class="form-label" for="content">Nội dung báo cáo</label>
             </div>
 
             <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
-                <button type="submit" class="btn btn-primary btn-lg">Báo cáo</button>
+                <button type="submit" class="btn btn-primary btn-lg me-2">Báo cáo</button>
+                <a th:href="@{/student/info-team}" class="btn btn-secondary btn-lg" role="button" style="text-decoration: none;">
+                    <i class="fas fa-arrow-left m-0" style="font-size: 1rem"></i> Trở về
+                </a>
             </div>
-            <a th:href="@{/student/info-team}" class="btn btn-secondary btn-lg" role="button" style="text-decoration: none;">
-                <i class="fas fa-arrow-left m-0" style="font-size: 1rem"></i> Trở về
-            </a>
         </form>
     </div>
 </div>
@@ -84,6 +93,20 @@
 <!-- Footer -->
 <div th:replace="~{layout :: footer}"></div>
 <!-- JS Plugin -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const progressBar = document.getElementById('progressBar');
+        const progressRange = document.getElementById('progressRange');
+        const progressPercent = document.getElementById('progressPercent');
+
+        progressRange.addEventListener('input', function () {
+            const value = progressRange.value;
+            progressBar.style.width = value + '%';
+            progressBar.setAttribute('aria-valuenow', value);
+            progressPercent.textContent = value + '%';
+        });
+    });
+</script>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/notification.js}"></script>
 <script th:src="@{/js/toast-noti.js}"></script>

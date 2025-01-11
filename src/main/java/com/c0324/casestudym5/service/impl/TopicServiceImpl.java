@@ -2,14 +2,8 @@ package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.RegisterTopicDTO;
 import com.c0324.casestudym5.model.*;
-import com.c0324.casestudym5.repository.MultiFileRepository;
-import com.c0324.casestudym5.repository.StudentRepository;
-import com.c0324.casestudym5.repository.TeamRepository;
-import com.c0324.casestudym5.repository.TopicRepository;
-import com.c0324.casestudym5.service.FirebaseService;
-import com.c0324.casestudym5.service.MailService;
-import com.c0324.casestudym5.service.NotificationService;
-import com.c0324.casestudym5.service.TopicService;
+import com.c0324.casestudym5.repository.*;
+import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.util.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,9 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import com.c0324.casestudym5.repository.TeacherRepository;
 
+import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -34,12 +30,12 @@ public class TopicServiceImpl implements TopicService {
     private final MultiFileRepository multiFileRepository;
     private final NotificationService notificationService;
     private final TeacherRepository teacherRepository;
-    private final StudentService studentService;
+    private final PhaseRepository phaseRepository;
     private final MailService mailService;
 
     @Autowired
 
-    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService, TeacherRepository teacherRepository, com.c0324.casestudym5.service.StudentService studentService, MailService mailService) {
+    public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository, FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService, TeacherRepository teacherRepository, PhaseRepository phaseRepository, MailService mailService) {
         this.topicRepository = topicRepository;
         this.teamRepository = teamRepository;
         this.studentRepository = studentRepository;
@@ -47,7 +43,7 @@ public class TopicServiceImpl implements TopicService {
         this.multiFileRepository = multiFileRepository;
         this.notificationService = notificationService;
         this.teacherRepository = teacherRepository;
-        this.studentService = studentService;
+        this.phaseRepository = phaseRepository;
         this.mailService = mailService;
     }
 
@@ -131,7 +127,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<Topic> getPendingTopics() {
-        return topicRepository.findByApprovedFalse(Pageable.unpaged()).getContent();
+        return topicRepository.findByApprovedTrueAndStatus(Pageable.unpaged()).getContent();
     }
 
     @Override
@@ -181,9 +177,7 @@ public class TopicServiceImpl implements TopicService {
     @Transactional
     public void rejectTopic(Long id) {
         Topic topic = getTopicById(id);
-        topic.setApproved(AppConstants.REJECTED);
-        topic.setStatus(AppConstants.UNAPPROVED);
-        topicRepository.save(topic);
+        topicRepository.delete(topic);
 
         Long teamId = topic.getTeam().getId();
         List<Student> students = studentRepository.findStudentsByTeamId(teamId);
