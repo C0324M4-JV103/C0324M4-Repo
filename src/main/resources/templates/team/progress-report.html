@@ -26,19 +26,7 @@
     </div>
 </div>
 
-<div th:if="${successMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
-        <div class="toast-header bg-success text-white">
-            <strong class="me-auto">Thành công</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            <span th:text="${successMessage}"></span>
-        </div>
-    </div>
-</div>
-
-<div class="row d-flex justify-content-center align-items-center h-100">
+<div class="row d-flex justify-content-center align-items-center h-100 progress-form">
     <div class="col-12 col-md-12 col-lg-8 col-xl-6 offset-xl-1">
         <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
             <h1 class="lead fw-normal mb-0 me-3 main-title">Báo cáo tiến độ đề tài</h1>
@@ -50,30 +38,30 @@
 
         <form th:action="@{/topics/handle-progress-report/{id}(id=${topic.id})}" th:object="${reportTopic}" method="post" enctype="multipart/form-data">
 
-            <div class="form-floating mb-4">
+            <label class="form-label fw-bold" for="topicName">Tên đề tài</label>
+            <div class="mb-4">
                 <p id="topicName" class="form-control form-control-lg" th:text="${topic.name}"></p>
-                <label class="form-label" for="topicName">Tên đề tài</label>
             </div>
 
-            <div class="form-floating mb-4">
+            <label class="form-label fw-bold" for="file">File báo cáo</label>
+            <div class="mb-4">
                 <input type="file" id="file" class="form-control form-control-lg" th:field="*{reportFile}" required/>
-                <label class="form-label" for="file">File báo cáo</label>
             </div>
 
             <!-- Progress Bar -->
             <div class="d-flex justify-content-between align-items-center mb-2">
-                <p class="fw-bold mb-0" th:text="|Giai đoạn ${phaseNumber} (Vui lòng tự đánh giá tiến độ giai đoạn)|"></p>
-                <p class="fw-bold mb-0" id="progressPercent" th:text="${phaseProgressPercent != null ? phaseProgressPercent : 0} + '%'"></p>
+                <p class="fw-bold mb-0" th:text="|Giai đoạn *{phaseNumber} (Vui lòng tự đánh giá tiến độ giai đoạn)|"></p>
+                <p class="fw-bold mb-0" id="progressPercent" th:text="${reportTopic.phaseProgressPercent != null ? reportTopic.phaseProgressPercent : 0} + '%'"></p>
             </div>
             <!-- Progress Bar -->
             <div class="progress mb-4">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" id="progressBar" role="progressbar"
-                     th:style="'width: ' + (${phaseProgressPercent} != null ? *{phaseProgressPercent} : 0) + '%'"
-                     th:aria-valuenow="${phaseProgressPercent} != null ? *{phaseProgressPercent} : 0"
+                     th:style="'width: ' + (${reportTopic.phaseProgressPercent} != null ? ${reportTopic.phaseProgressPercent} : 0) + '%'"
+                     th:aria-valuenow="${reportTopic.phaseProgressPercent} != null ? ${reportTopic.phaseProgressPercent} : 0"
                      aria-valuemin="0" aria-valuemax="100"></div>
             </div>
             <input type="range" id="progressRange" min="0" max="100"
-                   th:value="${phaseProgressPercent} != null ? *{phaseProgressPercent} : 0" class="form-range">
+                   th:value="${reportTopic.phaseProgressPercent} != null ? ${reportTopic.phaseProgressPercent} : 0" class="form-range">
 
             <div class="form-floating mb-4">
                 <textarea id="content" class="form-control form-control-lg custom-height" th:field="*{reportContent}" placeholder="Nhập nội dung báo cáo" required></textarea>

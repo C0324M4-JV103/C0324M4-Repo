@@ -1,5 +1,6 @@
 package com.c0324.casestudym5.service.impl;
 
+import com.c0324.casestudym5.dto.ProgressReportDTO;
 import com.c0324.casestudym5.dto.RegisterTopicDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.repository.*;
@@ -18,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -135,8 +137,28 @@ public class TopicServiceImpl implements TopicService {
     public void approveTopic(Long id) {
         Topic topic = getTopicById(id);
         topic.setStatus(1);
-        topic.setStatus(AppConstants.APPROVED);
+        topic.setApproved(AppConstants.APPROVED);
         topic.setApprovedBy(getCurrentTeacher());
+
+        Long teamId = topic.getTeam().getId();
+        List<Student> students = studentRepository.findStudentsByTeamId(teamId);
+        if (students != null) {
+            String action = " đã được Giáo viên phê duyệt.";
+            String subject = "Thông báo kiểm duyệt đề tài của giáo viên ";
+            for (Student student : students) {
+                try {
+                    mailService.sendMailApprovedToTeam(student.getUser().getEmail(), subject, student.getTeam().getName(), topic.getApprovedBy().getUser().getName(), student.getTeam().getTopic().getName(), action);
+                    // Send notification to the team
+                    Notification notification = new Notification();
+                    notification.setSender(topic.getApprovedBy().getUser());
+                    notification.setReceiver(student.getUser());
+                    notification.setContent("đã phê duyệt đề tài " + topic.getName() + " của nhóm bạn.");
+                    notificationService.sendNotification(notification);
+                } catch (Exception e) {
+                    System.err.println("Error sending email: " + e.getMessage());
+                }
+            }
+        }
 
         // Create and set start date, end date for each phase; strategy: 1 week for each phase; get start date from the next day the topic is approved
         Set<Phase> phases = new HashSet<>();
@@ -145,7 +167,11 @@ public class TopicServiceImpl implements TopicService {
             Phase phase = new Phase();
             phase.setTopic(topic);
             phase.setPhaseNumber(i);
-            phase.setStatus(0);
+            if (i == 1)
+                phase.setStatus(1);
+            else
+                phase.setStatus(0);
+            phase.setPhaseProgressPercent(0);
             phase.setStartDate(startDate);
             phase.setEndDate(startDate.plusWeeks(1));
             startDate = phase.getEndDate().plusDays(1);
@@ -155,22 +181,6 @@ public class TopicServiceImpl implements TopicService {
         topic.setPhases(phases);
 
         topicRepository.save(topic);
-
-        Long teamId = topic.getTeam().getId();
-        List<Student> students = studentRepository.findStudentsByTeamId(teamId);
-        if (students != null) {
-            String action = " đã được Giáo viên phê duyệt.";
-            String subject = "Thông báo kiểm duyệt đề tài của giáo viên ";
-            for (Student student : students) {
-                mailService.sendMailApprovedToTeam(student.getUser().getEmail(), subject, student.getTeam().getName(), topic.getApprovedBy().getUser().getName(), student.getTeam().getTopic().getName(), action);
-                // Send notification to the team
-                Notification notification = new Notification();
-                notification.setSender(topic.getApprovedBy().getUser());
-                notification.setReceiver(student.getUser());
-                notification.setContent("đã phê duyệt đề tài " + topic.getName() + " của nhóm bạn.");
-                notificationService.sendNotification(notification);
-            }
-        }
     }
 
     @Override
@@ -199,6 +209,60 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public Page<Topic> getPendingTopicsPage(Pageable pageable) {
         return topicRepository.findAll(pageable);
+    }
+
+    @Override
+    public Boolean submitProgressReport(Long topicId, ProgressReportDTO progressReportDTO, Student student) {
+        Phase phase = phaseRepository.findByTopicIdAndPhaseNumber(topicId, progressReportDTO.getPhaseNumber());
+        if (phase == null) {
+            return false;
+        }
+        if (!Objects.equals(student.getTeam().getTopic().getId(), topicId) || phase.getStatus() == 0) {
+            return false;
+        }
+        if (progressReportDTO.getPhaseProgressPercent() > 100 || progressReportDTO.getPhaseProgressPercent() < 50) {
+            return false;
+        }
+        phase.setStatus(1);
+        phase.setPhaseProgressPercent(progressReportDTO.getPhaseProgressPercent());
+
+        // upload report file to firebase
+        try {
+            if (progressReportDTO.getReportFile() == null) {
+                return false;
+            }
+            String url_report = firebaseService.uploadFileToFireBase(progressReportDTO.getReportFile(), AppConstants.URL_REPORT);
+            MultiFile report = new MultiFile();
+            report.setUrl(url_report);
+            multiFileRepository.save(report);
+            phase.setReportFile(report);
+        } catch (Exception e) {
+            return false;
+        }
+        phaseRepository.save(phase);
+
+        // Send notification to the teacher
+        Topic topic = phase.getTopic();
+        User teacher = topic.getTeam().getTeacher().getUser();
+        if (teacher != null) {
+            // Send email to the teacher
+            String subject = topic.getTeam().getName() + " - Thông báo báo cáo tiến độ giai đoạn " + progressReportDTO.getPhaseNumber();
+            mailService.sendSubmittedProgressReportEmail(teacher.getEmail(), subject, student.getUser().getName(), teacher.getName(), topic, topic.getTeam().getName(), phase.getPhaseNumber().toString());
+
+            // Send notification to the teacher
+            Notification notification = new Notification();
+            notification.setSender(getCurrentUser());
+            notification.setReceiver(teacher);
+            notification.setContent("đã báo cáo tiến độ giai đoạn " + progressReportDTO.getPhaseNumber() + " của đề tài " + topic.getName());
+            notificationService.sendNotification(notification);
+        }
+        return true;
+    }
+
+    private User getCurrentUser() {
+        // Logic để lấy thông tin user đang đăng nhập
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return studentRepository.findByUserEmail(auth.getName()).getUser();
     }
 
     @Override

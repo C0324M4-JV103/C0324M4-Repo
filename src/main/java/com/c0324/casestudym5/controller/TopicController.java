@@ -16,9 +16,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class TopicController {
@@ -54,24 +57,44 @@ public class TopicController {
     }
 
     @GetMapping("/topics/{topicId}/progress/{phaseNum}")
-    public String showProgressReportForm(@PathVariable Long topicId, @PathVariable Integer phaseNum ,Model model) {
+    public String showProgressReportForm(@PathVariable Long topicId, @PathVariable Integer phaseNum , Model model, RedirectAttributes redirectAttributes) {
         Topic topic = topicService.getTopicById(topicId);
         User currentUser = getCurrentUser();
         Student student = studentService.findStudentByUserId(currentUser.getId());
         Team userTeam = student.getTeam();
+        // check topic, approved and team
         if (topic == null || topic.getApproved() != AppConstants.APPROVED || !userTeam.getTopic().getId().equals(topic.getId())) {
             return "common/404";
+        }
+        // check phase number
+        if (phaseNum < 1 || phaseNum > 4) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Giai đoạn không hợp lệ");
+            return "redirect:/student/info-team"; // tam thoi chuyen ve trang info team
+        }
+        // check status of phase if status = 0 => redirect to info team
+        Phase phase = topic.getPhases().stream()
+                .filter(p -> Objects.equals(p.getPhaseNumber(), phaseNum))
+                .findFirst()
+                .orElse(null);
+
+        if (phase == null || phase.getStatus() == 0) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Giai đoạn này chưa được mở.");
+            return "redirect:/student/info-team";
         }
         List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
         model.addAttribute("notifications", notifications);
         model.addAttribute("topic", topic);
-        model.addAttribute("phaseNumber", phaseNum);
-        model.addAttribute("reportTopic", new ProgressReportDTO());
+        model.addAttribute("reportTopic", new ProgressReportDTO(phaseNum));
         return "team/progress-report";
     }
 
     @PostMapping("/topics/handle-progress-report/{id}")
-    public String submitProgressReport(@PathVariable Long id, @ModelAttribute ProgressReportDTO progressReportDTO) {
+    public String submitProgressReport(@PathVariable Long id, @ModelAttribute ProgressReportDTO progressReportDTO, BindingResult result, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Báo cáo không hợp lệ");
+            return "redirect:/topics/" + id; // tam thoi chuyen ve trang topic detail
+        }
+
         Topic topic = topicService.getTopicById(id);
         User currentUser = getCurrentUser();
         Student student = studentService.findStudentByUserId(currentUser.getId());
@@ -79,8 +102,12 @@ public class TopicController {
         if (topic == null || topic.getApproved() != AppConstants.APPROVED || !userTeam.getTopic().getId().equals(topic.getId())) {
             return "common/404";
         }
-//        topicService.submitProgressReport(topic, progressReportDTO);
-        return "redirect:/topics/progress/" + id;
+        boolean isReported = topicService.submitProgressReport(topic.getId(), progressReportDTO, student);
+        if (!isReported) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Báo cáo không hợp lệ");
+            return "redirect:/topics/" + id; // tam thoi chuyen ve trang topic detail
+        }
+        return "redirect:/topics/" + id; // tam thoi chuyen ve trang topic detail
     }
 
     private User getCurrentUser() {

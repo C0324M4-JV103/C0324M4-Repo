@@ -1,5 +1,6 @@
 package com.c0324.casestudym5.service;
 
+import com.c0324.casestudym5.model.Topic;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -74,7 +75,7 @@ public class MailService {
             context.setVariable("action", action);
             String content = templateEngine.process("common/topic-notification-mail", context);
             helper.setText(content, true); // set true to send HTML content
-            mailSender.send(message);
+            queue.add(message);
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
         }
@@ -93,6 +94,28 @@ public class MailService {
             context.setVariable("topicName", topicName);
             context.setVariable("teamName", teamName);
             String content = templateEngine.process("common/register-topic-mail", context);
+
+            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
+            queue.add(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
+        }
+    }
+
+    public void sendSubmittedProgressReportEmail(String to, String subject, String senderName, String teacherName, Topic topic, String teamName, String phaseName) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(to);
+            helper.setSubject(subject);
+
+            Context context = new Context();
+            context.setVariable("studentName", senderName);
+            context.setVariable("teacherName", teacherName);
+            context.setVariable("topic", topic);
+            context.setVariable("teamName", teamName);
+            context.setVariable("phaseName", phaseName);
+            String content = templateEngine.process("common/progress-report-mail", context);
 
             helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
             queue.add(message);

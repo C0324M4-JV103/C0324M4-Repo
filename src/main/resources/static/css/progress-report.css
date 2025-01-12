@@ -48,3 +48,7 @@ a.btn-secondary {
 .form-control-lg.custom-height {
     height: 150px; /* Adjust the height as needed */
 }
+
+.progress-form {
+    margin-bottom: 5rem;
+}
