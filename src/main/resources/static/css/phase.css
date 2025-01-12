@@ -48,10 +48,12 @@
 .phase-info {
     flex-grow: 1;
 }
-
+.progress-bar-animated {
+    animation: progress-bar-stripes 2s linear infinite; /* 2s là thời gian, có thể tăng/giảm */
+}
 .progress {
-    height: 24px;
-    background-color: #f8f9fa;
+    height: 25px;
+    background-color: #d3d9dc;
     border-radius: 12px;
     overflow: hidden;
 }
@@ -60,25 +62,13 @@
     transition: width 0.5s ease;
 }
 
-.progress-bar-gray {
-    background-color: #6c757d; /* Màu xám cho trạng thái Chưa mở */
-}
-
-.progress-bar-blue {
-    background-image: linear-gradient(to right, #0088cc, #00aaff); /* Màu xanh cho trạng thái Đang thực hiện */
-}
-
-.progress-bar-green {
-    background: conic-gradient(#28a745 0% 100%, transparent 100%); /* Thanh tiến độ xoắn ốc */
-}
-
 .status-badge.badge-secondary {
     background-color: #6c757d; /* Màu xám cho trạng thái Chưa mở */
     color: white;
 }
 
-.status-badge.badge-primary {
-    background-color: #007bff; /* Màu xanh lam cho trạng thái Đang thực hiện */
+.status-badge.badge-danger {
+    background-color: #fa3367; /* Màu xanh lam cho trạng thái Đang thực hiện */
     color: white;
 }
 
@@ -107,11 +97,6 @@
     font-weight: bold;
 }
 
-.container {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 20px;
-}
 
 h2 {
     margin-bottom: 30px;
@@ -119,17 +104,13 @@ h2 {
 }
 
 .info-team {
-    margin-top: 110px;
+    margin-top: 80px;
     box-shadow: 0 6px 6px rgba(0, 0, 0, 0.1);
     color: #130a0a;
     width: 100%; /* Chiếm toàn bộ chiều rộng */
     padding: 20px; /* Khoảng cách bên trong */
     margin-bottom: 20px; /* Khoảng cách bên ngoài */
     background-color: #ffffff; /* Màu nền nhạt */
-}
-
-.info-team h4, p, h3 {
-    font-weight: 700;
 }
 
 .editor-container {
@@ -140,5 +121,63 @@ h2 {
 
 .avatar {
     border-radius: 50%;
+    margin-right: 35px;
 }
 
+.message-avatar img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+
+.top2 {
+    display: none;
+}
+
+.show-form .top2 {
+    display: flex;
+}
+
+
+.btn-send {
+    background-color: #0088cc;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 20px;
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
+    margin-top: 20px;
+    display: block; /* Đảm bảo nút được hiển thị dưới cùng */
+}
+
+.btn-send:hover {
+    background-color: #005f77;
+}
+
+.input-container textarea {
+    flex-grow: 1;
+    margin-left: 10px;
+    width: 1160px;
+    height: 100px;
+}
+
+.message-container {
+    border-bottom: 1px solid #e3e1e1; /* Tạo đường kẻ dưới mỗi message-container */
+    padding: 15px 0;
+}
+
+.message-container-reply-btn {
+    margin-left: 80px;
+    padding-left: 15px;
+    margin-top: 10px;
+}

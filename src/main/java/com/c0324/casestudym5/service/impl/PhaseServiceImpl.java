@@ -26,13 +26,14 @@ public class PhaseServiceImpl implements PhaseService {
         LocalDate approvedDate = LocalDate.now();
         for (int i = 1; i <= 4; i++) {
             int status = (i == 1) ? 1 : 0;
-            Phase phase = Phase.builder()
-                    .topic(topic)
-                    .phaseNumber(i)
-                    .status(status)
-                    .phaseProgressPercent(0)
-                    .build();
+
+            Phase phase = new Phase();
+            phase.setTopic(topic);
+            phase.setPhaseNumber(i);
+            phase.setStatus(status);
+            phase.setPhaseProgressPercent(0);
             phase.setPhaseDates(approvedDate);
+
             phaseRepository.save(phase);
         }
     }

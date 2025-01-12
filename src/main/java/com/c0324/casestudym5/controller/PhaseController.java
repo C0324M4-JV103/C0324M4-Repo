@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.Set;
+
 @Controller
 public class PhaseController {
 
@@ -33,11 +35,10 @@ public class PhaseController {
 
     @GetMapping("/progress/{topicId}")
     public String showTopicProgress(@PathVariable Long topicId, Model model) {
-
         Topic topic = topicService.getTopicById(topicId);
         Team team = topic.getTeam();
-        List<Student> students = studentService.findStudentsByTeamId(team.getId());
-        List<Phase> phases = phaseService.findPhasesByTopic(topic);
+        List<Student> students = team.getStudents();
+        Set<Phase> phases = topic.getPhases();
 
         model.addAttribute("team", team);
         model.addAttribute("topic", topic);
