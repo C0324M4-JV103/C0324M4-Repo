@@ -104,10 +104,10 @@ public class AdminController {
             }
             teacherService.createNewTeacher(teacherDTO, avatar);
 
-            redirectAttributes.addFlashAttribute("toastMessage", "Thêm sinh viên thành công!");
+            redirectAttributes.addFlashAttribute("toastMessage", "Thêm giáo viên thành công!");
             redirectAttributes.addFlashAttribute("toastType", "success");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình thêm sinh viên.");
+            redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình thêm giáo viên.");
             redirectAttributes.addFlashAttribute("toastType", "danger");
             System.out.println(e.getMessage());
         }
