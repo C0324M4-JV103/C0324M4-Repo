@@ -37,7 +37,7 @@
         </div>
 
         <form th:action="@{/topics/handle-progress-report/{id}(id=${topic.id})}" th:object="${reportTopic}" method="post" enctype="multipart/form-data">
-
+            <input type="hidden" th:field="*{phaseNumber}" />
             <label class="form-label fw-bold" for="topicName">Tên đề tài</label>
             <div class="mb-4">
                 <p id="topicName" class="form-control form-control-lg" th:text="${topic.name}"></p>
@@ -51,7 +51,10 @@
             <!-- Progress Bar -->
             <div class="d-flex justify-content-between align-items-center mb-2">
                 <p class="fw-bold mb-0" th:text="|Giai đoạn *{phaseNumber} (Vui lòng tự đánh giá tiến độ giai đoạn)|"></p>
-                <p class="fw-bold mb-0" id="progressPercent" th:text="${reportTopic.phaseProgressPercent != null ? reportTopic.phaseProgressPercent : 0} + '%'"></p>
+                <div class="d-flex align-items-center">
+                    <p class="fw-bold mb-0 me-2" id="progressPercent" th:text="${reportTopic.phaseProgressPercent != null ? reportTopic.phaseProgressPercent : 0} + '%'"></p>
+                    <input th:field="*{phaseProgressPercent}" type="number" id="progressNumber" min="0" max="100" class="form-control form-control-sm" style="width: 80px;" placeholder="0-100">
+                </div>
             </div>
             <!-- Progress Bar -->
             <div class="progress mb-4">
@@ -60,8 +63,6 @@
                      th:aria-valuenow="${reportTopic.phaseProgressPercent} != null ? ${reportTopic.phaseProgressPercent} : 0"
                      aria-valuemin="0" aria-valuemax="100"></div>
             </div>
-            <input type="range" id="progressRange" min="0" max="100"
-                   th:value="${reportTopic.phaseProgressPercent} != null ? ${reportTopic.phaseProgressPercent} : 0" class="form-range">
 
             <div class="form-floating mb-4">
                 <textarea id="content" class="form-control form-control-lg custom-height" th:field="*{reportContent}" placeholder="Nhập nội dung báo cáo" required></textarea>
@@ -69,7 +70,7 @@
             </div>
 
             <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
-                <button type="submit" class="btn btn-primary btn-lg me-2">Báo cáo</button>
+                <button type="submit" class="btn btn-primary btn-lg me-2">  Báo cáo</button>
                 <a th:href="@{/student/info-team}" class="btn btn-secondary btn-lg" role="button" style="text-decoration: none;">
                     <i class="fas fa-arrow-left m-0" style="font-size: 1rem"></i> Trở về
                 </a>
@@ -84,14 +85,18 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const progressBar = document.getElementById('progressBar');
-        const progressRange = document.getElementById('progressRange');
+        const progressNumber = document.getElementById('progressNumber');
         const progressPercent = document.getElementById('progressPercent');
 
-        progressRange.addEventListener('input', function () {
-            const value = progressRange.value;
+        function updateProgress(value) {
             progressBar.style.width = value + '%';
             progressBar.setAttribute('aria-valuenow', value);
             progressPercent.textContent = value + '%';
+        }
+
+        progressNumber.addEventListener('input', function () {
+            const value = progressNumber.value;
+            updateProgress(value);
         });
     });
 </script>

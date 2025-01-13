@@ -1,9 +1,11 @@
 package com.c0324.casestudym5.util;
 
 import com.c0324.casestudym5.dto.NotificationDTO;
+import com.c0324.casestudym5.dto.ProgressReportDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.Notification;
+import com.c0324.casestudym5.model.Phase;
 import com.c0324.casestudym5.model.Team;
 import com.c0324.casestudym5.model.User;
 import org.springframework.beans.BeanUtils;
@@ -42,4 +44,11 @@ public class CommonMapper {
         return notificationDTO;
     }
 
+    public static ProgressReportDTO mapPhaseToProgressReportDTO(Phase phase){
+        ProgressReportDTO progressReportDTO = new ProgressReportDTO();
+        progressReportDTO.setPhaseNumber(phase.getPhaseNumber());
+        progressReportDTO.setPhaseProgressPercent(phase.getPhaseProgressPercent());
+        progressReportDTO.setReportContent(phase.getReportContent());
+        return progressReportDTO;
+    }
 }

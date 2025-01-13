@@ -168,9 +168,9 @@ public class TopicServiceImpl implements TopicService {
             phase.setTopic(topic);
             phase.setPhaseNumber(i);
             if (i == 1)
-                phase.setStatus(1);
+                phase.setStatus(AppConstants.PHASE_OPENED);
             else
-                phase.setStatus(0);
+                phase.setStatus(AppConstants.PHASE_CLOSED);
             phase.setPhaseProgressPercent(0);
             phase.setStartDate(startDate);
             phase.setEndDate(startDate.plusWeeks(1));
@@ -212,24 +212,25 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public Boolean submitProgressReport(Long topicId, ProgressReportDTO progressReportDTO, Student student) {
+    public String submitProgressReport(Long topicId, ProgressReportDTO progressReportDTO, Student student) {
         Phase phase = phaseRepository.findByTopicIdAndPhaseNumber(topicId, progressReportDTO.getPhaseNumber());
         if (phase == null) {
-            return false;
+            return "Không tìm thấy giai đoạn";
         }
-        if (!Objects.equals(student.getTeam().getTopic().getId(), topicId) || phase.getStatus() == 0) {
-            return false;
+        if (!Objects.equals(student.getTeam().getTopic().getId(), topicId) || phase.getStatus() == AppConstants.PHASE_CLOSED) {
+            return "Không thể báo cáo giai đoạn này";
         }
         if (progressReportDTO.getPhaseProgressPercent() > 100 || progressReportDTO.getPhaseProgressPercent() < 50) {
-            return false;
+            return "Tiến độ không hợp lệ (50% - 100%)";
         }
-        phase.setStatus(1);
+        phase.setStatus(AppConstants.PHASE_COMPLETED);
+        phase.setReportContent(progressReportDTO.getReportContent());
         phase.setPhaseProgressPercent(progressReportDTO.getPhaseProgressPercent());
 
         // upload report file to firebase
         try {
             if (progressReportDTO.getReportFile() == null) {
-                return false;
+                return "Không tìm thấy file báo cáo";
             }
             String url_report = firebaseService.uploadFileToFireBase(progressReportDTO.getReportFile(), AppConstants.URL_REPORT);
             MultiFile report = new MultiFile();
@@ -237,7 +238,7 @@ public class TopicServiceImpl implements TopicService {
             multiFileRepository.save(report);
             phase.setReportFile(report);
         } catch (Exception e) {
-            return false;
+            return "Lỗi khi tải file lên";
         }
         phaseRepository.save(phase);
 
@@ -256,7 +257,14 @@ public class TopicServiceImpl implements TopicService {
             notification.setContent("đã báo cáo tiến độ giai đoạn " + progressReportDTO.getPhaseNumber() + " của đề tài " + topic.getName());
             notificationService.sendNotification(notification);
         }
-        return true;
+
+        // Open next phase and check if all phases are completed
+        Phase next_phase = phaseRepository.findByTopicIdAndPhaseNumber(topicId, progressReportDTO.getPhaseNumber() + 1);
+        if (next_phase != null) {
+            next_phase.setStatus(AppConstants.PHASE_OPENED);
+            phaseRepository.save(next_phase);
+        }
+        return "";
     }
 
     private User getCurrentUser() {

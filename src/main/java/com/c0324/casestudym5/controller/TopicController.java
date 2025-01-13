@@ -8,6 +8,7 @@ import com.c0324.casestudym5.service.StudentService;
 import com.c0324.casestudym5.service.TopicService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.AppConstants;
+import com.c0324.casestudym5.util.CommonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -81,10 +82,12 @@ public class TopicController {
             redirectAttributes.addFlashAttribute("errorMessage", "Giai đoạn này chưa được mở.");
             return "redirect:/student/info-team";
         }
+
+        ProgressReportDTO progressReportDTO = CommonMapper.mapPhaseToProgressReportDTO(phase);
         List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
         model.addAttribute("notifications", notifications);
         model.addAttribute("topic", topic);
-        model.addAttribute("reportTopic", new ProgressReportDTO(phaseNum));
+        model.addAttribute("reportTopic", progressReportDTO);
         return "team/progress-report";
     }
 
@@ -102,12 +105,13 @@ public class TopicController {
         if (topic == null || topic.getApproved() != AppConstants.APPROVED || !userTeam.getTopic().getId().equals(topic.getId())) {
             return "common/404";
         }
-        boolean isReported = topicService.submitProgressReport(topic.getId(), progressReportDTO, student);
-        if (!isReported) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Báo cáo không hợp lệ");
-            return "redirect:/topics/" + id; // tam thoi chuyen ve trang topic detail
+        String isReported = topicService.submitProgressReport(topic.getId(), progressReportDTO, student);
+        if (!isReported.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", isReported);
+            return "redirect:/student/info-team"; // tam thoi chuyen ve trang info team
         }
-        return "redirect:/topics/" + id; // tam thoi chuyen ve trang topic detail
+        redirectAttributes.addFlashAttribute("successMessage", "Báo cáo giai đoạn " + progressReportDTO.getPhaseNumber() + " đã được gửi.");
+        return "redirect:/student/info-team"; // tam thoi chuyen ve trang info team
     }
 
     private User getCurrentUser() {

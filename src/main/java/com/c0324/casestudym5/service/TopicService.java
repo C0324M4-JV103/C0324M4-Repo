@@ -28,5 +28,5 @@ public interface TopicService {
     void rejectTopic(Long id);
     Page<Topic> getPendingTopicsPage(Pageable pageable);
 
-    Boolean submitProgressReport(Long topicId, ProgressReportDTO progressReportDTO, Student student);
+    String submitProgressReport(Long topicId, ProgressReportDTO progressReportDTO, Student student);
 }
