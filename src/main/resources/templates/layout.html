@@ -21,15 +21,13 @@
 <div th:fragment="nav">
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <!--        <a class="navbar-brand" href="#">CodeGym</a>-->
             <a class="navbar-brand" href="#">
-                <img src="https://cdn.codegym.vn/wp-content/uploads/2020/05/Logo-CodeGym-W-05.png" alt="CodeGym Logo"
-                     style="height: 40px;">
+                <img src="https://cdn.codegym.vn/wp-content/uploads/2020/05/Logo-CodeGym-W-05.png" alt="CodeGym Logo" style="height: 40px;">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item"><a class="nav-link" href="/">TRANG CHỦ</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">TIN TỨC</a></li>
@@ -60,7 +58,6 @@
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#">LIÊN HỆ</a></li>
-                    <!--Chuông-->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown notif-icon" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-bell" style="font-size: 15px"></i>
@@ -87,24 +84,17 @@
                             </div>
                         </div>
                     </li>
-
-                    <!--Chuông-->
                 </ul>
-
                 <div sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')">
                     <div class="dropdown user-profile d-flex justify-content-between align-items-center">
                         <span sec:authentication="principal.username" style="color: white" class="me-3"></span>
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <img src="https://www.thaimediafund.or.th/wp-content/uploads/2024/07/default-avatar-profile-icon-.jpg"
-                                 alt="User profile" class="rounded-circle"
-                                 style="width: 40px; height: 40px; object-fit: cover;">
+                            <img src="https://www.thaimediafund.or.th/wp-content/uploads/2024/07/default-avatar-profile-icon-.jpg" alt="User profile" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" th:href="@{/user/profile}"
-                                                                    style="font-size: 25px; font-weight: 700">THÔNG TIN CÁ NHÂN</a></li>
+                            <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" th:href="@{/user/profile}" style="font-size: 25px; font-weight: 700">THÔNG TIN CÁ NHÂN</a></li>
                             <hr class="divider">
-                            <li><a class="dropdown-item" th:href="@{/user/change-password}"
-                                   style="font-size: 25px; font-weight: 700">ĐỔI MẬT KHẨU</a></li>
+                            <li><a class="dropdown-item" th:href="@{/user/change-password}" style="font-size: 25px; font-weight: 700">ĐỔI MẬT KHẨU</a></li>
                             <hr class="divider">
                             <li><a class="dropdown-item" th:href="@{/logout}" style="font-size: 25px; font-weight: 700">ĐĂNG XUẤT</a></li>
                         </ul>
@@ -305,13 +295,12 @@
 
 <!--Footer-->
 <div th:fragment="footer">
-    <footer class="footer">
+    <footer class="footer py-4">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
                     <div class="logo">Code<span>gym</span></div>
-                    <p class="mb-4">Hệ thống quản lý thực hiện đề tài tốt nghiệp khoa CNTT- Software Requirements
-                        Specification V2.0</p>
+                    <p class="mb-4">Hệ thống quản lý thực hiện đề tài tốt nghiệp khoa CNTT- Software Requirements Specification V2.0</p>
                     <div class="contact-info">
                         <div>
                             <i class="fas fa-map-marker-alt contact-icon"></i>
@@ -328,7 +317,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-4 mb-4 mb-lg-0">
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
                     <h3 class="footer-heading">Các hoạt động & Tài nguyên</h3>
                     <div class="products">
                         <div>
@@ -350,21 +339,16 @@
                             <a href="" target="_blank" class="post-title">Blog chia sẻ kiến thức</a>
                         </div>
                     </div>
-
-
                 </div>
 
-                <div class="col-lg-4">
+                <div class="col-lg-4 col-md-12">
                     <h3 class="footer-heading">Đăng ký nhận thông tin</h3>
-                    <div class="input-group">
+                    <div class="input-group mb-3">
                         <input type="email" class="form-control" placeholder="Nhập email của bạn">
                         <button class="btn subscribe-btn text-white" type="button">Xác nhận</button>
                     </div>
-                    <br>
                     <hr class="divider">
-                    <br>
                     <h3 class="footer-heading">Liên kết mạng xã hội</h3>
-
                     <div class="social-icons">
                         <a href="https://www.facebook.com/codegym.vn" target="_blank">
                             <i class="fab fa-facebook"></i>
