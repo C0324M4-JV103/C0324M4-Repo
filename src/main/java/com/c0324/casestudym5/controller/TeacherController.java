@@ -1,25 +1,26 @@
 package com.c0324.casestudym5.controller;
 
+import com.c0324.casestudym5.dto.NotificationDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.Teacher;
 import com.c0324.casestudym5.model.Topic;
 import com.c0324.casestudym5.model.User;
-import com.c0324.casestudym5.service.TeacherService;
-import com.c0324.casestudym5.service.TeamService;
-import com.c0324.casestudym5.service.TopicService;
-import com.c0324.casestudym5.service.UserService;
+import com.c0324.casestudym5.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -31,13 +32,26 @@ public class TeacherController {
     private final TeamService teamService;
     private final UserService userService;
     private final TopicService topicService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService) {
+    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService, NotificationService notificationService) {
         this.teacherService = teacherService;
         this.teamService = teamService;
         this.userService = userService;
         this.topicService = topicService;
+        this.notificationService = notificationService;
+    }
+
+    @ModelAttribute
+    public void addNotificationsToModel(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        User currentUser = userService.findByEmail(userEmail);
+        if (currentUser != null) {
+            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
+            model.addAttribute("notifications", notifications);
+        }
     }
 
     @GetMapping("/detail/{id}")

@@ -40,6 +40,15 @@ public class TopicController {
         this.userService = userService;
     }
 
+    @ModelAttribute
+    public void addNotificationsToModel(Model model) {
+        User currentUser = getCurrentUser();
+        if (currentUser != null) {
+            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
+            model.addAttribute("notifications", notifications);
+        }
+    }
+
     @GetMapping("/topics")
     public String getTopics(@RequestParam(defaultValue = "0") int page, Model model) {
         PageRequest pageRequest = PageRequest.of(page, 12, Sort.by("id").descending());
@@ -84,8 +93,6 @@ public class TopicController {
         }
 
         ProgressReportDTO progressReportDTO = CommonMapper.mapPhaseToProgressReportDTO(phase);
-        List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
-        model.addAttribute("notifications", notifications);
         model.addAttribute("topic", topic);
         model.addAttribute("reportTopic", progressReportDTO);
         return "team/progress-report";

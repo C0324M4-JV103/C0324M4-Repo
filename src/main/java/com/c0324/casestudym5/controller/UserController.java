@@ -1,13 +1,17 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.ChangePasswordDTO;
+import com.c0324.casestudym5.dto.NotificationDTO;
 import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.User;
+import com.c0324.casestudym5.service.NotificationService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.CommonMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,21 +19,36 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, NotificationService notificationService) {
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
+    }
+
+    @ModelAttribute
+    public void addNotificationsToModel(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        User currentUser = userService.findByEmail(userEmail);
+        if (currentUser != null) {
+            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
+            model.addAttribute("notifications", notifications);
+        }
     }
 
     @GetMapping("/change-password")

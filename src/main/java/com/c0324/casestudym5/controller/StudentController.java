@@ -47,6 +47,17 @@ public class StudentController {
         this.notificationService = notificationService;
     }
 
+    @ModelAttribute
+    public void addNotificationsToModel(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        User currentUser = userService.findByEmail(userEmail);
+        if (currentUser != null) {
+            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
+            model.addAttribute("notifications", notifications);
+        }
+    }
+
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
@@ -95,7 +106,6 @@ public class StudentController {
         model.addAttribute("currentTeam", currentTeam);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
-        model.addAttribute("notifications", notifications);
 
         return "team/team-register";
     }
@@ -185,7 +195,6 @@ public class StudentController {
         model.addAttribute("team", team);
         model.addAttribute("student", currentStudent);
         model.addAttribute("list", availableStudents);
-        model.addAttribute("notifications", notifications);
         return "team/team-info";
 
     }
