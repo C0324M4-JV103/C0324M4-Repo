@@ -148,7 +148,8 @@ public class AdminController {
         }
 
         try {
-            if (userService.existsByEmail(teacherDTO.getEmail())) {
+            Optional<Teacher> existingTeacher = teacherService.getTeacherById(id);
+            if (!teacherDTO.getEmail().equals(existingTeacher.get().getUser().getEmail()) && userService.existsByEmail(teacherDTO.getEmail())) {
                 bindingResult.rejectValue("email", "error.teacherDTO", "Email đã tồn tại.");
                 model.addAttribute("faculties", facultyService.findAll());
                 return "admin/teacher/teacher-edit";

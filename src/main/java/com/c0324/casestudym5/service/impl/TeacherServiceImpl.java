@@ -1,14 +1,8 @@
 package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.TeacherDTO;
-import com.c0324.casestudym5.model.MultiFile;
-import com.c0324.casestudym5.model.Role;
-import com.c0324.casestudym5.model.Teacher;
-import com.c0324.casestudym5.model.User;
-import com.c0324.casestudym5.repository.MultiFileRepository;
-import com.c0324.casestudym5.repository.RoleRepository;
-import com.c0324.casestudym5.repository.TeacherRepository;
-import com.c0324.casestudym5.repository.UserRepository;
+import com.c0324.casestudym5.model.*;
+import com.c0324.casestudym5.repository.*;
 import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +26,19 @@ public class TeacherServiceImpl implements TeacherService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final FacultyRepository facultyRepository;
 
     @Autowired
     public TeacherServiceImpl(TeacherRepository teacherRepository, FirebaseService firebaseService,
-                              MultiFileRepository multiFileRepository, RoleRepository roleRepository, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+                              MultiFileRepository multiFileRepository, RoleRepository roleRepository,
+                              UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, FacultyRepository facultyRepository) {
         this.firebaseService = firebaseService;
         this.teacherRepository = teacherRepository;
         this.multiFileRepository = multiFileRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.facultyRepository = facultyRepository;
     }
 
     @Override
@@ -111,7 +108,9 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher newTeacher = new Teacher();
         newTeacher.setUser(newUser);
         newTeacher.setDegree(teacherDTO.getDegree());
-        newTeacher.setFaculty(newTeacher.getFaculty());
+        Faculty faculty = facultyRepository.findById(teacherDTO.getFacultyId())
+                .orElseThrow(() -> new Exception("Faculty not found"));
+        newTeacher.setFaculty(faculty);
         teacherRepository.save(newTeacher);
     }
 
@@ -142,7 +141,9 @@ public class TeacherServiceImpl implements TeacherService {
             multiFileRepository.save(newAvatar);
             existingUser.setAvatar(newAvatar);
         }
-
+        Faculty faculty = facultyRepository.findById(teacherDTO.getFacultyId())
+                .orElseThrow(() -> new Exception("Faculty not found"));
+        existingTeacher.setFaculty(faculty);
         existingTeacher.setDegree(teacherDTO.getDegree());
         userRepository.save(existingUser);
         teacherRepository.save(existingTeacher);
