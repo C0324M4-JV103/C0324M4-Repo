@@ -37,7 +37,7 @@ public class InvitationServiceimpl implements InvitationService {
 
     @Override
     public void inviteStudent(Long studentId, Student currentStudent, Team currentTeam) {
-        // Láº¥y email cá»§a sinh viÃªn Ä‘Æ°á»£c má»�i
+        // Lấy email của sinh viên được mời
         String email = studentService.getStudentEmailById(studentId);
         Student invitedStudent = studentService.findById(studentId);
         if (invitedStudent.getTeam() == null && !invitationRepository.existsByStudentAndTeam(invitedStudent, currentTeam)) {
@@ -47,14 +47,14 @@ public class InvitationServiceimpl implements InvitationService {
             invitation.setInviter(currentStudent);
             invitationRepository.save(invitation);
         }
-        // Táº¡o subject vÃ  content cho email
-        String subject = "Lá»�i má»�i tham gia nhÃ³m tá»« " + currentTeam.getName();
+        // Tạo subject và content cho email
+        String subject = "Lời mời tham gia nhóm từ " + currentTeam.getName();
         mailService.sendMailInvitedTeamToStudent(email, subject, invitedStudent.getUser().getName(), currentStudent.getUser().getName(), currentTeam.getName());
-        // Táº¡o notification websocket
+        // Tạo notification websocket
         Notification notification = new Notification();
         notification.setSender(currentStudent.getUser());
         notification.setReceiver(invitedStudent.getUser());
-        notification.setContent(" Ä‘Ã£ gá»­i Ä‘áº¿n báº¡n 1 lá»�i má»�i tham gia NhÃ³m: " + currentTeam.getName());
+        notification.setContent(" đã gửi đến bạn 1 lời mời tham gia Nhóm: " + currentTeam.getName());
         notification.setCreatedAt(new Date());
         notificationService.sendNotification(notification);
     }

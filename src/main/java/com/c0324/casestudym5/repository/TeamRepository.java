@@ -21,4 +21,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
 
     Boolean existsByName(String name);
 
+    int countByTeacherId(Long teacherId);
 }

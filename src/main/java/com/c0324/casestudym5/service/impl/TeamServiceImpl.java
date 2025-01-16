@@ -98,7 +98,7 @@ public class TeamServiceImpl implements TeamService {
                 notificationService.sendNotification(notification);
             }
             //Delete team
-            teamRepository.delete(team); 
+            teamRepository.delete(team);
         }
     }
 
@@ -122,6 +122,37 @@ public class TeamServiceImpl implements TeamService {
         currentStudent.setLeader(true);
         studentService.save(currentStudent);
         return newTeam;
+    }
+
+    @Override
+    public Team teacherrgt(Long teamId, Long teacherId) {
+        Team team = teamRepository.findById(teamId).orElse(null);
+        if (team != null) {
+            if (team.getTopic() != null && teacherId == 0) {
+                throw new IllegalStateException("Đã đăng ký đề tài, không được hủy giáo viên.");
+            }
+            if (team.getTopic() != null) {
+                throw new IllegalStateException("Nhóm đã đăng ký đề tài, không thể đăng ký giáo viên mới.");
+            }
+            if (teacherId == 0) {
+                team.setTeacher(null);
+                teamRepository.save(team);
+            } else {
+                Teacher teacher = teacherRepository.findById(teacherId).orElse(null);
+                if (teacher != null) {
+                    team.setTeacher(teacher);
+                    teamRepository.save(team);
+                }
+            }
+            return team;
+        }
+        return null;
+    }
+
+
+    @Override
+    public int countTeamsByTeacherId(Long teacherId) {
+        return teamRepository.countByTeacherId(teacherId);
     }
 
 }

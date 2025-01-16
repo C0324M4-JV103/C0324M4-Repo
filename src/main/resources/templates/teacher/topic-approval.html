@@ -154,7 +154,16 @@
                     location.reload();
                 },
                 error: function (xhr, status, error) {
-                    alert('Có lỗi xảy ra, vui lòng thử lại.');
+                    const toast = document.createElement('div');
+                    toast.classList.add('toast');
+                    toast.textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+                    document.body.appendChild(toast);
+
+                    // Xoá toast sau 3 giây
+                    setTimeout(function() {
+                        toast.remove();
+                    }, 3000);
+                    // alert('Có lỗi xảy ra, vui lòng thử lại.');
                 }
             });
         };

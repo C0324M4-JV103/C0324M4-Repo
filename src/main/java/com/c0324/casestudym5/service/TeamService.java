@@ -25,4 +25,7 @@ public interface TeamService {
     Team createNewTeam(TeamDTO teamDTO, Student currentStudent);
 
 
+    int countTeamsByTeacherId(Long teacherId);
+
+    Team teacherrgt(Long id, Long teacherId);
 }

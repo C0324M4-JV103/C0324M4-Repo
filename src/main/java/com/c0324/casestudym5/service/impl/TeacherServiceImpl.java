@@ -112,4 +112,9 @@ public class TeacherServiceImpl implements TeacherService {
         newTeacher.setDegree(teacherDTO.getDegree());
         teacherRepository.save(newTeacher);
     }
+
+    @Override
+    public Page<Teacher> findAll(Pageable pageable) {
+        return teacherRepository.findAll(pageable);
+    }
 }
