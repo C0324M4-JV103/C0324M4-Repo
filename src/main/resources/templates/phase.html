@@ -82,7 +82,7 @@
                    aria-controls="feedback" aria-selected="false" style="color: #2c3e50">THẮC MẮC CỦA SINH VIÊN</a>
             </li>
         </ul>
-
+        <input type="hidden" id="isTeacher" th:value="${#authorization.expression('hasRole(''TEACHER'')') ? 'true' : 'false'}"/>
         <div class="card-body">
             <!-- Tab 1: Đánh Giá Của Giáo Viên -->
             <div class="tab-pane fade show active" id="teacher" role="tabpanel" aria-labelledby="teacher-tab">
@@ -115,7 +115,7 @@
                                             <strong class="mb-0 me-2" th:text="${comment.studentName}"></strong>
                                         </div>
                                         <p class="mb-2" th:text="${comment.content}"></p>
-                                        <div class="action-buttons mb-2" sec:authorize="hasRole('TEACHER')" th:if="${comment.reply == ''}">
+                                        <div class="action-buttons mb-2" sec:authorize="hasRole('TEACHER')" th:if="${comment.reply == null || comment.reply == ''}">
                                             <button class="btn btn-success btn-sm reply-btn">Trả lời</button><!-- role teacher -->
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center comment-actions">
@@ -130,7 +130,7 @@
                             </div>
 
                             <!-- Giáo viên reply -->
-                            <div class="message-container-reply-btn" th:if="${comment.reply != ''}">
+                            <div class="message-container-reply-btn" th:if="${comment.reply != null && comment.reply != ''}">
                                 <div class="d-flex">
                                     <div class="me-3">
                                         <img th:src="${comment.teacherAvatar}"

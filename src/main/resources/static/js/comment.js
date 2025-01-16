@@ -8,7 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
         stompClient.subscribe('/socket/comment', function (response) {
             const output = JSON.parse(response.body);
             console.log(output);//log comment to console for debugging
-            showComment(output);
+            let isTeacher = document.getElementById('isTeacher').value;
+            if(isTeacher === 'true') {
+                showCommentForTeacher(output);
+            }
+            else {
+                showCommentForStudent(output);
+            }
         });
 
         stompClient.subscribe('/socket/reply', function (response) {
@@ -56,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
     })
 
-    const showComment = (comment) => {
+    const showCommentForTeacher = (comment) => {
         const commentContent = document.querySelector('#show-comment');
         const newComment = `
         <div class="top1" id="'comment-' + ${comment.id}">
@@ -70,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <strong class="mb-0 me-2">${comment.senderName}</strong>
                     </div>
                     <p class="mb-2">${comment.content}</p>
-                    <div class="action-buttons mb-2" sec:authorize="hasRole('TEACHER')">
+                    <div class="action-buttons mb-2" >
                         <button class="btn btn-success btn-sm reply-btn">Trả lời</button><!-- role teacher -->
                     </div>
                     <div class="d-flex justify-content-between align-items-center comment-actions">
@@ -84,27 +90,53 @@ document.addEventListener('DOMContentLoaded', function() {
         commentContent.insertAdjacentHTML('afterbegin', newComment);
     }
 
+    const showCommentForStudent = (comment) => {
+        const commentContent = document.querySelector('#show-comment');
+        const newComment = `
+        <div class="top1" id="'comment-' + ${comment.id}">
+        <div class="message-container">
+            <div class="d-flex">
+                <div class="me-3">
+                    <img src="${comment.senderAvatar}" width="50px" height="50px" alt="Avatar" class="avatar">
+                </div>
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center mb-2">
+                        <strong class="mb-0 me-2">${comment.senderName}</strong>
+                    </div>
+                    <p class="mb-2">${comment.content}</p>
+                    <div class="d-flex justify-content-between align-items-center comment-actions">
+                         <span class="timestamp ms-auto" >${comment.timeDifference}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    `;
+        commentContent.insertAdjacentHTML('afterbegin', newComment);
+    }
+
+
     const showReply = (reply) => {
-        // const parentComment = document.querySelector(`#comment-${reply.id}`);
-        // let replyHTML = `
-        // <div class="message-container-reply-btn">
-        //     <div class="d-flex">
-        //         <div class="me-3">
-        //             <img src="${reply.senderAvatar}"
-        //             width="50px" height="50px" alt="Avatar" class="avatar">
-        //         </div>
-        //         <div class="flex-grow-1">
-        //             <div class="mb-2">
-        //                 <strong class="mb-0" >${reply.senderName}</strong>
-        //             </div>
-        //             <p class=" mb-2" >${reply.content}</p>
-        //             <div class="d-flex justify-content-between align-items-center comment-actions">
-        //             <span class="timestamp ms-auto">${reply.timeDifference}</span>
-        //             </div>
-        //         </div>
-        //     </div>
-        // </div>
-        // `
-        // parentComment.insertAdjacentHTML('beforeend', replyHTML);
+        const parentComment = document.querySelector(`#comment-${reply.id}`);
+        let replyHTML = `
+        <div class="message-container-reply-btn">
+            <div class="d-flex">
+                <div class="me-3">
+                    <img src="${reply.senderAvatar}"
+                    width="50px" height="50px" alt="Avatar" class="avatar">
+                </div>
+                <div class="flex-grow-1">
+                    <div class="mb-2">
+                        <strong class="mb-0" >${reply.senderName}</strong>
+                    </div>
+                    <p class=" mb-2" >${reply.content}</p>
+                    <div class="d-flex justify-content-between align-items-center comment-actions">
+                    <span class="timestamp ms-auto">${reply.timeDifference}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `
+        parentComment.insertAdjacentHTML('beforeend', replyHTML);
     }
 });

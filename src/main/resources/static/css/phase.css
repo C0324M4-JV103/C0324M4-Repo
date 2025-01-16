@@ -143,8 +143,8 @@ h2 {
     display: none;
 }
 
-.show-form .top2 {
-    display: flex;
+.top2.show-form {
+    display: block;
 }
 
 

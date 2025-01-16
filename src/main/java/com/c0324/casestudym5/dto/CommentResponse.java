@@ -7,6 +7,7 @@ import lombok.*;
 @Builder
 @Getter
 @Setter
+@ToString
 public class CommentResponse {
 
     private Long id;
