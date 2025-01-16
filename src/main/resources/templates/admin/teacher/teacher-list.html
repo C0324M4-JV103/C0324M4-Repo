@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> <!--link các icon trong footer-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.9/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="/css/teachers.css">
     <link rel="stylesheet" href="/css/home-page.css">
 </head>
@@ -33,18 +34,34 @@
     </div>
 
     <script>
-        window.onload = function() {
+        window.onload = function () {
             var toastElList = document.querySelectorAll('.toast');
             var toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl));
             toastList.forEach(toast => toast.show());
         };
+
+        function confirmDelete() {
+            Swal.fire({
+                title: 'Bạn có chắc chắn muốn xóa giáo viên này không?',
+                text: "Hành động này không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có, xóa!',
+                cancelButtonText: 'Hủy',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('deleteForm').submit(); // Gửi form nếu người dùng xác nhận
+                }
+            });
+        }
     </script>
 
-<!-- Navbar -->
-<div th:replace="layout :: nav"></div>
-<div id="body-fixed"  class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <form action="/admin/teacher" method="get" class="d-flex align-items-center">
+    <!-- Navbar -->
+    <div th:replace="layout :: nav"></div>
+    <div id="body-fixed" class="container mt-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <form action="/admin/teacher" method="get" class="d-flex align-items-center">
             <input type="text" name="searchQuery" class="form-control me-3" placeholder="Tìm kiếm theo ID, Tên hoặc Email">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-search"></i>
@@ -85,12 +102,14 @@
                     <a th:href="@{/teacher/detail/{id}(id=${teacher.id})}" class="btn btn-info">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <a th:href="@{admin/teacher/update/{id}(id=${teacher.id})}" class="btn btn-warning">
+                    <a th:href="@{teacher/edit/{id}(id=${teacher.id})}" class="btn btn-warning">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a th:href="@{admin/teacher/delete/{id}(id=${teacher.id})}" class="btn btn-danger">
-                        <i class="fas fa-trash"></i>
-                    </a>
+                    <form th:action="@{teacher/delete/{id}(id=${teacher.id})}" method="post" style="display:inline-block;" id="deleteForm">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
                 </td>
             </tr>
             </tbody>
@@ -106,8 +125,27 @@
     </div>
 
 </div>
+<!--confirm delete-->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa giáo viên này không? Hành động này không thể hoàn tác!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" onclick="document.getElementById('deleteForm').submit();">Xóa!</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <!-- Footer -->
 <div th:replace="layout :: footer"></div>
-<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.9/dist/sweetalert2.min.js"></script>
+    <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
