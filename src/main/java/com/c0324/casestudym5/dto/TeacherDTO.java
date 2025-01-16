@@ -49,6 +49,8 @@ public class TeacherDTO {
 
     private MultipartFile avatar;
 
+    private String avatarUrl;
+
     public TeacherDTO(Teacher teacher) {
         this.id = teacher.getId();
         this.name = teacher.getUser().getName();
@@ -59,5 +61,6 @@ public class TeacherDTO {
         this.address = teacher.getUser().getAddress();
         this.degree = teacher.getDegree();
         this.facultyId = teacher.getFaculty().getId();
+        this.avatarUrl = teacher.getUser().getAvatar() != null ? teacher.getUser().getAvatar().getUrl() : null;
     }
 }
