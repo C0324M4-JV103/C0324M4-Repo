@@ -5,6 +5,7 @@ import com.c0324.casestudym5.dto.RegisterTopicDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.service.*;
+import com.c0324.casestudym5.util.AppConstants;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -182,6 +183,7 @@ public class StudentController {
 
         model.addAttribute("student", currentStudent);;
         model.addAttribute("team", team);
+        model.addAttribute("student", currentStudent);
         model.addAttribute("list", availableStudents);
         model.addAttribute("notifications", notifications);
         return "team/team-info";
@@ -190,6 +192,14 @@ public class StudentController {
 
     @GetMapping("/register-topic")
     public String showRegisterTopicForm(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        Student currentStudent = getCurrentStudent();
+        Team currentTeam = currentStudent.getTeam();
+        if (currentTeam == null) {
+            return "redirect:/student/team";
+        }
+        if (currentTeam.getTopic() != null) {
+            return "redirect:/student/info-team";
+        }
         if (!model.containsAttribute("registerTopic")) {
             model.addAttribute("registerTopic", new RegisterTopicDTO());
         }
@@ -221,7 +231,7 @@ public class StudentController {
             long imageSize = image.getSize();
             if (imageName != null && (imageName.endsWith(".jpg") || imageName.endsWith(".png") || imageName.endsWith(".jpeg"))) {
                 if (imageSize > maxFileSizeImage) {
-                    redirectAttributes.addFlashAttribute("imageError", "Kích thước ảnh không được vượt quá 5MB");
+                    redirectAttributes.addFlashAttribute("errorMessage", "Kích thước ảnh không được vượt quá 5MB");
                     redirectAttributes.addFlashAttribute("registerTopic", registerTopicDTO);
                     return "redirect:/student/register-topic";
                 }
@@ -238,12 +248,12 @@ public class StudentController {
             long descriptionSize = description.getSize();
             if (descriptionName != null && (descriptionName.endsWith(".xls") || descriptionName.endsWith(".xlsx") || descriptionName.endsWith(".doc") || descriptionName.endsWith(".docx") || descriptionName.endsWith(".ppt") || descriptionName.endsWith(".pptx"))) {
                 if (descriptionSize > maxFileSizeDescription) {
-                    redirectAttributes.addFlashAttribute("descriptionError", "Kích thước tệp mô tả không được vượt quá 15MB");
+                    redirectAttributes.addFlashAttribute("errorMessage", "Kích thước tệp mô tả không được vượt quá 15MB");
                     redirectAttributes.addFlashAttribute("registerTopic", registerTopicDTO);
                     return "redirect:/student/register-topic";
                 }
             } else {
-                redirectAttributes.addFlashAttribute("descriptionError", "Chỉ hỗ trợ tệp có định dạng xls, xlsx, doc, docx, ppt, pptx");
+                redirectAttributes.addFlashAttribute("errorMessage", "Chỉ hỗ trợ tệp có định dạng xls, xlsx, doc, docx, ppt, pptx");
                 redirectAttributes.addFlashAttribute("registerTopic", registerTopicDTO);
                 return "redirect:/student/register-topic";
             }
@@ -251,12 +261,14 @@ public class StudentController {
 
         boolean isRegistered = topicService.registerTopic(registerTopicDTO, principal.getName());
         if (!isRegistered) {
-            redirectAttributes.addFlashAttribute("registerError", "Đăng ký đề tài thất bại");
+            redirectAttributes.addFlashAttribute("errorMessage", "Đăng ký đề tài thất bại");
             redirectAttributes.addFlashAttribute("registerTopic", registerTopicDTO);
             return "redirect:/student/register-topic";
         }
-        redirectAttributes.addFlashAttribute("registerSuccess", "Đăng ký đề tài thành công");
+        redirectAttributes.addFlashAttribute("successMessage", "Đăng ký đề tài thành công");
         return "redirect:/student/info-team";
     }
+
+
 
 }

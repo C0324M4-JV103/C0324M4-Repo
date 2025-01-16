@@ -1,11 +1,7 @@
 package com.c0324.casestudym5.dto;
 
 import com.c0324.casestudym5.model.Teacher;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +27,7 @@ public class TeacherDTO {
     private String email;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Ngày sinh không được để trống")
     private Date dob;
 
     @NotEmpty(message = "Giới tính không được để trống")
@@ -40,7 +37,7 @@ public class TeacherDTO {
     @NotEmpty(message = "Số điện thoại không được để trống")
     private String phoneNumber;
 
-    @Size(min = 5, max = 50, message = "Địa có độ dài từ 5 đến 50 ký tự")
+    @Size(min = 5, max = 50, message = "Địa chỉ có độ dài từ 5 đến 50 ký tự")
     @NotEmpty(message = "Địa chỉ không được để trống")
     private String address;
 
@@ -50,8 +47,20 @@ public class TeacherDTO {
     @NotNull(message = "Khoa không được để trống")
     private Long facultyId;
 
-    @NotNull(message = "Ảnh không được để trống")
     private MultipartFile avatar;
 
-    private MultipartFile multipartFile;
+    private String avatarUrl;
+
+    public TeacherDTO(Teacher teacher) {
+        this.id = teacher.getId();
+        this.name = teacher.getUser().getName();
+        this.email = teacher.getUser().getEmail();
+        this.dob = teacher.getUser().getDob();
+        this.gender = teacher.getUser().getGender().name();
+        this.phoneNumber = teacher.getUser().getPhoneNumber();
+        this.address = teacher.getUser().getAddress();
+        this.degree = teacher.getDegree();
+        this.facultyId = teacher.getFaculty().getId();
+        this.avatarUrl = teacher.getUser().getAvatar() != null ? teacher.getUser().getAvatar().getUrl() : null;
+    }
 }

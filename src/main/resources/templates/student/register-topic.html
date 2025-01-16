@@ -6,7 +6,6 @@
     <title>CODEGYM</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/register-topic.css">
     <link rel="stylesheet" href="/css/home-page.css">
@@ -19,9 +18,25 @@
     <div class="container-fluid h-custom">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+
+                <!-- Back button -->
                 <a href="/student/info-team" class="btn btn-secondary mb-4">
                     <i class="fas fa-arrow-left"></i> Trở lại
                 </a>
+
+                <!-- Error message -->
+                <div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
+                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="warningToast">
+                        <div class="toast-header bg-danger text-white">
+                            <strong class="me-auto">Thất bại</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            <span th:text="${errorMessage}"></span>
+                        </div>
+                    </div>
+                </div>
+
                 <form th:action="@{/student/handle-register-topic}" th:object="${registerTopic}" method="post" enctype="multipart/form-data">
                     <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                         <h1 class="lead fw-normal mb-0 me-3 main-title">Đăng ký đề tài</h1>
@@ -55,11 +70,14 @@
                         <label class="form-label" for="image">Ảnh</label>
                     </div>
 
+                    <!-- Submit button -->
                     <div class="text-center text-lg-start mt-4 pt-2">
                         <button type="submit" class="btn btn-primary btn-lg w-100 w-lg-auto">Đăng ký</button>
                     </div>
                 </form>
             </div>
+
+            <!-- Topic list -->
             <div class="col-md-9 col-lg-6 col-xl-5 d-none d-md-block">
                 <table class="table table-hover table-bordered">
                     <thead>
@@ -79,6 +97,7 @@
                     </tr>
                     </tbody>
                 </table>
+                <!-- Pagination -->
                 <div class="d-flex justify-content-center" th:if="${totalPages > 1}">
                     <ul class="pagination">
                         <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
@@ -102,26 +121,8 @@
 </div>
 <!-- Footer -->
 <div th:replace="~{layout :: footer}"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script th:inline="javascript">
-    $(document).ready(function() {
-        /* Check and display error messages */
-        if ([[${imageError != null}]] && '[[${imageError}]]' !== '') {
-            toastr.error([[${imageError}]]);
-        }
-        if ([[${descriptionError != null}]] && '[[${descriptionError}]]' !== '') {
-            toastr.error([[${descriptionError}]]);
-        }
-        if ([[${registerError != null}]] && '[[${registerError}]]' !== '') {
-            toastr.error([[${registerError}]]);
-        }
-        if ([[${registerSuccess != null}]] && '[[${registerSuccess}]]' !== '') {
-            toastr.success([[${registerSuccess}]]);
-        }
-    });
-</script>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
 </body>
 </html>

@@ -24,6 +24,8 @@ public interface StudentService {
     Page<Student> getAvailableStudents(int page, String search, Long currentStudentId);
     Page<Student> findAllExceptCurrentStudent(Long currentStudentId, Pageable pageable);
     void createNewStudent(StudentDTO studentDTO, MultipartFile avatar) throws Exception;
+    void editStudent(Long id, StudentDTO studentDTO, MultipartFile avatar, String existingAvatarUrl) throws Exception;
+    void deleteStudentById(Long id) throws Exception;
     List<Student> findStudentsByTeamId(Long teamId);
 
 }

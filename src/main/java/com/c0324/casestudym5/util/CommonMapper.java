@@ -1,8 +1,7 @@
 package com.c0324.casestudym5.util;
 
-import com.c0324.casestudym5.dto.NotificationDTO;
-import com.c0324.casestudym5.dto.TeamDTO;
-import com.c0324.casestudym5.dto.UserDTO;
+import com.c0324.casestudym5.dto.*;
+import com.c0324.casestudym5.model.Comment;
 import com.c0324.casestudym5.model.Notification;
 import com.c0324.casestudym5.model.Team;
 import com.c0324.casestudym5.model.User;
@@ -41,5 +40,21 @@ public class CommonMapper {
         notificationDTO.setTimeDifference(DateTimeUtil.getTimeDifference(notification.getCreatedAt()));
         return notificationDTO;
     }
+
+    public static CommentDTO toCommentDTO(Comment comment) {
+
+        return CommentDTO.builder()
+                .id(comment.getId())
+                .content(comment.getContent())
+                .reply(comment.getReply() != null ? comment.getReply() : "")
+                .createdTimeDifference(comment.getCreatedAt() != null ? DateTimeUtil.getTimeDifference(comment.getCreatedAt()) : null)
+                .repliedTimeDifference(comment.getRepliedAt() != null ? DateTimeUtil.getTimeDifference(comment.getRepliedAt()) : null)
+                .studentName(comment.getStudent() != null ? comment.getStudent().getUser().getName() : "Ẩn danh")
+                .teacherName(comment.getTeacher() != null ? comment.getTeacher().getUser().getName() : "Ẩn danh")
+                .studentAvatar(comment.getStudent() != null ? comment.getStudent().getUser().getAvatar().getUrl() : AppConstants.URL_DEFAULT_AVATAR)
+                .teacherAvatar(comment.getTeacher() != null ? comment.getTeacher().getUser().getAvatar().getUrl() : AppConstants.URL_DEFAULT_AVATAR)
+                .build();
+    }
+
 
 }

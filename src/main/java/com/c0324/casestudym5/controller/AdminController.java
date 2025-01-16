@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Optional;
+
 
 @RequestMapping("/admin")
 @Controller
@@ -102,10 +104,10 @@ public class AdminController {
             }
             teacherService.createNewTeacher(teacherDTO, avatar);
 
-            redirectAttributes.addFlashAttribute("toastMessage", "Thêm sinh viên thành công!");
+            redirectAttributes.addFlashAttribute("toastMessage", "Thêm giáo viên thành công!");
             redirectAttributes.addFlashAttribute("toastType", "success");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình thêm sinh viên.");
+            redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình thêm giáo viên.");
             redirectAttributes.addFlashAttribute("toastType", "danger");
             System.out.println(e.getMessage());
         }
@@ -113,6 +115,69 @@ public class AdminController {
         return "redirect:/admin/teacher";
     }
 
+    @GetMapping("/teacher/edit/{id}")
+    public String editTeacherForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Teacher> teacherOptional = teacherService.getTeacherById(id);
+
+        if (!teacherOptional.isPresent()) {
+            redirectAttributes.addFlashAttribute("toastMessage", "Không tìm thấy giáo viên.");
+            redirectAttributes.addFlashAttribute("toastType", "danger");
+            return "redirect:/admin/teacher";
+        }
+
+        Teacher teacher = teacherOptional.get();
+        TeacherDTO teacherDTO = new TeacherDTO(teacher);
+
+        model.addAttribute("teacherDTO", teacherDTO);
+        model.addAttribute("faculties", facultyService.findAll());
+
+        return "admin/teacher/teacher-edit";
+    }
+
+    @PostMapping("/teacher/edit/{id}")
+    public String editTeacher(@PathVariable Long id,
+                              @Valid @ModelAttribute("teacherDTO") TeacherDTO teacherDTO,
+                              BindingResult bindingResult,
+                              @RequestParam(value = "avatar", required = false) MultipartFile avatar,
+                              Model model,
+                              RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("faculties", facultyService.findAll());
+            return "admin/teacher/teacher-edit";
+        }
+
+        try {
+            Optional<Teacher> existingTeacher = teacherService.getTeacherById(id);
+            if (!teacherDTO.getEmail().equals(existingTeacher.get().getUser().getEmail()) && userService.existsByEmail(teacherDTO.getEmail())) {
+                bindingResult.rejectValue("email", "error.teacherDTO", "Email đã tồn tại.");
+                model.addAttribute("faculties", facultyService.findAll());
+                return "admin/teacher/teacher-edit";
+            }
+            teacherService.editTeacher(id, teacherDTO, avatar);
+            redirectAttributes.addFlashAttribute("toastMessage", "Cập nhật giáo viên thành công!");
+            redirectAttributes.addFlashAttribute("toastType", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình cập nhật.");
+            redirectAttributes.addFlashAttribute("toastType", "danger");
+            System.out.println(e.getMessage());
+        }
+
+        return "redirect:/admin/teacher";
+    }
+
+    @PostMapping("/teacher/delete/{id}")
+    public String deleteTeacher(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            teacherService.deleteTeacherById(id);
+            redirectAttributes.addFlashAttribute("toastMessage", "Xóa giáo viên thành công!");
+            redirectAttributes.addFlashAttribute("toastType", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("toastMessage", "Đã xảy ra lỗi khi xóa giáo viên.");
+            redirectAttributes.addFlashAttribute("toastType", "danger");
+        }
+        return "redirect:/admin/teacher";
+    }
 
 
 
@@ -185,6 +250,70 @@ public class AdminController {
         return "redirect:/admin/student";
     }
 
+    // Student Edit
+    @GetMapping("/edit-student/{id}")
+    public String editStudentForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
+        Optional<Student> studentOptional = Optional.ofNullable(studentService.getStudent(id));
+
+        if (!studentOptional.isPresent()) {
+            redirectAttributes.addFlashAttribute("toastMessage", "Không tìm thấy sinh viên.");
+            redirectAttributes.addFlashAttribute("toastType", "danger");
+            return "redirect:/admin/student";
+        }
+
+        Student student = studentOptional.get();
+        StudentDTO studentDTO = new StudentDTO(student);
+
+        model.addAttribute("studentDTO", studentDTO);
+        model.addAttribute("clazzes", clazzService.getAllClazzes());
+
+        return "admin/student/student-edit";
+    }
+    @PostMapping("/edit-student/{id}")
+    public String editTeacher(@PathVariable Long id,
+                              @Valid @ModelAttribute("studentDTO") StudentDTO studentDTO,
+                              BindingResult bindingResult,
+                              @RequestParam(value = "avatar", required = false) MultipartFile avatar,
+                              Model model,
+                              RedirectAttributes redirectAttributes) {
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("clazzes", clazzService.getAllClazzes());
+            return "admin/student/student-edit";
+        }
+
+        try {
+            Optional<Student> existingStudent = Optional.ofNullable(studentService.getStudent(id));
+            if (!studentDTO.getEmail().equals(existingStudent.get().getUser().getEmail()) && userService.existsByEmail(studentDTO.getEmail())) {
+                bindingResult.rejectValue("email", "error.teacherDTO", "Email đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-edit";
+            }
+            studentService.editStudent(id, studentDTO, avatar, studentDTO.getAvatarUrl());
+            redirectAttributes.addFlashAttribute("toastMessage", "Cập nhật sinh viên thành công!");
+            redirectAttributes.addFlashAttribute("toastType", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình cập nhật.");
+            redirectAttributes.addFlashAttribute("toastType", "danger");
+            System.out.println(e.getMessage());
+        }
+
+        return "redirect:/admin/student";
+    }
+
+    // Student delete
+    @PostMapping("/delete-student/{id}")
+    public String deleteStudent(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        try {
+            studentService.deleteStudentById(id);
+            redirectAttributes.addFlashAttribute("toastMessage", "Xóa sinh viên thành công!");
+            redirectAttributes.addFlashAttribute("toastType", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("toastMessage", "Đã xảy ra lỗi khi xóa sinh viên.");
+            redirectAttributes.addFlashAttribute("toastType", "danger");
+        }
+        return "redirect:/admin/student";
+    }
 }
 
 

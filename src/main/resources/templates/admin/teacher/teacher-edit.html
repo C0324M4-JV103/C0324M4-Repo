@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý giáo viên - Thêm giáo viên</title>
+    <title>Quản lý giáo viên - Sửa giáo viên</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
@@ -14,7 +14,7 @@
 <!-- Navbar -->
 <div th:replace="layout.html :: nav"></div>
 <div class="containers shadow-lg">
-    <form role="form" th:action="@{/admin/teacher/create}" th:object="${teacherDTO}" method="post" enctype="multipart/form-data">
+    <form role="form" th:action="@{/admin/teacher/edit/{id}(id=${teacherDTO.id})}" th:object="${teacherDTO}" method="post" enctype="multipart/form-data">
         <div class="form-grid">
             <div class="title_header">
                 <h2>Chi Tiết Giáo Viên</h2>
@@ -23,20 +23,20 @@
             <div class="form-fields">
                 <div class="form-group">
                     <label class="required" for="name">Tên giáo viên</label>
-                    <input class="form-control" id="name" type="text" th:field="*{name}">
+                    <input class="form-control" id="name" type="text" th:field="*{name}" required maxlength="100">
                     <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="required" for="dob">Ngày sinh</label>
-                    <input class="form-control" id="dob" type="date" th:field="*{dob}">
+                    <input class="form-control" id="dob" type="date" th:field="*{dob}" required>
                     <div th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="text-danger"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="required" for="gender">Giới tính</label>
-                    <select class="form-control" id="gender" th:field="*{gender}">
-                        <option value=''>Chọn Giới tính</option>
+                    <select class="form-control" id="gender" th:field="*{gender}" required>
+                        <option value="">Chọn giới tính</option>
                         <option th:value="MALE" th:text="'Nam'"></option>
                         <option th:value="FEMALE" th:text="'Nữ'"></option>
                     </select>
@@ -45,47 +45,63 @@
 
                 <div class="form-group">
                     <label class="required" for="email">Email</label>
-                    <input class="form-control" id="email" type="text" th:field="*{email}">
+                    <input class="form-control" id="email" type="email" th:field="*{email}" required maxlength="100">
                     <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="required" for="phoneNumber">Số điện thoại</label>
-                    <input class="form-control" id="phoneNumber" type="text" th:field="*{phoneNumber}">
+                    <input class="form-control" id="phoneNumber" type="tel" th:field="*{phoneNumber}" required pattern="^[0-9]{10,11}$">
                     <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="required" for="address">Địa chỉ</label>
-                    <input class="form-control" id="address" type="text" th:field="*{address}">
+                    <input class="form-control" id="address" type="text" th:field="*{address}" maxlength="255">
                     <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-danger"></div>
                 </div>
 
                 <div class="form-group">
                     <label class="required" for="degree">Học vị</label>
-                    <select class="form-control" id="degree" th:field="*{degree}">
-                        <option value=''>Chọn học vị</option>
-                        <option th:value="MASTER" th:text="'Thạc sĩ'"></option>
-                        <option th:value="DOCTOR" th:text="'Tiến sĩ'"></option>
-                        <option th:value="PROFESSOR" th:text="'Giáo sư'"></option>
+                    <select class="form-control" id="degree" th:field="*{degree}" required>
+                        <option value="">Chọn học vị</option>
+                        <option th:value="MASTER">Thạc sĩ</option>
+                        <option th:value="DOCTOR">Tiến sĩ</option>
+                        <option th:value="PROFESSOR">Giáo sư</option>
                     </select>
                     <div th:if="${#fields.hasErrors('degree')}" th:errors="*{degree}" class="text-danger"></div>
                 </div>
 
                 <div class="form-group">
-                    <label class="required" for="facultyId">Khoa</label>
-                    <select class="form-control" id="facultyId" th:field="*{facultyId}">
-                        <option value=''>Chọn khoa</option>
+                    <label class="required" for="faculty">Khoa</label>
+                    <select class="form-control" id="faculty" th:field="*{facultyId}" required>
+                        <option value="">Chọn khoa</option>
                         <option th:each="faculty : ${faculties}" th:value="${faculty.id}" th:text="${faculty.name}"></option>
                     </select>
                     <div th:if="${#fields.hasErrors('facultyId')}" th:errors="*{facultyId}" class="text-danger"></div>
                 </div>
 
-                <div class="form-group">
-                    <label class="required" for="avatar">Ảnh đại diện</label>
-                    <input class="form-control" id="avatar" type="file" th:field="*{avatar}" accept=".jpg,.png,.jpeg">
-                    <div th:if="${#fields.hasErrors('avatar')}" th:errors="*{avatar}" class="text-danger"></div>
+                <div class="form-group d-flex align-items-center">
+                    <div class="me-3">
+                        <img
+                                id="avatar-preview"
+                                th:src="@{${teacherDTO.avatarUrl}}"
+                                alt="Ảnh đại diện"
+                                style="width: 200px; height: 200px; display: block; margin-top: 10px;">
+                    </div>
+                    <div>
+                        <label class="required" for="avatar">Cập nhật ảnh đại diện mới</label>
+                        <input
+                                class="form-control"
+                                id="avatar"
+                                type="file"
+                                name="avatar"
+                                accept=".jpg,.png,.jpeg"
+                                onchange="previewImage(event)">
+                        <input type="hidden" name="existingAvatarUrl" th:value="${teacherDTO.avatarUrl}">
+                    </div>
                 </div>
+
             </div>
         </div>
 
@@ -96,6 +112,17 @@
     </form>
 </div>
 <div th:replace="layout :: footer"></div>
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const output = document.getElementById('avatar-preview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

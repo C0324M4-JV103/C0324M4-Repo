@@ -40,6 +40,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Page<Student> searchStudentsExceptCurrent(@Param("search") String search,
                                               @Param("currentStudentId") Long currentStudentId, Pageable pageable);
 
-    @Query("select s from Student s where s.team.id = :teamId")
+    @Query("SELECT s FROM Student s WHERE s.team.id = :teamId")
     List<Student> findStudentsByTeamId(@Param("teamId") Long teamId);
 }

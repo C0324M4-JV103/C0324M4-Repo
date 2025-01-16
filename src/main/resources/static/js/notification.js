@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Connected: ' + frame);
         stompClient.subscribe('/user/socket/notification', function (response) {
             const notification = JSON.parse(response.body);
-            console.log(notification);
+            console.log(notification);//log notification to console for debugging
             showNotification(notification);
         });
     });
