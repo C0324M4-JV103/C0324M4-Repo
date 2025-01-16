@@ -12,6 +12,36 @@
     <link rel="stylesheet" href="/css/home-page.css">
 </head>
 <body>
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <!-- Success Toast -->
+    <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" th:text="${toastMessage}"></div>
+    </div>
+
+    <!-- Error Toast -->
+    <div th:if="${toastMessage != null and toastType == 'danger'}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Cảnh báo</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" th:text="${toastMessage}"></div>
+    </div>
+</div>
+
+<script>
+    window.onload = function () {
+        var toastElList = document.querySelectorAll('.toast');
+        var toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl));
+        toastList.forEach(toast => toast.show());
+    };
+
+</script>
+
+<!-- Navbar -->
 <div th:replace="layout.html :: nav"></div>
 <div id="body-fixed" class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -67,12 +97,14 @@
                     <a th:href="@{/student/{id}(id=${s.id})}" class="btn btn-info">
                         <i class="fas fa-eye"></i>
                     </a>
-                    <a th:href="@{/s/update/{id}(id=${s.id})}" class="btn btn-warning">
+                    <a th:href="@{/admin/edit-student/{id}(id=${s.id})}" class="btn btn-warning">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <a th:href="@{/s/delete/{id}(id=${s.id})}" class="btn btn-danger">
-                        <i class="fas fa-trash"></i>
-                    </a>
+                    <form th:action="@{delete-student/{id}(id=${s.id})}" method="post" style="display:inline-block;" id="deleteForm">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
                 </td>
             </tr>
             </tbody>
@@ -89,9 +121,26 @@
             </ul>
         </nav>
     </div>
-
-
 </div>
+<!--Modal Delete-->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa sinh viên này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="document.getElementById('deleteForm').submit();">Xóa</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div th:replace="layout :: footer"></div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
