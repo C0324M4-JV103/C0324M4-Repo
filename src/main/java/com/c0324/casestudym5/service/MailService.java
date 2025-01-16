@@ -121,4 +121,47 @@ public class MailService {
         }
 
     }
+
+    public void sendQuestionEmail(String to, String subject, String senderName, String teacherName, String topicName, Long topicId) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(to);
+            helper.setSubject(subject);
+
+            Context context = new Context();
+            context.setVariable("senderName", senderName);
+            context.setVariable("teacherName", teacherName);
+            context.setVariable("topicName", topicName);
+            context.setVariable("topicId", topicId);
+            String content = templateEngine.process("common/student-question-mail", context);
+
+            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
+            queue.add(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
+        }
+    }
+
+    public void sendAnswerEmail(String to, String subject, String senderName, String studentName, String topicName, Long topicId) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(to);
+            helper.setSubject(subject);
+
+            Context context = new Context();
+            context.setVariable("senderName", senderName);
+            context.setVariable("studentName", studentName);
+            context.setVariable("topicName", topicName);
+            context.setVariable("topicId", topicId);
+            String content = templateEngine.process("common/teacher-answer-mail", context);
+
+            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
+            queue.add(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
+        }
+
+    }
 }

@@ -269,4 +269,6 @@ public class StudentController {
         return "redirect:/student/info-team";
     }
 
+
+
 }

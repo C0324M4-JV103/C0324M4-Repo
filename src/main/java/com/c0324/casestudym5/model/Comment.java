@@ -4,7 +4,7 @@ package com.c0324.casestudym5.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +24,10 @@ public class Comment {
     private String reply;
 
     @Column(columnDefinition = "TIMESTAMP", nullable = false)
-    private LocalDateTime createdAt;
+    private Date createdAt;
+
+    @Column(columnDefinition = "TIMESTAMP")
+    private Date repliedAt;
 
     @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "id")
@@ -33,4 +36,8 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "teacher_id", referencedColumnName = "id")
     private Teacher teacher;
+
+    @ManyToOne
+    @JoinColumn(name = "topic_id", referencedColumnName = "id")
+    private Topic topic;
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>PROGRESS</title>
     <meta charset="UTF-8">
@@ -97,61 +97,66 @@
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade" id="feedback" role="tabpanel" aria-labelledby="feedback-tab">
                     <h5 class="content-title text-center fw-bold">Thắc mắc của sinh viên</h5>
-                    <div style="text-align: right;">
-                        <button id="toggle-feedback-form" class="btn btn-success">Đăng câu hỏi thắc mắc</button>
+                    <div style="text-align: right;" >
+<!--                        sec:authorize="hasRole('STUDENT')"-->
+                        <button id="question-btn" class="btn btn-success">Đăng câu hỏi thắc mắc</button>
                     </div>
-                    <div class="editor-container">
-                        <div class="top1">
+                    <div class="editor-container" th:id="show-comment">
+                        <div class="top1" th:each="comment : ${comments}" th:id="'comment-' + ${comment.id}">
                             <!-- Sinh viên report-->
                             <div class="message-container">
                                 <div class="d-flex">
                                     <div class="me-3">
-                                        <img src="https://img.freepik.com/premium-vector/person-with-blue-shirt-that-says-name-person_1029948-7040.jpg"
+                                        <img th:src="${comment.studentAvatar}"
                                              width="50px" height="50px" alt="Avatar" class="avatar">
                                     </div>
                                     <div class="flex-grow-1">
                                         <div class="d-flex align-items-center mb-2">
-                                            <strong class="mb-0 me-2">Sinh viên</strong>
+                                            <strong class="mb-0 me-2" th:text="${comment.studentName}"></strong>
                                         </div>
-                                        <p class="mb-2">Em có thắc mắc</p>
-                                        <div class="action-buttons mb-2">
+                                        <p class="mb-2" th:text="${comment.content}"></p>
+                                        <div class="action-buttons mb-2" sec:authorize="hasRole('TEACHER')" th:if="${comment.reply == ''}">
                                             <button class="btn btn-success btn-sm reply-btn">Trả lời</button><!-- role teacher -->
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center comment-actions">
-                                            <span class="timestamp ms-auto">06/04/2021</span>
+                                            <span class="timestamp ms-auto" th:text="${comment.createdTimeDifference}"></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="reply-form" style="display: none;">
+                                <textarea th:id="'reply-box-'+${comment.id}" class="form-control" rows="3"></textarea>
+                                <button class="btn btn-primary mt-2 btn-reply" th:attr="topic-id=${topic.id}, comment-id=${comment.id}">Gửi</button>
+                            </div>
 
                             <!-- Giáo viên reply -->
-                            <div class="message-container-reply-btn">
+                            <div class="message-container-reply-btn" th:if="${comment.reply != ''}">
                                 <div class="d-flex">
                                     <div class="me-3">
-                                        <img src="https://img.freepik.com/premium-vector/person-with-blue-shirt-that-says-name-person_1029948-7040.jpg"
+                                        <img th:src="${comment.teacherAvatar}"
                                              width="50px" height="50px" alt="Avatar" class="avatar">
                                     </div>
                                     <div class="flex-grow-1">
                                         <div class="mb-2">
-                                            <strong class="mb-0">Giáo viên</strong>
+                                            <strong class="mb-0" th:text="${comment.teacherName}"></strong>
                                         </div>
-                                        <p class=" mb-2">Có thắc mắc gì</p>
+                                        <p class=" mb-2" th:text="${comment.reply}"></p>
                                         <div class="d-flex justify-content-between align-items-center comment-actions">
-                                            <span class="timestamp ms-auto">06/04/2021</span>
+                                            <span class="timestamp ms-auto" th:text="${comment.repliedTimeDifference}"></span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!-- Form nhập liệu -->
+                        <!--Form nhập liệu-->
                         <div class="top2">
-                            <div class="avatar">
-                                <img src="https://img.freepik.com/premium-vector/person-with-blue-shirt-that-says-name-person_1029948-7040.jpg"
-                                     width="60" height="60" alt="User Avatar">
-                            </div>
+<!--                            <div class="avatar">-->
+<!--                                <img th:src="${curUserAvatar}"-->
+<!--                                     width="60" height="60" alt="User Avatar">-->
+<!--                            </div>-->
                             <div class="input-container">
-                                <textarea class="form-control" placeholder="Nhập thắc mắc của bạn..." rows="5"></textarea>
-                                <button class="btn-send">Gửi</button>
+                                <textarea th:id="comment-box" class="form-control" placeholder="Nhập thắc mắc của bạn..." rows="5"></textarea>
+                                <button class="btn-send" id="btn-send-comment" th:attr="data-topic-id=${topic.id}">Gửi</button>
                             </div>
                         </div>
                     </div>
@@ -163,30 +168,9 @@
 
 <div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
-<script>
-    document.getElementById('toggle-feedback-form').addEventListener('click', function () {
-        var formContainer = document.querySelector('.editor-container');
-        var button = document.getElementById('toggle-feedback-form');
-
-        formContainer.classList.toggle('show-form');
-
-        if (formContainer.classList.contains('show-form')) {
-            button.textContent = 'Ẩn thắc mắc';
-        } else {
-            button.textContent = 'Đăng câu hỏi thắc mắc';
-        }
-    });
-</script>
-<script>
-    document.querySelectorAll('.reply-btn').forEach(button => {
-        button.addEventListener('click', function () {
-            const editorContainer = button.closest('.editor-container');
-            if (editorContainer) {
-                editorContainer.classList.toggle('show-form');
-            }
-        });
-    });
-</script>
-
+<script th:src="@{/js/phase.js}"></script>
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/comment.js}"></script>
 </body>
 </html>

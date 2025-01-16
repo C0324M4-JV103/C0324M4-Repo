@@ -25,4 +25,5 @@ public interface TopicService {
     void approveTopic(Long id);
     void rejectTopic(Long id);
     Page<Topic> getPendingTopicsPage(Pageable pageable);
+
 }

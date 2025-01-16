@@ -42,7 +42,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) { // StompEndpointRegistry: doi tuong dang ky
         registry.addEndpoint("/ws").withSockJS();
-
     }
 
     public void configureClientInboundChannel(ChannelRegistration registration) {
