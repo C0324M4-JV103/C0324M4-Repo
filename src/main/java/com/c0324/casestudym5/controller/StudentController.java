@@ -47,6 +47,17 @@ public class StudentController {
         this.notificationService = notificationService;
     }
 
+    @ModelAttribute
+    public void addNotificationsToModel(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        User currentUser = userService.findByEmail(userEmail);
+        if (currentUser != null) {
+            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
+            model.addAttribute("notifications", notifications);
+        }
+    }
+
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
@@ -72,11 +83,10 @@ public class StudentController {
     @GetMapping("/team")
     public String formRegisterTeam(@RequestParam(name = "page", required = false, defaultValue = "1") int page,
                                    @RequestParam(name = "search", required = false, defaultValue = "") String search,
-                                   Model model, Principal principal) {
+                                   Model model) {
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
-        User currentUser = userService.findByEmail(principal.getName());
-        List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
+
         if (!model.containsAttribute("team")) {
             model.addAttribute("team", new TeamDTO());
         }
@@ -95,7 +105,6 @@ public class StudentController {
         model.addAttribute("currentTeam", currentTeam);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
-        model.addAttribute("notifications", notifications);
 
         return "team/team-register";
     }
@@ -185,19 +194,28 @@ public class StudentController {
         model.addAttribute("team", team);
         model.addAttribute("student", currentStudent);
         model.addAttribute("list", availableStudents);
-        model.addAttribute("notifications", notifications);
         return "team/team-info";
 
     }
 
     @GetMapping("/register-topic")
-    public String showRegisterTopicForm(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public String showRegisterTopicForm(Model model,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size,
+                                        RedirectAttributes redirectAttributes) {
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
         if (currentTeam == null) {
-            return "redirect:/student/team";
+            redirectAttributes.addFlashAttribute("errorMessage", "Bạn chưa có nhóm");
+            return "redirect:/student/info-team";
         }
         if (currentTeam.getTopic() != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã có đề tài hoặc đang đợi phê duyệt");
+            return "redirect:/student/info-team";
+        }
+        if (currentTeam.getTeacher() == null)
+        {
+            redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng đăng ký giáo viên trước khi đăng ký đề tài!");
             return "redirect:/student/info-team";
         }
         if (!model.containsAttribute("registerTopic")) {
