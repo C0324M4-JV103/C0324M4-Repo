@@ -1,5 +1,6 @@
 package com.c0324.casestudym5.dto;
 
+import com.c0324.casestudym5.model.Student;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -49,5 +50,19 @@ public class StudentDTO {
     private Long clazzId;
 
     private MultipartFile multipartFile;
+
+    private String avatarUrl;
+
+    public StudentDTO(Student student) {
+        this.id = student.getId();
+        this.name = student.getUser().getName();
+        this.email = student.getUser().getEmail();
+        this.dob = student.getUser().getDob();
+        this.gender = student.getUser().getGender().name();
+        this.phoneNumber = student.getUser().getPhoneNumber();
+        this.address = student.getUser().getAddress();
+        this.clazzId = student.getClazz().getId();
+        this.avatarUrl = student.getUser().getAvatar() != null ? student.getUser().getAvatar().getUrl() : null;
+    }
 
 }
