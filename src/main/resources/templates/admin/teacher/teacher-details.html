@@ -53,7 +53,7 @@
                         </div>
                         <div class="info-content">
                             <div class="info-label">Giới tính</div>
-                            <div class="info-value" th:text="${teacher.user.gender == 'MALE' ? 'Nam' : 'Nữ'}"></div>
+                            <div class="info-value" th:text="${teacher.user.gender.name() == 'MALE' ? 'Nam' : 'Nữ'}"></div>
                         </div>
                     </div>
 
