@@ -67,7 +67,7 @@ public class TopicServiceImpl implements TopicService {
             topic.setName(registerTopicDTO.getName());
             topic.setContent(registerTopicDTO.getContent());
             topic.setStatus(0);
-            topic.setApproved(AppConstants.PENDING);
+            topic.setApproved(AppConstants.TOPIC_PENDING);
             topic.setTeam(team);
 
             String url_image, url_description;
@@ -145,7 +145,7 @@ public class TopicServiceImpl implements TopicService {
     public void approveTopic(Long id) {
         Topic topic = getTopicById(id);
         topic.setStatus(1);
-        topic.setApproved(AppConstants.APPROVED);
+        topic.setApproved(AppConstants.TOPIC_APPROVED);
         topic.setApprovedBy(getCurrentTeacher());
 
         Long teamId = topic.getTeam().getId();
@@ -271,6 +271,20 @@ public class TopicServiceImpl implements TopicService {
         if (next_phase != null) {
             next_phase.setStatus(AppConstants.PHASE_OPENED);
             phaseRepository.save(next_phase);
+        }
+        else {
+            boolean allPhasesCompleted = true;
+            for (int i = 1; i <= 4; i++) {
+                Phase p = phaseRepository.findByTopicIdAndPhaseNumber(topicId, i);
+                if (p.getStatus() != AppConstants.PHASE_COMPLETED) {
+                    allPhasesCompleted = false;
+                    break;
+                }
+            }
+            if (allPhasesCompleted) {
+                topic.setStatus(AppConstants.TOPIC_CLOSED);
+                topicRepository.save(topic);
+            }
         }
         return "";
     }

@@ -49,7 +49,6 @@ public class CommentService {
 
         for (Comment comment : comments) {
             responses.add(CommonMapper.toCommentDTO(comment));
-            System.err.println("comment: " + comment);
         }
 
         return responses;

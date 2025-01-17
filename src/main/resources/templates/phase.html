@@ -13,6 +13,30 @@
 <body>
 <div th:replace="~{layout :: nav}"></div>
 
+<div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="warningToast">
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Thất bại</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <span th:text="${errorMessage}"></span>
+        </div>
+    </div>
+</div>
+
+<div th:if="${successMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <span th:text="${successMessage}"></span>
+        </div>
+    </div>
+</div>
+
 <div class="info-team text-center">
     <p style="font-size: 2rem; font-weight: 700">Nhóm: <span th:text="${team.name}"></span></p>
     <p style="font-size: 1.5rem; font-weight: 555">Tên đề tài: <span th:text="${topic.name}"></span></p>
@@ -45,7 +69,9 @@
     <div th:each="phase : ${phases}">
         <div class="phase-row">
             <button class="phase-button" th:text="'BÁO CÁO GIAI ĐOẠN ' + ${phase.phaseNumber}"
-                    th:disabled="${phase.status == 0}">BÁO CÁO GIAI ĐOẠN
+                    th:disabled="${phase.status == 0}"
+                    th:onclick="'window.location.href=\'/topics/' + ${topic.id} + '/progress/' + ${phase.phaseNumber} + '\';'">
+                BÁO CÁO GIAI ĐOẠN
             </button>
             <div class="phase-info">
                 <div class="date-range">
@@ -61,7 +87,7 @@
                     <div class="progress-bar progress-bar-striped progress-bar-animated"
                          th:classappend="${phase.status == 0 ? 'bg-secondary' : (phase.status == 1 ? 'bg-danger' : 'bg-info')}"
                          role="progressbar"
-                         th:style="'width: ' + ${phase.status == 0 ? '0%' : (phase.status == 1 ? '1%' : '100%')}">
+                         th:style="'width: ' + ${phase.status == 0 ? '0%' : (phase.status == 1 ? '10' : phase.phaseProgressPercent) + '%'}">
                     </div>
                 </div>
             </div>
@@ -172,5 +198,7 @@
 <script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
 <script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
 <script th:src="@{/js/comment.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
 </body>
 </html>

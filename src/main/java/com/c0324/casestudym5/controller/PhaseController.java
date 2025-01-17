@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 public class PhaseController {
@@ -42,6 +45,10 @@ public class PhaseController {
         Team team = topic.getTeam();
         List<Student> students = team.getStudents();
         Set<Phase> phases = topic.getPhases();
+        // sort phases by phase number
+        Set<Phase> sortedPhases = phases.stream()
+                .sorted(Comparator.comparing(Phase::getPhaseNumber))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         List<CommentDTO> comments = commentService.getCommentsByTopicId(topicId);
         User currentUser = userService.findByEmail(principal.getName());
         String curUserAvatar = currentUser.getAvatar().getUrl();
@@ -49,7 +56,7 @@ public class PhaseController {
         model.addAttribute("team", team);
         model.addAttribute("topic", topic);
         model.addAttribute("students", students);
-        model.addAttribute("phases", phases);
+        model.addAttribute("phases", sortedPhases);
         model.addAttribute("comments", comments);
         model.addAttribute("curUserAvatar", curUserAvatar);
         return "phase";
