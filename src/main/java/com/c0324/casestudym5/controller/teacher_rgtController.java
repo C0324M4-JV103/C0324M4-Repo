@@ -71,10 +71,17 @@ public class teacher_rgtController {
             teacherTeamCount.put(teacher.getId(), teamCount);
         }
 
+        List<Long> registeredTeacherIds = new ArrayList<>();
+        Student currentStudent = getCurrentStudent();
+        if (currentStudent.getTeam() != null && currentStudent.getTeam().getTeacher() != null) {
+            registeredTeacherIds.add(currentStudent.getTeam().getTeacher().getId());
+        }
+
         model.addAttribute("teachers", teachers);
         model.addAttribute("teacherTeamCount", teacherTeamCount);
         model.addAttribute("totalPages", teacherPage.getTotalPages());
         model.addAttribute("pageNumber", page);
+        model.addAttribute("registeredTeacherIds", registeredTeacherIds);
 
         return "student/register-teacher";
     }

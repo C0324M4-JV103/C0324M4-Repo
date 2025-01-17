@@ -81,21 +81,18 @@
                     </span>
             </td>
             <td>
-                <!-- Form Đăng Ký -->
-                <form th:if="${teacher.status == 2}"
-                      th:action="@{/teachersrgt}" method="post" class="d-inline" id="registerForm-${teacher.id}">
-                    <input type="hidden" name="teacherId" th:value="${teacher.id}"/>
-                    <button type="submit" class="btn btn-primary" style="width: 110px"
-                            th:disabled="${teacherTeamCount[teacher.id] >= 5}">Đăng kí
-                    </button>
-                </form>
-
-                <!-- Form Hủy Đăng Ký -->
-                <form th:if="${teacher.status == 1}"
+                <!-- Hiển thị nút Hủy cho nhóm đã đăng ký -->
+                <form th:if="${registeredTeacherIds != null && #lists.contains(registeredTeacherIds, teacher.id)}"
                       th:action="@{/teachersrgt}" method="post" class="d-inline" id="cancelForm-${teacher.id}">
                     <input type="hidden" name="teacherId" th:value="0"/>
-                    <button type="submit" style="width: 110px" class="btn btn-danger">Hủy
-                    </button>
+                    <button type="submit" style="width: 110px" class="btn btn-danger">Hủy</button>
+                </form>
+
+                <!-- Hiển thị nút Đăng Ký cho nhóm chưa đăng ký -->
+                <form th:if="${registeredTeacherIds != null && !#lists.contains(registeredTeacherIds, teacher.id) && teacherTeamCount[teacher.id] < 5}"
+                      th:action="@{/teachersrgt}" method="post" class="d-inline" id="registerForm-${teacher.id}">
+                    <input type="hidden" name="teacherId" th:value="${teacher.id}"/>
+                    <button type="submit" class="btn btn-primary" style="width: 110px">Đăng kí</button>
                 </form>
             </td>
         </tr>
