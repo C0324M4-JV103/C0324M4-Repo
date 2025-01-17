@@ -9,7 +9,6 @@ import com.c0324.casestudym5.repository.TeamRepository;
 import com.c0324.casestudym5.repository.TopicRepository;
 import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.repository.*;
-import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.util.AppConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -45,7 +44,7 @@ public class TopicServiceImpl implements TopicService {
 
     public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository,
                             FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService,
-                            TeacherRepository teacherRepository, MailService mailService) {
+                            TeacherRepository teacherRepository, PhaseRepository phaseRepository, MailService mailService) {
         this.topicRepository = topicRepository;
         this.teamRepository = teamRepository;
         this.studentRepository = studentRepository;
@@ -54,6 +53,7 @@ public class TopicServiceImpl implements TopicService {
         this.notificationService = notificationService;
         this.teacherRepository = teacherRepository;
         this.phaseRepository = phaseRepository;
+
         this.mailService = mailService;
     }
 

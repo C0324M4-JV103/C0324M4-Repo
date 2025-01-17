@@ -1,8 +1,10 @@
 package com.c0324.casestudym5.controller;
 
-import com.c0324.casestudym5.model.Topic;
-import com.c0324.casestudym5.service.TopicService;
-import com.c0324.casestudym5.service.UserService;
+import com.c0324.casestudym5.dto.CommentDTO;
+import com.c0324.casestudym5.dto.NotificationDTO;
+import com.c0324.casestudym5.dto.ProgressReportDTO;
+import com.c0324.casestudym5.model.*;
+import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.service.impl.CommentService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.AppConstants;
@@ -37,11 +39,12 @@ public class TopicController {
 
 
     @Autowired
-    public TopicController(TopicService topicService, NotificationService notificationService, StudentService studentService, UserService userService) {
+    public TopicController(TopicService topicService, NotificationService notificationService, StudentService studentService, UserService userService, CommentService commentService) {
         this.topicService = topicService;
         this.notificationService = notificationService;
         this.studentService = studentService;
         this.userService = userService;
+        this.commentService = commentService;
     }
 
     @ModelAttribute
@@ -51,11 +54,6 @@ public class TopicController {
             List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
             model.addAttribute("notifications", notifications);
         }
-    }
-    public TopicController(TopicService topicService, UserService userService, CommentService commentService) {
-        this.topicService = topicService;
-        this.userService = userService;
-        this.commentService = commentService;
     }
 
     @GetMapping("/topics")
