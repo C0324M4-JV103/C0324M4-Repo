@@ -9,6 +9,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Service
@@ -60,24 +62,51 @@ public class MailService {
         }
     }
 
+//    public void sendMailApprovedToTeam(String to, String subject, String teamName, String teacherName, String topicName, String action) {
+//        try {
+//            MimeMessage message = mailSender.createMimeMessage();
+//            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+//            helper.setTo(to);
+//            helper.setSubject(subject);
+//            // Create the email content using Thymeleaf
+//            Context context = new Context();
+//            context.setVariable("teamName", teamName);
+//            context.setVariable("teacherName", teacherName);
+//            context.setVariable("topicName", topicName);
+//            context.setVariable("action", action);
+//            String content = templateEngine.process("common/topic-notification-mail", context);
+//            helper.setText(content, true); // set true to send HTML content
+//            mailSender.send(message);
+//        } catch (Exception e) {
+//            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
+//        }
+//    }
+    //Chỉnh lại gửi mail đa luồng
     public void sendMailApprovedToTeam(String to, String subject, String teamName, String teacherName, String topicName, String action) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(to);
-            helper.setSubject(subject);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        executorService.submit(() -> {
+            try {
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+                helper.setTo(to);
+                helper.setSubject(subject);
+
             // Create the email content using Thymeleaf
-            Context context = new Context();
-            context.setVariable("teamName", teamName);
-            context.setVariable("teacherName", teacherName);
-            context.setVariable("topicName", topicName);
-            context.setVariable("action", action);
-            String content = templateEngine.process("common/topic-notification-mail", context);
-            helper.setText(content, true); // set true to send HTML content
-            mailSender.send(message);
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
-        }
+                Context context = new Context();
+                context.setVariable("teamName", teamName);
+                context.setVariable("teacherName", teacherName);
+                context.setVariable("topicName", topicName);
+                context.setVariable("action", action);
+                String content = templateEngine.process("common/topic-notification-mail", context);
+                helper.setText(content, true); // set true to send HTML content
+
+                mailSender.send(message);
+            } catch (Exception e) {
+                throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
+            }
+        });
+        executorService.shutdown();
     }
 
     public void sendRegisterTopicEmail(String to, String subject, String senderName, String teacherName, String topicName, String teamName) {
