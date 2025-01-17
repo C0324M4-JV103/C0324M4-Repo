@@ -32,12 +32,13 @@ public class TopicServiceImpl implements TopicService {
     private final NotificationService notificationService;
     private final TeacherRepository teacherRepository;
     private final MailService mailService;
+    private final PhaseService phaseService;
 
     @Autowired
 
     public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository,
                             FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService,
-                            TeacherRepository teacherRepository, MailService mailService) {
+                            TeacherRepository teacherRepository, MailService mailService, PhaseService phaseService) {
         this.topicRepository = topicRepository;
         this.teamRepository = teamRepository;
         this.studentRepository = studentRepository;
@@ -46,6 +47,7 @@ public class TopicServiceImpl implements TopicService {
         this.notificationService = notificationService;
         this.teacherRepository = teacherRepository;
         this.mailService = mailService;
+        this.phaseService = phaseService;
     }
 
 
@@ -130,8 +132,11 @@ public class TopicServiceImpl implements TopicService {
 
         Topic topic = getTopicById(id);
         topic.setApproved(AppConstants.APPROVED);
+        topic.setStatus(AppConstants.APPROVED);
         topic.setApprovedBy(getCurrentTeacher());
         topicRepository.save(topic);
+
+        phaseService.createPhasesForTopic(topic);
 
         Long teamId = topic.getTeam().getId();
         List<Student> students = studentRepository.findStudentsByTeamId(teamId);

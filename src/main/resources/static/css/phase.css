@@ -113,71 +113,71 @@ h2 {
     background-color: #ffffff; /* Màu nền nhạt */
 }
 
-.editor-container {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-}
+/*.editor-container {*/
+/*    display: flex;*/
+/*    gap: 1rem;*/
+/*    margin-top: 1rem;*/
+/*}*/
 
-.avatar {
-    border-radius: 50%;
-    margin-right: 35px;
-}
+/*.avatar {*/
+/*    border-radius: 50%;*/
+/*    margin-right: 35px;*/
+/*}*/
 
-.message-avatar img {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-
-.editor-container {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
+/*.message-avatar img {*/
+/*    width: 45px;*/
+/*    height: 45px;*/
+/*    border-radius: 50%;*/
+/*    object-fit: cover;*/
+/*}*/
 
 
-.top2 {
-    display: none;
-}
-
-.top2.show-form {
-    display: block;
-}
+/*.editor-container {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    gap: 15px;*/
+/*}*/
 
 
-.btn-send {
-    background-color: #0088cc;
-    color: white;
-    border-radius: 20px;
-    padding: 8px 20px;
-    border: none;
-    cursor: pointer;
-    margin-left: auto;
-    margin-top: 20px;
-    display: block; /* Đảm bảo nút được hiển thị dưới cùng */
-}
+/*.top2 {*/
+/*    display: none;*/
+/*}*/
 
-.btn-send:hover {
-    background-color: #005f77;
-}
+/*.top2.show-form {*/
+/*    display: block;*/
+/*}*/
 
-.input-container textarea {
-    flex-grow: 1;
-    margin-left: 10px;
-    width: 1160px;
-    height: 100px;
-}
 
-.message-container {
-    border-bottom: 1px solid #e3e1e1; /* Tạo đường kẻ dưới mỗi message-container */
-    padding: 15px 0;
-}
+/*.btn-send {*/
+/*    background-color: #0088cc;*/
+/*    color: white;*/
+/*    border-radius: 20px;*/
+/*    padding: 8px 20px;*/
+/*    border: none;*/
+/*    cursor: pointer;*/
+/*    margin-left: auto;*/
+/*    margin-top: 20px;*/
+/*    display: block; !* Đảm bảo nút được hiển thị dưới cùng *!*/
+/*}*/
 
-.message-container-reply-btn {
-    margin-left: 80px;
-    padding-left: 15px;
-    margin-top: 10px;
-}
+/*.btn-send:hover {*/
+/*    background-color: #005f77;*/
+/*}*/
+
+/*.input-container textarea {*/
+/*    flex-grow: 1;*/
+/*    margin-left: 10px;*/
+/*    width: 1160px;*/
+/*    height: 100px;*/
+/*}*/
+
+/*.message-container {*/
+/*    border-bottom: 1px solid #e3e1e1; !* Tạo đường kẻ dưới mỗi message-container *!*/
+/*    padding: 15px 0;*/
+/*}*/
+
+/*.message-container-reply-btn {*/
+/*    margin-left: 80px;*/
+/*    padding-left: 15px;*/
+/*    margin-top: 10px;*/
+/*}*/

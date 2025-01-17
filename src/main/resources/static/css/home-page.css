@@ -301,7 +301,7 @@ swiper-slide {
 
 /*  teacher css*/
 
-.card {
+.announcement-card {
     border: none;
     border-radius: 15px;
     overflow: hidden;
@@ -331,12 +331,12 @@ swiper-slide {
     margin-bottom: 20px;
 }
 
-.card:hover {
+.announcement-card:hover {
     transform: translateY(-10px); /* Hiệu ứng nâng lên khi hover */
     box-shadow: 0 20px 40px rgba(110, 144, 255, 0.2); /* bóng đổ khi hover */
 }
 
-.card:hover .card-img-top {
+.announcement-card:hover .card-img-top {
     transform: scale(1.2); /* zoom ảnh khi hover */
 }
 

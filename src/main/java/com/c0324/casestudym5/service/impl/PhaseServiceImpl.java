@@ -25,21 +25,20 @@ public class PhaseServiceImpl implements PhaseService {
     public void createPhasesForTopic(Topic topic) {
         LocalDate approvedDate = LocalDate.now();
         for (int i = 1; i <= 4; i++) {
-            int status = (i == 1) ? 1 : 0;
-
             Phase phase = new Phase();
             phase.setTopic(topic);
             phase.setPhaseNumber(i);
-            phase.setStatus(status);
             phase.setPhaseProgressPercent(0);
-            phase.setPhaseDates(approvedDate);
+            phase.setStatus(i == 1 ? 1 : 0);
+            phase.setStartDate(approvedDate.plusDays(i));
+            phase.setEndDate(approvedDate.plusDays(i + 6));
 
             phaseRepository.save(phase);
         }
-    }
 
+    }
     @Override
     public List<Phase> findPhasesByTopic(Topic topic) {
-        return phaseRepository.findPhaseByTopic(topic);
+        return phaseRepository.findPhaseByTopicOrderByIdAsc(topic);
     }
 }

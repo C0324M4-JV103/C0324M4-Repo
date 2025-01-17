@@ -24,5 +24,8 @@ public interface TeamService {
     public Team getTeamByStudentId(Long studentId);
     Team createNewTeam(TeamDTO teamDTO, Student currentStudent);
 
+    public Team findTeamByTopicId(Long topicId) ;
 
-}
+
+
+    }

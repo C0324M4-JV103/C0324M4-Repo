@@ -41,11 +41,4 @@ public class Phase {
     @Column(columnDefinition = "TEXT")
     private String reportContent;
 
-    public void setPhaseDates(LocalDate approvedDate) {
-
-        this.startDate = approvedDate.plusDays(phaseNumber);
-        this.endDate = this.startDate.plusDays(6);
-
-    }
-
 }

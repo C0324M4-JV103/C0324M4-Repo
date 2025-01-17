@@ -54,7 +54,7 @@ public class MailService {
             context.setVariable("teamName", teamName);
             String content = templateEngine.process("common/invited-team-mail", context);
             helper.setText(content, true); // set true to send HTML content
-            mailSender.send(message);
+            queue.add(message);
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
         }
@@ -74,7 +74,7 @@ public class MailService {
             context.setVariable("action", action);
             String content = templateEngine.process("common/topic-notification-mail", context);
             helper.setText(content, true); // set true to send HTML content
-            mailSender.send(message);
+            queue.add(message);
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
         }

@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 };
                 stompClient.send("/app/add-reply", {}, JSON.stringify(reply));
                 contentInput.value = '';
-                contentInput.closest('.reply-form').style.display = 'none';
+                contentInput.closest('.reply-container').style.display = 'none';
             }
         })
     })

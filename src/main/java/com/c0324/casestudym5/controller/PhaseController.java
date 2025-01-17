@@ -2,10 +2,7 @@ package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.CommentDTO;
 import com.c0324.casestudym5.model.*;
-import com.c0324.casestudym5.service.PhaseService;
-import com.c0324.casestudym5.service.StudentService;
-import com.c0324.casestudym5.service.TopicService;
-import com.c0324.casestudym5.service.UserService;
+import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.service.impl.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,14 +22,17 @@ public class PhaseController {
     private final StudentService studentService;
     private final CommentService commentService;
     private final UserService userService;
+    private final TeamService teamService;
 
     @Autowired
-    public PhaseController(PhaseService phaseService, TopicService topicService, StudentService studentService, CommentService commentService, UserService userService) {
+    public PhaseController(PhaseService phaseService, TopicService topicService, StudentService studentService,
+                           CommentService commentService, UserService userService, TeamService teamService) {
         this.phaseService = phaseService;
         this.topicService = topicService;
         this.studentService = studentService;
         this.commentService = commentService;
         this.userService = userService;
+        this.teamService = teamService;
     }
 
 
@@ -41,9 +41,17 @@ public class PhaseController {
         Topic topic = topicService.getTopicById(topicId);
         Team team = topic.getTeam();
         List<Student> students = team.getStudents();
-        Set<Phase> phases = topic.getPhases();
-        List<CommentDTO> comments = commentService.getCommentsByTopicId(topicId);
         User currentUser = userService.findByEmail(principal.getName());
+
+        boolean isStudentInTeam = students.stream().anyMatch(student -> student.getUser().getId().equals(currentUser.getId()));
+        boolean isTeacherOfTeam = team.getTeacher().getUser().getId().equals(currentUser.getId());
+
+        if (!isStudentInTeam && !isTeacherOfTeam) {
+            return "common/404";
+        }
+
+        List<Phase> phases = phaseService.findPhasesByTopic(topic);
+        List<CommentDTO> comments = commentService.getCommentsByTopicId(topicId);
         String curUserAvatar = currentUser.getAvatar().getUrl();
 
         model.addAttribute("team", team);
@@ -54,4 +62,5 @@ public class PhaseController {
         model.addAttribute("curUserAvatar", curUserAvatar);
         return "phase";
     }
+
 }
