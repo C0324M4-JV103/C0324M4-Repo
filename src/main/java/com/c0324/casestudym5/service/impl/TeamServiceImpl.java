@@ -130,4 +130,9 @@ public class TeamServiceImpl implements TeamService {
         return newTeam;
     }
 
+    @Override
+    public Team findTeamByTopicId(Long topicId) {
+        return teamRepository.findTeamByTopicId(topicId);
+    }
+
 }

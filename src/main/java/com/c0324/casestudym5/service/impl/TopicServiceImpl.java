@@ -39,12 +39,13 @@ public class TopicServiceImpl implements TopicService {
     private final TeacherRepository teacherRepository;
     private final PhaseRepository phaseRepository;
     private final MailService mailService;
+    private final PhaseService phaseService;
 
     @Autowired
 
     public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository,
                             FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService,
-                            TeacherRepository teacherRepository, PhaseRepository phaseRepository, MailService mailService) {
+                            TeacherRepository teacherRepository, MailService mailService) {
         this.topicRepository = topicRepository;
         this.teamRepository = teamRepository;
         this.studentRepository = studentRepository;
@@ -55,14 +56,18 @@ public class TopicServiceImpl implements TopicService {
         this.phaseRepository = phaseRepository;
 
         this.mailService = mailService;
+        this.phaseService = phaseService;
     }
+
+
+
 
     @Override
     @Transactional
     public boolean registerTopic(RegisterTopicDTO registerTopicDTO, String studentEmail) {
         Student student = studentRepository.findByUserEmail(studentEmail);
         Team team = teamRepository.findTeamByStudentsId(student.getId());
-        if(team != null && team.getStudents().contains(student) && team.getTopic() == null && student.isLeader()){
+        if (team != null && team.getStudents().contains(student) && team.getTopic() == null && student.isLeader()) {
             Topic topic = new Topic();
             topic.setName(registerTopicDTO.getName());
             topic.setContent(registerTopicDTO.getContent());
