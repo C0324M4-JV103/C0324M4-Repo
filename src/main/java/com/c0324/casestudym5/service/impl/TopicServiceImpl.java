@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.c0324.casestudym5.repository.TeacherRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -220,6 +221,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Transactional
     public String submitProgressReport(Long topicId, ProgressReportDTO progressReportDTO, Student student) {
         Phase phase = phaseRepository.findByTopicIdAndPhaseNumber(topicId, progressReportDTO.getPhaseNumber());
         if (phase == null) {
@@ -234,6 +236,8 @@ public class TopicServiceImpl implements TopicService {
         phase.setStatus(AppConstants.PHASE_COMPLETED);
         phase.setReportContent(progressReportDTO.getReportContent());
         phase.setPhaseProgressPercent(progressReportDTO.getPhaseProgressPercent());
+        phase.setReportDate(LocalDateTime.now());
+        phase.setReporter(student.getUser());
 
         // upload report file to firebase
         try {

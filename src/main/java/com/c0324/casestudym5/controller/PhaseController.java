@@ -45,7 +45,6 @@ public class PhaseController {
         Team team = topic.getTeam();
         List<Student> students = team.getStudents();
         Set<Phase> phases = topic.getPhases();
-        // sort phases by phase number
         Set<Phase> sortedPhases = phases.stream()
                 .sorted(Comparator.comparing(Phase::getPhaseNumber))
                 .collect(Collectors.toCollection(LinkedHashSet::new));

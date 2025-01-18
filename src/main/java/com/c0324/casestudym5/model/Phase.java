@@ -1,10 +1,10 @@
 package com.c0324.casestudym5.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -34,6 +34,12 @@ public class Phase {
     private LocalDate startDate;
 
     private LocalDate endDate;
+
+    private LocalDateTime reportDate;
+
+    @ManyToOne
+    @JoinColumn(name = "reporter_id", referencedColumnName = "id")
+    private User reporter;
 
     @OneToOne
     private MultiFile reportFile;

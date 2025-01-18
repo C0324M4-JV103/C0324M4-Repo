@@ -110,21 +110,46 @@
         </ul>
         <input type="hidden" id="isTeacher" th:value="${#authorization.expression('hasRole(''TEACHER'')') ? 'true' : 'false'}"/>
         <div class="card-body">
-            <!-- Tab 1: Đánh Giá Của Giáo Viên -->
-            <div class="tab-pane fade show active" id="teacher" role="tabpanel" aria-labelledby="teacher-tab">
-                <h5 class="content-title text-center fw-bold">Đánh giá tiến độ của sinh viên</h5>
-            </div>
-
-            <!-- Tab 2: Báo Cáo Của Sinh Viên -->
-            <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
-                <h5 class="content-title text-center fw-bold">Báo cáo tiến độ của sinh viên</h5>
-            </div>
-
             <div class="tab-content" id="myTabContent">
+                <!-- Tab 1: Đánh Giá Của Giáo Viên -->
+                <div class="tab-pane fade show active" id="teacher" role="tabpanel" aria-labelledby="teacher-tab">
+                    <h5 class="content-title text-center fw-bold">Đánh giá tiến độ của sinh viên</h5>
+                </div>
+
+                <!-- Tab 2: Báo Cáo Của Sinh Viên -->
+                <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
+                    <h5 class="content-title text-center fw-bold">Báo cáo tiến độ của sinh viên</h5>
+                    <div class="editor-container" th:id="show-report">
+                        <div class="top1" th:each="report : ${phases}" th:id="'report-' + ${report.id}" th:if="${report.status == 2}">
+                            <!-- Report phase -->
+                            <div class="message-container">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <img th:src="${report.reporter?.avatar?.url}"
+                                             width="50px" height="50px" alt="Avatar" class="avatar">
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <strong class="mb-0 me-2" th:text="${report.reporter?.name}"></strong>
+                                        </div>
+                                        <p class="mb-2" th:text="${report.reportContent}"></p>
+                                        <div class="d-flex justify-content-between align-items-center comment-actions">
+                                            <span class="timestamp ms-auto" th:text="${#dates.format(T(java.util.Date).from(report.reportDate.atZone(T(java.time.ZoneId).systemDefault()).toInstant()), 'dd/MM/yyyy HH:mm:ss')}"></span>
+                                        </div>
+                                        <div class="d-flex flex-column">
+                                            <a th:href="${report.reportFile.url}" class="btn btn-primary btn-sm mb-2 file-download-button" target="_blank">Xem tệp báo cáo</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Thắc Mắc Của Sinh Viên -->
                 <div class="tab-pane fade" id="feedback" role="tabpanel" aria-labelledby="feedback-tab">
                     <h5 class="content-title text-center fw-bold">Thắc mắc của sinh viên</h5>
-                    <div style="text-align: right;" >
-<!--                        sec:authorize="hasRole('STUDENT')"-->
+                    <div style="text-align: right;">
                         <button id="question-btn" class="btn btn-success">Đăng câu hỏi thắc mắc</button>
                     </div>
                     <div class="editor-container" th:id="show-comment">
@@ -176,10 +201,6 @@
                         </div>
                         <!--Form nhập liệu-->
                         <div class="top2">
-<!--                            <div class="avatar">-->
-<!--                                <img th:src="${curUserAvatar}"-->
-<!--                                     width="60" height="60" alt="User Avatar">-->
-<!--                            </div>-->
                             <div class="input-container">
                                 <textarea th:id="comment-box" class="form-control" placeholder="Nhập thắc mắc của bạn..." rows="5"></textarea>
                                 <button class="btn-send" id="btn-send-comment" th:attr="data-topic-id=${topic.id}">Gửi</button>
@@ -191,7 +212,30 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var myTab = document.getElementById('myTabContent');
+        var tabPanes = myTab.querySelectorAll('.tab-pane');
 
+        // Initially hide all tab panes except the active one
+        tabPanes.forEach(function (tabPane) {
+            if (!tabPane.classList.contains('show') || !tabPane.classList.contains('active')) {
+                tabPane.classList.add('d-none');
+            }
+        });
+
+        var tabLinks = document.querySelectorAll('#myTab a[data-bs-toggle="tab"]');
+        tabLinks.forEach(function (tabLink) {
+            tabLink.addEventListener('shown.bs.tab', function (event) {
+                tabPanes.forEach(function (tabPane) {
+                    tabPane.classList.add('d-none');
+                });
+                var activeTabPane = document.querySelector(event.target.getAttribute('href'));
+                activeTabPane.classList.remove('d-none');
+            });
+        });
+    });
+</script>
 <div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/phase.js}"></script>
