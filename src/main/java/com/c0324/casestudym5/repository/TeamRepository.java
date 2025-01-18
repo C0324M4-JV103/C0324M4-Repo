@@ -24,4 +24,5 @@ public interface TeamRepository extends JpaRepository<Team, Long> {
     @Query("SELECT t FROM Team t JOIN t.topic tp WHERE tp.id = :topicId")
     Team findTeamByTopicId(@Param("topicId") Long topicId);
 
+    int countByTeacherId(Long teacherId);
 }

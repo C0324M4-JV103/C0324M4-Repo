@@ -4,7 +4,10 @@ import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.repository.TeacherRepository;
 import com.c0324.casestudym5.repository.TeamRepository;
-import com.c0324.casestudym5.service.*;
+import com.c0324.casestudym5.service.InvitationService;
+import com.c0324.casestudym5.service.NotificationService;
+import com.c0324.casestudym5.service.StudentService;
+import com.c0324.casestudym5.service.TeamService;
 import com.c0324.casestudym5.util.CommonMapper;
 import org.hibernate.Hibernate;
 import org.springframework.data.domain.PageImpl;
@@ -138,6 +141,37 @@ public class TeamServiceImpl implements TeamService {
     @Override
     public Team findTeamByTopicId(Long topicId) {
         return teamRepository.findTeamByTopicId(topicId);
+    }
+
+    @Override
+    public Team teacherrgt(Long teamId, Long teacherId) {
+        Team team = teamRepository.findById(teamId).orElse(null);
+        if (team != null) {
+            if (team.getTopic() != null && teacherId == 0) {
+                throw new IllegalStateException("Đã đăng ký đề tài, không được hủy giáo viên.");
+            }
+            if (team.getTopic() != null) {
+                throw new IllegalStateException("Nhóm đã đăng ký đề tài, không thể đăng ký giáo viên mới.");
+            }
+            if (teacherId == 0) {
+                team.setTeacher(null);
+                teamRepository.save(team);
+            } else {
+                Teacher teacher = teacherRepository.findById(teacherId).orElse(null);
+                if (teacher != null) {
+                    team.setTeacher(teacher);
+                    teamRepository.save(team);
+                }
+            }
+            return team;
+        }
+        return null;
+    }
+
+
+    @Override
+    public int countTeamsByTeacherId(Long teacherId) {
+        return teamRepository.countByTeacherId(teacherId);
     }
 
 }

@@ -28,4 +28,7 @@ public interface TeamService {
 
 
 
-    }
+    int countTeamsByTeacherId(Long teacherId);
+
+    Team teacherrgt(Long id, Long teacherId);
+}

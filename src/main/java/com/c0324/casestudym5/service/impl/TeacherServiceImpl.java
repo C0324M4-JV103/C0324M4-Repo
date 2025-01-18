@@ -1,8 +1,14 @@
 package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.TeacherDTO;
-import com.c0324.casestudym5.model.*;
-import com.c0324.casestudym5.repository.*;
+import com.c0324.casestudym5.model.MultiFile;
+import com.c0324.casestudym5.model.Role;
+import com.c0324.casestudym5.model.Teacher;
+import com.c0324.casestudym5.model.User;
+import com.c0324.casestudym5.repository.MultiFileRepository;
+import com.c0324.casestudym5.repository.RoleRepository;
+import com.c0324.casestudym5.repository.TeacherRepository;
+import com.c0324.casestudym5.repository.UserRepository;
 import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +118,11 @@ public class TeacherServiceImpl implements TeacherService {
                 .orElseThrow(() -> new Exception("Faculty not found"));
         newTeacher.setFaculty(faculty);
         teacherRepository.save(newTeacher);
+    }
+
+    @Override
+    public Page<Teacher> findAll(Pageable pageable) {
+        return teacherRepository.findAll(pageable);
     }
 
     @Override

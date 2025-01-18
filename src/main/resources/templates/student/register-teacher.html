@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách giáo viên</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="/css/home-page.css">
+    <link rel="stylesheet" href="/css/team-info.css">
+    <style>
+        .profile-image {
+            width: 220px;
+            height: 340px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .form-control-plaintext {
+            background-color: #f0f0f0;
+            padding: 0.375rem 0.75rem;
+            border-radius: 10px;
+        }
+        .modal-dialog {
+            max-width: 70%;
+        }
+        .btn-info i {
+            transition: transform 0.3s ease;
+        }
+        .btn-info:hover i {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+<div th:replace="~{layout :: nav}"></div>
+<div class="container"  style="margin-top: 120px" >
+    <div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="warningToast">
+            <div class="toast-header bg-danger text-white">
+                <strong class="me-auto">Thất bại</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <span th:text="${errorMessage}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${message != null}" class="toast-container position-fixed top-0 end-0 p-3">
+        <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="warningToast">
+            <div th:class="${messageType == 'error-message' ? 'toast-header bg-danger text-white' : 'toast-header bg-success text-white'}">
+                <strong class="me-auto" th:text="${messageType == 'error-message' ? 'Thất bại' : 'Thành công'}"></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <span th:text="${message}"></span>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="text-center my-4">Danh sách giáo viên</h1>
+    <table class="table table-striped text-center align-middle">
+        <thead class="table-dark">
+        <tr>
+            <th>STT</th>
+            <th>Họ và Tên</th>
+            <th>Tình trạng đăng kí</th>
+            <th>Chi tiết</th>
+            <th>Hành Động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="teacher : ${teachers}" id="teacher-${teacher.id}">
+            <td th:text="${teacher.id}"></td>
+            <td th:text="${teacher.user.name}"></td>
+            <td th:text="${teacherTeamCount[teacher.id]} + ' /5'"></td>
+            <td>
+                    <span class="btn-info" th:onclick="'loadTeacherDetails(' + ${teacher.id} + ')'">
+                        <i class="fas fa-eye"></i>
+                    </span>
+            </td>
+            <td>
+                <!-- Hiển thị nút Hủy cho nhóm đã đăng ký -->
+                <form th:if="${registeredTeacherIds != null && #lists.contains(registeredTeacherIds, teacher.id)}"
+                      th:action="@{/teachersrgt}" method="post" class="d-inline" id="cancelForm-${teacher.id}">
+                    <input type="hidden" name="teacherId" th:value="0"/>
+                    <button type="submit" style="width: 110px" class="btn btn-danger">Hủy</button>
+                </form>
+
+                <!-- Hiển thị nút Đăng Ký cho nhóm chưa đăng ký -->
+                <form th:if="${registeredTeacherIds != null && !#lists.contains(registeredTeacherIds, teacher.id) && teacherTeamCount[teacher.id] < 5}"
+                      th:action="@{/teachersrgt}" method="post" class="d-inline" id="registerForm-${teacher.id}">
+                    <input type="hidden" name="teacherId" th:value="${teacher.id}"/>
+                    <button type="submit" class="btn btn-primary" style="width: 110px">Đăng kí</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Phân trang -->
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${pageNumber == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/listteachersrgt(page=${pageNumber - 1})}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == pageNumber} ? 'active'">
+                <a class="page-link" th:href="@{/listteachersrgt(page=${i})}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${pageNumber == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/listteachersrgt(page=${pageNumber + 1})}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+
+    <!-- Modal Chi Tiết Giáo Viên -->
+    <div class="modal fade" id="teacherDetailModal" tabindex="-1" aria-labelledby="teacherDetailModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="teacherDetailModalLabel">Thông tin chi tiết</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Hình ảnh -->
+                        <div class="col-md-3 d-flex align-items-center">
+                            <img id="teacherAvatar" src="https://via.placeholder.com/150" alt="Giảng viên"
+                                 class="profile-image">
+                        </div>
+                        <!-- Thông tin -->
+                        <div class="info-container col-md-9">
+                            <div class="row mb-3">
+                                <div class="col-md-9">
+                                    <label class="form-label">Tên giảng viên</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="teacherName">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Giới tính</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="teacherGender">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-9">
+                                    <label class="form-label">Địa chỉ</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="teacherAddress">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Số điện thoại</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="teacherPhoneNumber">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-9">
+                                    <label class="form-label">Ngày sinh</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="teacherDob">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Trình độ</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="teacherDegree">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-9">
+                                    <label class="form-label">Email</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="teacherEmail">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Khoa</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="teacherFacutly">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="layout :: footer"></div>
+<!-- Thêm các thư viện JS -->
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script>
+    function loadTeacherDetails(teacherId) {
+        fetch(`/teachersrgt/${teacherId}`)
+            .then(response => response.json())
+            .then(teacher => {
+                if (!teacher.id) throw new Error("Dữ liệu không hợp lệ");
+                document.getElementById("teacherName").value = teacher.name;
+                document.getElementById("teacherEmail").value = teacher.email;
+                document.getElementById("teacherDegree").value = teacher.degree;
+                document.getElementById("teacherPhoneNumber").value = teacher.phoneNumber;
+                document.getElementById("teacherDob").value = new Date(teacher.dob).toLocaleDateString();
+                document.getElementById("teacherAddress").value = teacher.address;
+                document.getElementById("teacherGender").value = teacher.gender === "MALE" ? "Nam" : "Nữ";
+                document.getElementById("teacherFacutly").value = teacher.facutly;
+                document.getElementById("teacherAvatar").src = teacher.avatar || "https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-anh-the-dep-e1664379835782.jpg";
+                const teacherDetailModal = new bootstrap.Modal(document.getElementById('teacherDetailModal'));
+                teacherDetailModal.show();
+            })
+            .catch(error => {
+                console.error("Lỗi tải thông tin giáo viên:", error.message);
+                alert('Không thể tải thông tin giáo viên: ' + error.message);
+            });
+    }
+
+</script>
+<script th:src="@{/js/toast-noti.js}"></script>
+</body>
+</html>
