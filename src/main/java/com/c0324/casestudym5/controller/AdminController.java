@@ -24,10 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.io.IOException;
-import java.util.HashSet;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
-import java.util.Set;
+
 
 
 @RequestMapping("/admin")
@@ -75,6 +75,24 @@ public class AdminController {
 
 
 
+    // CalculateAge
+    private int calculateAge(Date dob) {
+        if (dob == null) {
+            return 0;
+        }
+        Calendar dobCal = Calendar.getInstance();
+        dobCal.setTime(dob);
+        Calendar today = Calendar.getInstance();
+
+        int age = today.get(Calendar.YEAR) - dobCal.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dobCal.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+        return age;
+    }
+
+
     // Student Functionality
     @GetMapping("/student")
     public String index(Model model,
@@ -115,34 +133,49 @@ public class AdminController {
     }
 
     @PostMapping("/create-student")
-    public String createStudent(@Valid @ModelAttribute("studentDTO") StudentDTO studentDTO,
+    public String creatStudent(@Valid @ModelAttribute("studentDTO") StudentDTO studentDTO,
                                 BindingResult bindingResult,
                                 @RequestParam("avatar") MultipartFile avatar,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
+       
+        studentDTO.setEmail(studentDTO.getEmail().trim());
+        studentDTO.setName(studentDTO.getName().trim());
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("clazzes", clazzService.getAllClazzes());
             return "admin/student/student-create";
         }
 
-        try {
-            if (userService.existsByEmail(studentDTO.getEmail())) {
-                bindingResult.rejectValue("email", "error.studentDTO", "Email đã tồn tại.");
+        if (studentDTO.getDob() != null) {
+            int age = calculateAge(studentDTO.getDob());
+            if (age < 18) {
+                bindingResult.rejectValue("dob", "error.studentDTO", "Sinh viên phải đủ 18 tuổi");
                 model.addAttribute("clazzes", clazzService.getAllClazzes());
                 return "admin/student/student-create";
             }
-            studentService.createNewStudent(studentDTO, avatar); // Gọi CreateNewStudent từ studentService
+        }
+
+        try {
+            if (userService.existsByEmail(studentDTO.getEmail())) {
+                bindingResult.rejectValue("email", "error.teacherDTO", "Email đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-create";
+            }
+            studentService.createNewStudent(studentDTO, avatar);
 
             redirectAttributes.addFlashAttribute("toastMessage", "Thêm sinh viên thành công!");
             redirectAttributes.addFlashAttribute("toastType", "success");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình thêm sinh viên.");
             redirectAttributes.addFlashAttribute("toastType", "danger");
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         return "redirect:/admin/student";
     }
+
+
 
     // Student Edit
     @GetMapping("/edit-student/{id}")
@@ -163,17 +196,30 @@ public class AdminController {
 
         return "admin/student/student-edit";
     }
+
     @PostMapping("/edit-student/{id}")
-    public String editTeacher(@PathVariable Long id,
+    public String editStudent(@PathVariable Long id,
                               @Valid @ModelAttribute("studentDTO") StudentDTO studentDTO,
                               BindingResult bindingResult,
                               @RequestParam(value = "avatar", required = false) MultipartFile avatar,
                               Model model,
                               RedirectAttributes redirectAttributes) {
 
+        // Trim dữ liệu đầu vào
+        studentDTO.setEmail(studentDTO.getEmail().trim());
+        studentDTO.setName(studentDTO.getName().trim());
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("clazzes", clazzService.getAllClazzes());
             return "admin/student/student-edit";
+        }
+        if (studentDTO.getDob() != null) {
+            int age = calculateAge(studentDTO.getDob());
+            if (age < 18) {
+                bindingResult.rejectValue("dob", "error.teacherDTO", "Sinh viên phải đủ 18 tuổi.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-edit";
+            }
         }
 
         try {
@@ -183,7 +229,7 @@ public class AdminController {
                 model.addAttribute("clazzes", clazzService.getAllClazzes());
                 return "admin/student/student-edit";
             }
-            studentService.editStudent(id, studentDTO, avatar, studentDTO.getAvatarUrl());
+            studentService.editStudent(id, studentDTO, avatar);
             redirectAttributes.addFlashAttribute("toastMessage", "Cập nhật sinh viên thành công!");
             redirectAttributes.addFlashAttribute("toastType", "success");
         } catch (Exception e) {

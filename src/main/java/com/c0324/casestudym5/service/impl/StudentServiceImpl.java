@@ -1,7 +1,6 @@
 package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.StudentDTO;
-import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.repository.*;
@@ -94,6 +93,8 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.searchStudentsExceptCurrent(search,id,pageable);
     }
 
+
+
     @Override
     public void createNewStudent(StudentDTO studentDTO, MultipartFile avatar) throws Exception {
         // Tạo đối tượng mới
@@ -137,7 +138,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public void editStudent(Long id, StudentDTO studentDTO, MultipartFile avatar, String existingAvatarUrl) throws Exception {
+    public void editStudent(Long id, StudentDTO studentDTO, MultipartFile avatar) throws Exception {
         Optional<Student> optionalStudent = studentRepository.findById(id);
         if (!optionalStudent.isPresent()) {
             throw new Exception("Teacher not found");

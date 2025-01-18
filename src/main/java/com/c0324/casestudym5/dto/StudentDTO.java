@@ -13,6 +13,7 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -31,6 +32,7 @@ public class StudentDTO {
     private String email;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Ngày sinh không được để trống")
     private Date dob;
 
     @NotEmpty(message = "Giới tính không được để trống")
@@ -49,6 +51,7 @@ public class StudentDTO {
     @NotNull(message = "Lớp học không được để trống")
     private Long clazzId;
 
+
     private MultipartFile multipartFile;
 
     private String avatarUrl;
@@ -64,5 +67,6 @@ public class StudentDTO {
         this.clazzId = student.getClazz().getId();
         this.avatarUrl = student.getUser().getAvatar() != null ? student.getUser().getAvatar().getUrl() : null;
     }
+
 
 }

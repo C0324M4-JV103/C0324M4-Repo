@@ -23,6 +23,6 @@ public interface StudentService {
     Page<Student> findAllExceptCurrentStudent(Long currentStudentId, Pageable pageable);
     Page<Student> searchStudentsExceptCurrent(String search, Long id, Pageable pageable);
     void createNewStudent(StudentDTO studentDTO, MultipartFile avatar) throws Exception;
-    void editStudent(Long id, StudentDTO studentDTO, MultipartFile avatar, String existingAvatarUrl) throws Exception;
+    void editStudent(Long id, StudentDTO studentDTO, MultipartFile avatar) throws Exception;
     void deleteStudentById(Long id) throws Exception;
 }
