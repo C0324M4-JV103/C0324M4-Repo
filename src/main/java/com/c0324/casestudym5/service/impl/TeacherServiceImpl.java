@@ -1,14 +1,8 @@
 package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.TeacherDTO;
-import com.c0324.casestudym5.model.MultiFile;
-import com.c0324.casestudym5.model.Role;
-import com.c0324.casestudym5.model.Teacher;
-import com.c0324.casestudym5.model.User;
-import com.c0324.casestudym5.repository.MultiFileRepository;
-import com.c0324.casestudym5.repository.RoleRepository;
-import com.c0324.casestudym5.repository.TeacherRepository;
-import com.c0324.casestudym5.repository.UserRepository;
+import com.c0324.casestudym5.model.*;
+import com.c0324.casestudym5.repository.*;
 import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,7 +122,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public void editTeacher(Long id, TeacherDTO teacherDTO, MultipartFile avatar) throws Exception {
         Optional<Teacher> optionalTeacher = teacherRepository.findById(id);
-        if (!optionalTeacher.isPresent()) {
+        if (optionalTeacher.isEmpty()) {
             throw new Exception("Teacher not found");
         }
 
@@ -163,7 +157,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public void deleteTeacherById(Long id) throws Exception {
         Optional<Teacher> teacherOptional = teacherRepository.findById(id);
-        if (!teacherOptional.isPresent()) {
+        if (teacherOptional.isEmpty()) {
             throw new Exception("Không tìm thấy giáo viên với ID: " + id);
         }
         Teacher teacher = teacherOptional.get();

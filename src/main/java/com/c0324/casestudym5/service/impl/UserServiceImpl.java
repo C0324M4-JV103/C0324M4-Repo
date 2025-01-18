@@ -12,7 +12,6 @@ import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.AppConstants;
 import jakarta.annotation.PostConstruct;
-import org.antlr.v4.runtime.misc.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
