@@ -4,7 +4,6 @@ import com.c0324.casestudym5.dto.CommentDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.service.TopicService;
 import com.c0324.casestudym5.service.UserService;
-import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.service.impl.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,8 +27,6 @@ public class PhaseController {
 
     @Autowired
     public PhaseController(TopicService topicService, CommentService commentService, UserService userService) {
-    public PhaseController(PhaseService phaseService, TopicService topicService, CommentService commentService, UserService userService) {
-        this.phaseService = phaseService;
         this.topicService = topicService;
         this.commentService = commentService;
         this.userService = userService;
@@ -53,15 +50,12 @@ public class PhaseController {
         if (!isStudentInTeam && !isTeacherOfTeam) {
             return "common/404";
         }
-
-        List<Phase> phases = phaseService.findPhasesByTopic(topic);
-        List<CommentDTO> comments = commentService.getCommentsByTopicId(topicId);
         String curUserAvatar = currentUser.getAvatar().getUrl();
 
         model.addAttribute("team", team);
         model.addAttribute("topic", topic);
         model.addAttribute("students", students);
-        model.addAttribute("phases", phases);
+        model.addAttribute("phases", sortedPhases);
         model.addAttribute("comments", comments);
         model.addAttribute("curUserAvatar", curUserAvatar);
         return "phase";

@@ -7,6 +7,7 @@ import com.c0324.casestudym5.repository.TeamRepository;
 import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.util.CommonMapper;
 import org.hibernate.Hibernate;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public Page<TeamDTO> getPageTeams(int page, String keyword, User user) {
-        Pageable pageable = PageRequest.of(page, 3);
+        Pageable pageable = PageRequest.of(page, 5);
         Teacher teacher = teacherRepository.findTeacherByUserEmail(user.getEmail());
         Page<Team> teams;
         if(keyword.isEmpty()){
@@ -70,7 +71,11 @@ public class TeamServiceImpl implements TeamService {
         } else {
             teams = teamRepository.searchTeamByNameAndTeacherId(teacher.getId(), keyword ,pageable);
         }
-        return teams.map(CommonMapper::mapToTeamDTO);
+        List<Team> filteredTeams = teams.stream()
+                .filter(team -> !team.getStudents().isEmpty())
+                .toList();
+        return new PageImpl<>(filteredTeams, pageable, filteredTeams.size())
+                .map(CommonMapper::mapToTeamDTO);
     }
 
     @Override

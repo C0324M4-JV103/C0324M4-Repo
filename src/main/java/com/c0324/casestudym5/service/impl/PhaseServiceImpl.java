@@ -22,22 +22,6 @@ public class PhaseServiceImpl implements PhaseService {
     }
 
     @Override
-    public void createPhasesForTopic(Topic topic) {
-        LocalDate approvedDate = LocalDate.now();
-        for (int i = 1; i <= 4; i++) {
-            Phase phase = new Phase();
-            phase.setTopic(topic);
-            phase.setPhaseNumber(i);
-            phase.setPhaseProgressPercent(0);
-            phase.setStatus(i == 1 ? 1 : 0);
-            phase.setStartDate(approvedDate.plusDays(i));
-            phase.setEndDate(approvedDate.plusDays(i + 6));
-
-            phaseRepository.save(phase);
-        }
-
-    }
-    @Override
     public List<Phase> findPhasesByTopic(Topic topic) {
         return phaseRepository.findPhaseByTopicOrderByIdAsc(topic);
     }

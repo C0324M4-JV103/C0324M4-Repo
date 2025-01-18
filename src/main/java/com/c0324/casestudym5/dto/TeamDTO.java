@@ -26,4 +26,6 @@ public class TeamDTO {
     private Integer memberCount;
 
     private Integer status;
+
+    private Long topicId;
 }

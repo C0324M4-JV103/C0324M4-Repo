@@ -33,6 +33,7 @@ public class CommonMapper {
         teamDTO.setMemberCount(team.getStudents().size());
         teamDTO.setDeadline(team.getTopic() != null ? team.getTopic().getDeadline() : null);
         teamDTO.setStatus(team.getTopic() != null ? team.getTopic().getStatus() : null);
+        teamDTO.setTopicId(team.getTopic() != null ? team.getTopic().getId() : null);
         return teamDTO;
     }
 
