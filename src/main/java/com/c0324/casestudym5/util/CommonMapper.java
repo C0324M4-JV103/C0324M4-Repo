@@ -68,7 +68,9 @@ public class CommonMapper {
         progressReportDTO.setPhaseNumber(phase.getPhaseNumber());
         progressReportDTO.setPhaseProgressPercent(phase.getPhaseProgressPercent());
         progressReportDTO.setReportContent(phase.getReportContent());
-        progressReportDTO.setReportLink(phase.getReportFile().getUrl());
+        if (phase.getReportFile() != null) {
+            progressReportDTO.setReportLink(phase.getReportFile().getUrl());
+        }
         return progressReportDTO;
     }
 }

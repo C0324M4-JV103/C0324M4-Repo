@@ -62,7 +62,7 @@
 
             <label class="form-label fw-bold" for="file">File báo cáo</label>
             <div class="mb-4">
-                <input type="file" id="file" class="form-control form-control-lg" th:field="*{reportFile}"/>
+                <input type="file" id="file" class="form-control form-control-lg" th:field="*{reportFile}" th:attr="required=${reportTopic.reportLink == null}"/>
                 <div th:if="${reportTopic.reportLink != null}" class="mt-2">
                     <a class="btn btn-outline-secondary" th:href="@{${reportTopic.reportLink}}" target="_blank" th:text="${#strings.substring(reportTopic.reportLink, reportTopic.reportLink.lastIndexOf('/') + 1, reportTopic.reportLink.indexOf('?'))}"></a>
                 </div>
