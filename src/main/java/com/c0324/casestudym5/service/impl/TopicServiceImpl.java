@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.c0324.casestudym5.repository.TeacherRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -69,7 +70,7 @@ public class TopicServiceImpl implements TopicService {
             topic.setName(registerTopicDTO.getName());
             topic.setContent(registerTopicDTO.getContent());
             topic.setStatus(0);
-            topic.setApproved(AppConstants.PENDING);
+            topic.setApproved(AppConstants.TOPIC_PENDING);
             topic.setTeam(team);
 
             String url_image, url_description;
@@ -147,7 +148,7 @@ public class TopicServiceImpl implements TopicService {
     public void approveTopic(Long id) {
         Topic topic = getTopicById(id);
         topic.setStatus(1);
-        topic.setApproved(AppConstants.APPROVED);
+        topic.setApproved(AppConstants.TOPIC_APPROVED);
         topic.setApprovedBy(getCurrentTeacher());
 
         Long teamId = topic.getTeam().getId();
@@ -222,6 +223,7 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    @Transactional
     public String submitProgressReport(Long topicId, ProgressReportDTO progressReportDTO, Student student) {
         Phase phase = phaseRepository.findByTopicIdAndPhaseNumber(topicId, progressReportDTO.getPhaseNumber());
         if (phase == null) {
@@ -236,6 +238,8 @@ public class TopicServiceImpl implements TopicService {
         phase.setStatus(AppConstants.PHASE_COMPLETED);
         phase.setReportContent(progressReportDTO.getReportContent());
         phase.setPhaseProgressPercent(progressReportDTO.getPhaseProgressPercent());
+        phase.setReportDate(LocalDateTime.now());
+        phase.setReporter(student.getUser());
 
         // upload report file to firebase
         try {
@@ -273,6 +277,20 @@ public class TopicServiceImpl implements TopicService {
         if (next_phase != null) {
             next_phase.setStatus(AppConstants.PHASE_OPENED);
             phaseRepository.save(next_phase);
+        }
+        else {
+            boolean allPhasesCompleted = true;
+            for (int i = 1; i <= 4; i++) {
+                Phase p = phaseRepository.findByTopicIdAndPhaseNumber(topicId, i);
+                if (p.getStatus() != AppConstants.PHASE_COMPLETED) {
+                    allPhasesCompleted = false;
+                    break;
+                }
+            }
+            if (allPhasesCompleted) {
+                topic.setStatus(AppConstants.TOPIC_CLOSED);
+                topicRepository.save(topic);
+            }
         }
         return "";
     }

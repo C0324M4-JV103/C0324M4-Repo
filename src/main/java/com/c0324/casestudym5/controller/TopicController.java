@@ -80,7 +80,7 @@ public class TopicController {
         Student student = studentService.findStudentByUserId(currentUser.getId());
         Team userTeam = student.getTeam();
         // check topic, approved and team
-        if (topic == null || topic.getApproved() != AppConstants.APPROVED || !userTeam.getTopic().getId().equals(topic.getId())) {
+        if (topic == null || topic.getApproved() != AppConstants.TOPIC_APPROVED || !userTeam.getTopic().getId().equals(topic.getId())) {
             return "common/404";
         }
         // check phase number
@@ -116,16 +116,16 @@ public class TopicController {
         User currentUser = getCurrentUser();
         Student student = studentService.findStudentByUserId(currentUser.getId());
         Team userTeam = student.getTeam();
-        if (topic == null || topic.getApproved() != AppConstants.APPROVED || !userTeam.getTopic().getId().equals(topic.getId())) {
+        if (topic == null || topic.getApproved() != AppConstants.TOPIC_APPROVED || !userTeam.getTopic().getId().equals(topic.getId())) {
             return "common/404";
         }
         String isReported = topicService.submitProgressReport(topic.getId(), progressReportDTO, student);
         if (!isReported.trim().isEmpty()) {
             redirectAttributes.addFlashAttribute("errorMessage", isReported);
-            return "redirect:/student/info-team"; // tam thoi chuyen ve trang info team
+            return "redirect:/progress/" + topic.getId();
         }
         redirectAttributes.addFlashAttribute("successMessage", "Báo cáo giai đoạn " + progressReportDTO.getPhaseNumber() + " đã được gửi.");
-        return "redirect:/student/info-team"; // tam thoi chuyen ve trang info team
+        return "redirect:/progress/" + topic.getId();
     }
 
     private User getCurrentUser() {

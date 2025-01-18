@@ -183,11 +183,9 @@ public class StudentController {
 
 
     @GetMapping("/info-team")
-    public String teamInfo(Model model, Pageable pageable, Principal principal) {
+    public String teamInfo(Model model, Pageable pageable) {
         Student currentStudent = getCurrentStudent();
         Team team = currentStudent.getTeam();
-        User currentUser = userService.findByEmail(principal.getName());
-        List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
 
         model.addAttribute("student", currentStudent);;
@@ -287,6 +285,14 @@ public class StudentController {
         return "redirect:/student/info-team";
     }
 
-
-
+    @GetMapping("/progress")
+    public String redirectToProgress() {
+        Student currentStudent = getCurrentStudent();
+        Team currentTeam = currentStudent.getTeam();
+        if (currentTeam != null && currentTeam.getTopic() != null && currentTeam.getTopic().getApproved() == AppConstants.TOPIC_APPROVED) {
+            Long topicId = currentTeam.getTopic().getId();
+            return "redirect:/progress/" + topicId;
+        }
+        return "redirect:/student/info-team";
+    }
 }
