@@ -261,8 +261,8 @@ public class TopicServiceImpl implements TopicService {
         User teacher = topic.getTeam().getTeacher().getUser();
         if (teacher != null) {
             // Send email to the teacher
-            String subject = topic.getTeam().getName() + " - Thông báo báo cáo tiến độ giai đoạn " + progressReportDTO.getPhaseNumber();
-            mailService.sendSubmittedProgressReportEmail(teacher.getEmail(), subject, student.getUser().getName(), teacher.getName(), topic, topic.getTeam().getName(), phase.getPhaseNumber().toString());
+//            String subject = topic.getTeam().getName() + " - Thông báo báo cáo tiến độ giai đoạn " + progressReportDTO.getPhaseNumber();
+//            mailService.sendSubmittedProgressReportEmail(teacher.getEmail(), subject, student.getUser().getName(), teacher.getName(), topic, topic.getTeam().getName(), phase.getPhaseNumber().toString());
 
             // Send notification to the teacher
             Notification notification = new Notification();
@@ -274,7 +274,7 @@ public class TopicServiceImpl implements TopicService {
 
         // Open next phase and check if all phases are completed
         Phase next_phase = phaseRepository.findByTopicIdAndPhaseNumber(topicId, progressReportDTO.getPhaseNumber() + 1);
-        if (next_phase != null) {
+        if (next_phase != null && next_phase.getStatus() == AppConstants.PHASE_CLOSED) {
             next_phase.setStatus(AppConstants.PHASE_OPENED);
             phaseRepository.save(next_phase);
         }

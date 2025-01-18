@@ -13,6 +13,7 @@ public class ProgressReportDTO {
     private Integer phaseProgressPercent;
     private MultipartFile reportFile;
     private String reportContent;
+    private String reportLink;
 
     public ProgressReportDTO(Integer phaseNumber) {
         this.phaseNumber = phaseNumber;

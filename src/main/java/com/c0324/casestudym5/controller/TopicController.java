@@ -78,6 +78,9 @@ public class TopicController {
         Topic topic = topicService.getTopicById(topicId);
         User currentUser = getCurrentUser();
         Student student = studentService.findStudentByUserId(currentUser.getId());
+        if (student == null) {
+            return "common/404";
+        }
         Team userTeam = student.getTeam();
         // check topic, approved and team
         if (topic == null || topic.getApproved() != AppConstants.TOPIC_APPROVED || !userTeam.getTopic().getId().equals(topic.getId())) {
