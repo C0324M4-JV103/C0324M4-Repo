@@ -20,6 +20,6 @@ public class CommentResponse {
 
     private String timeDifference;
 
-    private boolean isReply;
+    private Long topicId;
 
 }

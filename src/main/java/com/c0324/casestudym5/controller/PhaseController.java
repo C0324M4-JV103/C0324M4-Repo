@@ -12,27 +12,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 public class PhaseController {
 
     private final PhaseService phaseService;
     private final TopicService topicService;
-    private final StudentService studentService;
     private final CommentService commentService;
     private final UserService userService;
-    private final TeamService teamService;
 
     @Autowired
-    public PhaseController(PhaseService phaseService, TopicService topicService, StudentService studentService,
-                           CommentService commentService, UserService userService, TeamService teamService) {
+    public PhaseController(PhaseService phaseService, TopicService topicService, CommentService commentService, UserService userService) {
         this.phaseService = phaseService;
         this.topicService = topicService;
-        this.studentService = studentService;
         this.commentService = commentService;
         this.userService = userService;
-        this.teamService = teamService;
     }
 
 

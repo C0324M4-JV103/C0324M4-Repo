@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelectorAll('.btn-reply').forEach(button => {
         button.addEventListener('click', function (){
-            let topicId = this.getAttribute('topic-id');
-            let commentId = this.getAttribute('comment-id');
+            let topicId = this.getAttribute('data-topic-id');
+            let commentId = this.getAttribute('data-comment-id');
             let contentInput = document.querySelector(`#reply-box-${commentId}`);
             let content = contentInput.value;
             if(content.trim() !== '' ){
@@ -65,26 +65,34 @@ document.addEventListener('DOMContentLoaded', function() {
     const showCommentForTeacher = (comment) => {
         const commentContent = document.querySelector('#show-comment');
         const newComment = `
-        <div class="top1" id="'comment-' + ${comment.id}">
-        <div class="message-container">
-            <div class="d-flex">
-                <div class="me-3">
-                    <img src="${comment.senderAvatar}" width="50px" height="50px" alt="Avatar" class="avatar">
-                </div>
+        <div class="d-flex gap-3 mb-3 question-container"
+            id="comment-${comment.id}">
+                <img src="${comment.senderAvatar}"
+                    width="50px" height="50px"
+                        alt="Profile" class="profile-img">
                 <div class="flex-grow-1">
-                    <div class="d-flex align-items-center mb-2">
-                        <strong class="mb-0 me-2">${comment.senderName}</strong>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h6 class="mb-0 fw-bold" >${comment.senderName}</h6>
+                        </div>
+                        <span class="timestamp">${comment.timeDifference}</span>
                     </div>
-                    <p class="mb-2">${comment.content}</p>
-                    <div class="action-buttons mb-2" >
-                        <button class="btn btn-success btn-sm reply-btn">Trả lời</button><!-- role teacher -->
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center comment-actions">
-                         <span class="timestamp ms-auto" >${comment.timeDifference}</span>
-                    </div>
-                </div>
+                    <p class="mb-2" >${comment.content}</p>
+                    <button class="btn btn-outline-primary btn-sm" id="btn-show-reply-${comment.id}" onclick="toggleQuestion(this)">
+                        <i class="fas fa-reply"></i> Trả lời
+                    </button>
+                    <!-- Ô trả lời bên trong khung -->
+                    <div class="reply-container" style="display: none; margin-top: 10px;">
+                        <div class="d-flex align-items-center gap-2">
+                            <input id="reply-box-${comment.id}" class="form-control"
+                                    placeholder="Nhập câu trả lời của bạn...">
+                            <button class="btn btn-outline-primary btn-reply"
+                                data-topic-id=${comment.topicId} data-comment-id=${comment.id}">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>   
             </div>
-        </div>
         </div>
     `;
         commentContent.insertAdjacentHTML('afterbegin', newComment);
@@ -93,23 +101,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const showCommentForStudent = (comment) => {
         const commentContent = document.querySelector('#show-comment');
         const newComment = `
-        <div class="top1" id="'comment-' + ${comment.id}">
-        <div class="message-container">
-            <div class="d-flex">
-                <div class="me-3">
-                    <img src="${comment.senderAvatar}" width="50px" height="50px" alt="Avatar" class="avatar">
-                </div>
+        <div class="d-flex gap-3 mb-3 question-container" 
+            id="comment-${comment.id}">
+                <img src="${comment.senderAvatar}"
+                    width="50px" height="50px"
+                        alt="Profile" class="profile-img">
                 <div class="flex-grow-1">
-                    <div class="d-flex align-items-center mb-2">
-                        <strong class="mb-0 me-2">${comment.senderName}</strong>
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h6 class="mb-0 fw-bold">${comment.senderName}</h6>
+                        </div>
+                        <span class="timestamp">${comment.timeDifference}</span>
                     </div>
                     <p class="mb-2">${comment.content}</p>
-                    <div class="d-flex justify-content-between align-items-center comment-actions">
-                         <span class="timestamp ms-auto" >${comment.timeDifference}</span>
-                    </div>
-                </div>
             </div>
-        </div>
         </div>
     `;
         commentContent.insertAdjacentHTML('afterbegin', newComment);
@@ -118,25 +123,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const showReply = (reply) => {
         const parentComment = document.querySelector(`#comment-${reply.id}`);
+        let insertPos = parentComment.querySelector('.flex-grow-1')
         let replyHTML = `
-        <div class="message-container-reply-btn">
-            <div class="d-flex">
-                <div class="me-3">
-                    <img src="${reply.senderAvatar}"
-                    width="50px" height="50px" alt="Avatar" class="avatar">
-                </div>
-                <div class="flex-grow-1">
-                    <div class="mb-2">
-                        <strong class="mb-0" >${reply.senderName}</strong>
-                    </div>
-                    <p class=" mb-2" >${reply.content}</p>
-                    <div class="d-flex justify-content-between align-items-center comment-actions">
-                    <span class="timestamp ms-auto">${reply.timeDifference}</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <div class="divider"></div>
+        <!-- Giảng viên trả lời -->
+             <div class="teacher-reply" >
+                  <div class="d-flex gap-3 mb-3">
+                       <img src="${reply.senderAvatar}"
+                            width="50px" height="50px"
+                            alt="Profile" class="profile-img">
+                       <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                 <div>
+                                      <h6 class="mb-0 fw-bold" >${reply.senderName}</h6>
+                                 </div>
+                                 <span class="timestamp" th:text="${reply.timeDifference}"></span>
+                            </div>
+                            <p class="mb-2">${reply.content}</p>
+                       </div>
+                  </div>
+             </div>
         `
-        parentComment.insertAdjacentHTML('beforeend', replyHTML);
+        insertPos.insertAdjacentHTML('beforeend', replyHTML);
+        const replyButton = parentComment.querySelector(`#btn-show-reply-${reply.id}`);
+        if (replyButton) {
+            replyButton.remove();
+        }
+        parentComment.classList.remove('with-border');
     }
 });

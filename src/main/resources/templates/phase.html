@@ -29,11 +29,11 @@
         }
 
 
-        .teacher-reply {
-            /*margin-left: 40px;*/
-            /*padding-left: 15px;*/
-            margin-bottom: 20px;
-        }
+        /*.teacher-reply {*/
+        /*    margin-left: 40px;*/
+        /*    padding-left: 15px;*/
+        /*    margin-bottom: 20px;*/
+        /*}*/
 
         .divider {
             border-top: 1px solid #6c757d;
@@ -50,6 +50,19 @@
         .question-container.with-border {
             background-color: #dddde0;
         }
+
+        .reply-container .form-control {
+            flex-grow: 1; /* Đảm bảo input chiếm toàn bộ khoảng trống còn lại */
+            margin-bottom: 0; /* Loại bỏ khoảng cách mặc định */
+        }
+
+        /* Viền cho mỗi comment */
+        .question-container {
+            border: 1px solid #ccc; /* Thêm viền */
+            border-radius: 8px; /* Bo góc */
+            background-color: #f9f9f9; /* Màu nền nhẹ cho comment */
+        }
+
     </style>
 </head>
 <body>
@@ -147,79 +160,74 @@
                 <div class="container tab-content py-4 d-flex align-items-center justify-content-center">
                     <div class="card cards">
                         <div class="card-body card-bodys">
-                            <!-- Đăng câu hỏi thắc mắc -->
-                            <div class="mb-3 text-end">
-                                <button class="btn btn-outline-primary rounded-5" sec:authorize="hasRole('STUDENT')"
-                                        onclick="toggleQuestionInput()">
-                                    <i class="fas fa-question-circle"></i> Đăng câu hỏi thắc mắc
-                                </button>
-                                <div id="questionInput" style="display: none;">
-                                <textarea class="form-control mt-2" rows="3"
-                                          placeholder="Bạn có thắc mắc gì...?"></textarea>
-                                    <div class="d-flex justify-content-end gap-2 mt-2">
-                                        <button class="btn btn-outline-success">
-                                            <i class="fas fa-paper-plane"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Thắc mắc của sinh viên -->
-                            <div class="d-flex gap-3 mb-3 question-container" th:each="comment : ${comments}"
-                                 th:id="'comment-' + ${comment.id}">
-                                <img th:src="${comment.studentAvatar}"
-                                     width="50px" height="50px"
-                                     alt="Profile" class="profile-img">
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <div>
-                                            <h6 class="mb-0 fw-bold" th:text="${comment.studentName}"></h6>
+                            <div id="show-comment">
+                                <div class="d-flex gap-3 mb-3 question-container" th:each="comment : ${comments}"
+                                     th:id="'comment-' + ${comment.id}">
+                                    <img th:src="${comment.studentAvatar}"
+                                         width="50px" height="50px"
+                                         alt="Profile" class="profile-img">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h6 class="mb-0 fw-bold" th:text="${comment.studentName}"></h6>
+                                            </div>
+                                            <span class="timestamp" th:text="${comment.createdTimeDifference}"></span>
                                         </div>
-                                        <span class="timestamp" th:text="${comment.createdTimeDifference}"></span>
-                                    </div>
-                                    <p class="mb-2" th:text="${comment.content}"></p>
-                                    <button class="btn btn-outline-success btn-sm" sec:authorize="hasRole('TEACHER')"
-                                            th:if="${comment.reply == null || comment.reply == ''}"
-                                            onclick="toggleQuestion(this)">
-                                        <i class="fas fa-reply"></i> Trả lời
-                                    </button>
+                                        <p class="mb-2" th:text="${comment.content}"></p>
+                                        <button class="btn btn-outline-primary btn-sm" th:id="'btn-show-reply-'+${comment.id}" sec:authorize="hasRole('TEACHER')"
+                                                th:if="${comment.reply == null || comment.reply == ''}"
+                                                onclick="toggleQuestion(this)">
+                                            <i class="fas fa-reply"></i> Trả lời
+                                        </button>
 
-                                    <!-- Ô trả lời bên trong khung -->
-                                    <div class="reply-container" style="display: none; margin-top: 10px;">
-                                        <input th:id="'reply-box-'+${comment.id}" class="form-control mb-2" rows="2"
-                                               placeholder="Nhập câu trả lời của bạn...">
-                                        <div class="d-flex justify-content-end gap-2">
-                                            <button class="btn btn-outline-success"
-                                                    th:attr="topic-id=${topic.id}, comment-id=${comment.id}">
-                                                <i class="fas fa-paper-plane"></i>
-                                            </button>
+                                        <!-- Ô trả lời bên trong khung -->
+                                        <div class="reply-container" style="display: none; margin-top: 10px;">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <label>
+                                                    <input th:id="'reply-box-'+${comment.id}" class="form-control"
+                                                           placeholder="Nhập câu trả lời của bạn...">
+                                                </label>
+                                                <button class="btn btn-outline-primary btn-reply"
+                                                        th:attr="data-topic-id=${topic.id}, data-comment-id=${comment.id}">
+                                                    <i class="fas fa-paper-plane"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="divider"></div>
+                                        <div class="divider" th:if="${comment.reply != null && comment.reply != ''}"></div>
 
-                                    <!-- Giảng viên trả lời -->
-                                    <div class="teacher-reply" th:if="${comment.reply != null && comment.reply != ''}">
-                                        <div class="d-flex gap-3 mb-3">
-                                            <img th:src="${comment.teacherAvatar}"
-                                                 width="50px" height="50px"
-                                                 alt="Profile" class="profile-img">
-                                            <div class="flex-grow-1">
-                                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                                    <div>
-                                                        <h6 class="mb-0 fw-bold" th:text="${comment.teacherName}"></h6>
+                                        <!-- Giảng viên trả lời -->
+                                        <div class="teacher-reply" th:if="${comment.reply != null && comment.reply != ''}">
+                                            <div class="d-flex gap-3 mb-3">
+                                                <img th:src="${comment.teacherAvatar}"
+                                                     width="50px" height="50px"
+                                                     alt="Profile" class="profile-img">
+                                                <div class="flex-grow-1">
+                                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                                        <div>
+                                                            <h6 class="mb-0 fw-bold" th:text="${comment.teacherName}"></h6>
+                                                        </div>
+                                                        <span class="timestamp" th:text="${comment.repliedTimeDifference}">0 06/04/2021</span>
                                                     </div>
-                                                    <span class="timestamp" th:text="${comment.repliedTimeDifference}">0 06/04/2021</span>
+                                                    <p class="mb-2" th:text="${comment.reply}"></p>
                                                 </div>
-                                                <p class="mb-2" th:text="${comment.reply}"></p>
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
-                        </div>
+                            <!--Sinh viên comment-->
+                            <div id="questionInput" sec:authorize="hasAnyRole('STUDENT')">
+                                <div class="d-flex align-items-center">
+                                    <label for="comment-box"></label><input class="form-control" id="comment-box" placeholder="Bạn có thắc mắc gì...?">
+                                    <button class="btn btn-outline-primary btn-send ms-2" th:attr="data-topic-id=${topic.id}">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
@@ -229,45 +237,10 @@
 
 <div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
-
-<script>
-    function toggleReplyInput() {
-        const replyInput = document.getElementById('replyInput');
-        replyInput.style.display = replyInput.style.display === 'none' ? 'block' : 'none';
-    }
-
-
-    function toggleQuestionInput() {
-        const questionInput = document.getElementById('questionInput');
-        const textarea = questionInput.querySelector('textarea');
-
-        if (questionInput.style.display === 'none') {
-            questionInput.style.display = 'block';
-            textarea.focus(); // Tự động focus vào ô nhập liệu
-        } else {
-            questionInput.style.display = 'none';
-        }
-    }
-
-
-    function toggleQuestion(button) {
-        const replyContainer = button.parentElement.querySelector('.reply-container');
-        const questionContainer = button.closest('.question-container');
-        const textarea = replyContainer.querySelector('input');
-
-        if (replyContainer.style.display === 'none') {
-            replyContainer.style.display = 'block';
-            textarea.focus();
-            questionContainer.classList.add('with-border');
-        } else {
-            replyContainer.style.display = 'none';
-            questionContainer.classList.remove('with-border');
-        }
-    }
-
-</script>
 <script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
 <script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
 <script th:src="@{/js/comment.js}"></script>
+<script th:src="@{/js/phase.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
 </body>
 </html>

@@ -39,13 +39,12 @@ public class TopicServiceImpl implements TopicService {
     private final TeacherRepository teacherRepository;
     private final PhaseRepository phaseRepository;
     private final MailService mailService;
-    private final PhaseService phaseService;
 
     @Autowired
 
     public TopicServiceImpl(TopicRepository topicRepository, TeamRepository teamRepository, StudentRepository studentRepository,
                             FirebaseService firebaseService, MultiFileRepository multiFileRepository, NotificationService notificationService,
-                            TeacherRepository teacherRepository, MailService mailService) {
+                            TeacherRepository teacherRepository, PhaseRepository phaseRepository, MailService mailService) {
         this.topicRepository = topicRepository;
         this.teamRepository = teamRepository;
         this.studentRepository = studentRepository;
@@ -54,9 +53,7 @@ public class TopicServiceImpl implements TopicService {
         this.notificationService = notificationService;
         this.teacherRepository = teacherRepository;
         this.phaseRepository = phaseRepository;
-
         this.mailService = mailService;
-        this.phaseService = phaseService;
     }
 
 

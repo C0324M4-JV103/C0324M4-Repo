@@ -1,35 +1,17 @@
 
 
-document.getElementById('question-btn').addEventListener('click', function () {
-    let formContainer = document.querySelector('.top2');
-    let button = document.getElementById('question-btn');
+function toggleQuestion(button) {
+    const replyContainer = button.parentElement.querySelector('.reply-container');
+    const questionContainer = button.closest('.question-container');
+    const textarea = replyContainer.querySelector('input');
 
-    formContainer.classList.toggle('show-form');
-
-    if (formContainer.classList.contains('show-form')) {
-        button.textContent = 'Ẩn thắc mắc';
+    if (replyContainer.style.display === 'none') {
+        replyContainer.style.display = 'block';
+        textarea.focus();
+        questionContainer.classList.add('with-border');
     } else {
-        button.textContent = 'Đăng câu hỏi thắc mắc';
+        replyContainer.style.display = 'none';
+        questionContainer.classList.remove('with-border');
     }
-});
-
-document.querySelectorAll('.btn-send').forEach(button => {
-    button.addEventListener('click', function () {
-        const editorContainer = button.closest('.editor-container');
-        if (editorContainer) {
-            editorContainer.classList.toggle('show-form');
-        }
-    });
-});
-
-document.querySelectorAll('.reply-btn').forEach(button => {
-    button.addEventListener('click', function () {
-        const replyForm = button.closest('.top1').querySelector('.reply-form');
-        if (replyForm) {
-            replyForm.style.display = replyForm.style.display === 'none' ? 'block' : 'none';
-        } else {
-            console.log('Reply form not found');
-        }
-    });
-});
+}
 
