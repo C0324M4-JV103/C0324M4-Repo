@@ -2,8 +2,6 @@ package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.CommentDTO;
 import com.c0324.casestudym5.model.*;
-import com.c0324.casestudym5.service.PhaseService;
-import com.c0324.casestudym5.service.StudentService;
 import com.c0324.casestudym5.service.TopicService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.service.impl.CommentService;
@@ -23,21 +21,16 @@ import java.util.stream.Collectors;
 @Controller
 public class PhaseController {
 
-    private final PhaseService phaseService;
     private final TopicService topicService;
-    private final StudentService studentService;
     private final CommentService commentService;
     private final UserService userService;
 
     @Autowired
-    public PhaseController(PhaseService phaseService, TopicService topicService, StudentService studentService, CommentService commentService, UserService userService) {
-        this.phaseService = phaseService;
+    public PhaseController(TopicService topicService, CommentService commentService, UserService userService) {
         this.topicService = topicService;
-        this.studentService = studentService;
         this.commentService = commentService;
         this.userService = userService;
     }
-
 
     @GetMapping("/progress/{topicId}")
     public String showTopicProgress(@PathVariable Long topicId, Model model, Principal principal) {
