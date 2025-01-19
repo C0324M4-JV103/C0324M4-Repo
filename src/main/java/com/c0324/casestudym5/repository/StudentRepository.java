@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Long> {
@@ -31,6 +32,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
                               @Param("classId") Long classId);
 
     Student findByUserEmail(String email);
+    Optional<Student> findByCode(String code);
+
+//    Optional<Student> existsByPhoneNumber(String phoneNumber);
 
     Student findStudentByUserId(Long id);
     @Query("select s from Student s where s.id != :currentStudentId")
@@ -39,4 +43,5 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
             "and (s.user.name like %:search% or s.code like %:search%)")
     Page<Student> searchStudentsExceptCurrent(@Param("search") String search,
                                               @Param("currentStudentId") Long currentStudentId, Pageable pageable);
+
 }

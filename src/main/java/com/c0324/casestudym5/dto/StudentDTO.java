@@ -27,6 +27,10 @@ public class StudentDTO {
     @NotEmpty(message = "Tên không được để trống")
     private String name;
 
+    @Pattern(regexp = "^MSV-\\d{4}$", message = "Mã sinh viên không hợp lệ. Định dạng phải là MSV-XXXX")
+    @NotEmpty(message = "Mã sinh viên không được để trống")
+    private String code;
+
     @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$", message = "Email không hợp lệ")
     @NotEmpty(message = "Email không được để trống")
     private String email;

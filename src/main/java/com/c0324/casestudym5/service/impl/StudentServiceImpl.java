@@ -128,6 +128,7 @@ public class StudentServiceImpl implements StudentService {
         // Tạo Student mới
         Student newStudent = new Student();
         newStudent.setUser(newUser);
+        newStudent.setCode(studentDTO.getCode());
         newStudent.setClazz(clazzRepository.findById(studentDTO.getClazzId()).orElseThrow(() -> new RuntimeException("Lớp học không hợp lệ")));
 
         // Lưu Student
@@ -145,6 +146,9 @@ public class StudentServiceImpl implements StudentService {
         }
 
         Student existingStudent = optionalStudent.get();
+
+        existingStudent.setCode(studentDTO.getCode());
+
         User existingUser = existingStudent.getUser();
 
         existingUser.setName(studentDTO.getName());
@@ -189,4 +193,12 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
+    @Override
+    public boolean existsByCode(String code) {
+        return studentRepository.findByCode(code).isPresent();
+    }
+
+
 }
+
+

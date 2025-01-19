@@ -134,13 +134,20 @@ public class AdminController {
 
     @PostMapping("/create-student")
     public String creatStudent(@Valid @ModelAttribute("studentDTO") StudentDTO studentDTO,
-                                BindingResult bindingResult,
-                                @RequestParam("avatar") MultipartFile avatar,
-                                Model model,
-                                RedirectAttributes redirectAttributes) {
-       
-        studentDTO.setEmail(studentDTO.getEmail().trim());
-        studentDTO.setName(studentDTO.getName().trim());
+                               BindingResult bindingResult,
+                               @RequestParam("avatar") MultipartFile avatar,
+                               Model model,
+                               RedirectAttributes redirectAttributes) {
+
+
+        String trimmedEmail = studentDTO.getEmail().trim();
+        String trimmedName = studentDTO.getName().trim();
+
+        String cleanedEmail = trimmedEmail.replaceAll("\\s+", " ");
+        String cleanedName = trimmedName.replaceAll("\\s+", " ");
+
+        studentDTO.setEmail(cleanedEmail);
+        studentDTO.setName(cleanedName);
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("clazzes", clazzService.getAllClazzes());
@@ -158,10 +165,23 @@ public class AdminController {
 
         try {
             if (userService.existsByEmail(studentDTO.getEmail())) {
-                bindingResult.rejectValue("email", "error.teacherDTO", "Email đã tồn tại.");
+                bindingResult.rejectValue("email", "error.studentDTO", "Email đã tồn tại.");
                 model.addAttribute("clazzes", clazzService.getAllClazzes());
                 return "admin/student/student-create";
             }
+
+            if (studentService.existsByCode(studentDTO.getCode())) {
+                bindingResult.rejectValue("code", "error.studentDTO", "Mã sinh viên đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-create";
+            }
+
+            if (userService.existsByPhoneNumber(studentDTO.getPhoneNumber())) {
+                bindingResult.rejectValue("phoneNumber", "error.studentDTO", "Số điện thoại đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-create";
+            }
+
             studentService.createNewStudent(studentDTO, avatar);
 
             redirectAttributes.addFlashAttribute("toastMessage", "Thêm sinh viên thành công!");
@@ -190,6 +210,7 @@ public class AdminController {
 
         Student student = studentOptional.get();
         StudentDTO studentDTO = new StudentDTO(student);
+        studentDTO.setCode(student.getCode());
 
         model.addAttribute("studentDTO", studentDTO);
         model.addAttribute("clazzes", clazzService.getAllClazzes());
@@ -205,9 +226,15 @@ public class AdminController {
                               Model model,
                               RedirectAttributes redirectAttributes) {
 
-        // Trim dữ liệu đầu vào
-        studentDTO.setEmail(studentDTO.getEmail().trim());
-        studentDTO.setName(studentDTO.getName().trim());
+        String trimmedEmail = studentDTO.getEmail().trim();
+        String trimmedName = studentDTO.getName().trim();
+
+        String cleanedEmail = trimmedEmail.replaceAll("\\s+", " ");
+        String cleanedName = trimmedName.replaceAll("\\s+", " ");
+
+        studentDTO.setEmail(cleanedEmail);
+        studentDTO.setName(cleanedName);
+
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("clazzes", clazzService.getAllClazzes());
@@ -216,7 +243,7 @@ public class AdminController {
         if (studentDTO.getDob() != null) {
             int age = calculateAge(studentDTO.getDob());
             if (age < 18) {
-                bindingResult.rejectValue("dob", "error.teacherDTO", "Sinh viên phải đủ 18 tuổi.");
+                bindingResult.rejectValue("dob", "error.studentDTO", "Sinh viên phải đủ 18 tuổi.");
                 model.addAttribute("clazzes", clazzService.getAllClazzes());
                 return "admin/student/student-edit";
             }
@@ -225,10 +252,21 @@ public class AdminController {
         try {
             Optional<Student> existingStudent = Optional.ofNullable(studentService.getStudent(id));
             if (!studentDTO.getEmail().equals(existingStudent.get().getUser().getEmail()) && userService.existsByEmail(studentDTO.getEmail())) {
-                bindingResult.rejectValue("email", "error.teacherDTO", "Email đã tồn tại.");
+                bindingResult.rejectValue("email", "error.studentDTO", "Email đã tồn tại.");
                 model.addAttribute("clazzes", clazzService.getAllClazzes());
                 return "admin/student/student-edit";
             }
+
+            if (!studentDTO.getCode().equals(existingStudent.get().getCode()) && studentService.existsByCode(studentDTO.getCode())) {
+                bindingResult.rejectValue("code", "error.studentDTO", "Mã sinh viên đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-edit"; }
+
+            if (!studentDTO.getPhoneNumber().equals(existingStudent.get().getUser().getPhoneNumber()) && userService.existsByPhoneNumber(studentDTO.getPhoneNumber())) {
+                bindingResult.rejectValue("phoneNumber", "error.studentDTO", "Số điện thoại đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-edit"; }
+
             studentService.editStudent(id, studentDTO, avatar);
             redirectAttributes.addFlashAttribute("toastMessage", "Cập nhật sinh viên thành công!");
             redirectAttributes.addFlashAttribute("toastType", "success");
@@ -254,8 +292,10 @@ public class AdminController {
         }
         return "redirect:/admin/student";
     }
-}
 
+
+
+}
 
 
 
