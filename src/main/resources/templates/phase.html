@@ -9,53 +9,6 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link rel="stylesheet" href="/css/home-page.css">
     <link rel="stylesheet" href="/css/phase.css">
-    <style>
-        .cards {
-            width: 650px;
-            height: auto;
-        }
-
-        .profile-img {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .timestamp {
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-
-        .divider {
-            border-top: 1px solid #6c757d;
-            margin: 20px auto;
-        }
-
-        .question-container {
-            border: none; /* Loại bỏ viền */
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-
-        .question-container.with-border {
-            background-color: #dddde0;
-        }
-
-        .reply-container .form-control {
-            flex-grow: 1; /* Đảm bảo input chiếm toàn bộ khoảng trống còn lại */
-            margin-bottom: 0; /* Loại bỏ khoảng cách mặc định */
-        }
-
-        /* Viền cho mỗi comment */
-        .question-container {
-            border: 1px solid #ccc; /* Thêm viền */
-            border-radius: 8px; /* Bo góc */
-            background-color: #f9f9f9; /* Màu nền nhẹ cho comment */
-        }
-    </style>
 </head>
 <body>
 <div th:replace="~{layout :: nav}"></div>
@@ -237,25 +190,6 @@
 
 <div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
-<script>
-
-
-    function toggleQuestion(button) {
-        const replyContainer = button.parentElement.querySelector('.reply-container');
-        const questionContainer = button.closest('.question-container');
-        const textarea = replyContainer.querySelector('input');
-
-        if (replyContainer.style.display === 'none') {
-            replyContainer.style.display = 'block';
-            textarea.focus();
-            questionContainer.classList.add('with-border');
-        } else {
-            replyContainer.style.display = 'none';
-            questionContainer.classList.remove('with-border');
-        }
-    }
-
-</script>
 <script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
 <script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
 <script th:src="@{/js/comment.js}"></script>

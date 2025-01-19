@@ -113,71 +113,48 @@ h2 {
     background-color: #ffffff; /* Màu nền nhạt */
 }
 
-/*.editor-container {*/
-/*    display: flex;*/
-/*    gap: 1rem;*/
-/*    margin-top: 1rem;*/
-/*}*/
+.cards {
+    width: 650px;
+    height: auto;
+}
 
-/*.avatar {*/
-/*    border-radius: 50%;*/
-/*    margin-right: 35px;*/
-/*}*/
+.profile-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
-/*.message-avatar img {*/
-/*    width: 45px;*/
-/*    height: 45px;*/
-/*    border-radius: 50%;*/
-/*    object-fit: cover;*/
-/*}*/
-
-
-/*.editor-container {*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    gap: 15px;*/
-/*}*/
+.timestamp {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
 
 
-/*.top2 {*/
-/*    display: none;*/
-/*}*/
+.divider {
+    border-top: 1px solid #6c757d;
+    margin: 20px auto;
+}
 
-/*.top2.show-form {*/
-/*    display: block;*/
-/*}*/
+.question-container {
+    border: none; /* Loại bỏ viền */
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
 
+.question-container.with-border {
+    background-color: #dddde0;
+}
 
-/*.btn-send {*/
-/*    background-color: #0088cc;*/
-/*    color: white;*/
-/*    border-radius: 20px;*/
-/*    padding: 8px 20px;*/
-/*    border: none;*/
-/*    cursor: pointer;*/
-/*    margin-left: auto;*/
-/*    margin-top: 20px;*/
-/*    display: block; !* Đảm bảo nút được hiển thị dưới cùng *!*/
-/*}*/
+.reply-container .form-control {
+    flex-grow: 1; /* Đảm bảo input chiếm toàn bộ khoảng trống còn lại */
+    margin-bottom: 0; /* Loại bỏ khoảng cách mặc định */
+}
 
-/*.btn-send:hover {*/
-/*    background-color: #005f77;*/
-/*}*/
-
-/*.input-container textarea {*/
-/*    flex-grow: 1;*/
-/*    margin-left: 10px;*/
-/*    width: 1160px;*/
-/*    height: 100px;*/
-/*}*/
-
-/*.message-container {*/
-/*    border-bottom: 1px solid #e3e1e1; !* Tạo đường kẻ dưới mỗi message-container *!*/
-/*    padding: 15px 0;*/
-/*}*/
-
-/*.message-container-reply-btn {*/
-/*    margin-left: 80px;*/
-/*    padding-left: 15px;*/
-/*    margin-top: 10px;*/
-/*}*/
+/* Viền cho mỗi comment */
+.question-container {
+    border: 1px solid #ccc; /* Thêm viền */
+    border-radius: 8px; /* Bo góc */
+    background-color: #f9f9f9; /* Màu nền nhẹ cho comment */
+}
