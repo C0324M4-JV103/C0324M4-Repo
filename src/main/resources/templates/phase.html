@@ -98,6 +98,7 @@
 </div>
 <div class="text-center py-4" th:if="${topic.status == 0}"><strong style="color: red; font-size: 2rem">Đề tài đang được
     kiểm duyệt!</strong></div>
+<div class="alert text-center" style="background-color: #282781" th:if="${topic.status == 2}"><strong style="color: white; font-size: 2rem">Nhóm của bạn đã hoàn thành đề tài!</strong></div>
 <div class="container" th:if="${topic.status == 1 || topic.status == 2}">
     <p class="fw-bold text-center fs-4">Thành viên trong nhóm</p>
     <div class="card-info-team-container">
@@ -123,11 +124,10 @@
 
     <h3 class="mt-5">Tiến độ</h3>
 
-    <div class="alert alert-secondary text-center" th:if="${topic.status == 2}"><strong style="color: red; font-size: 2rem">Nhóm của bạn đã hoàn thành đề tài!</strong></div>
-    <div th:if="${topic.status == 1}" th:each="phase : ${phases}">
+    <div th:each="phase : ${phases}">
         <div class="phase-row">
             <button class="phase-button" th:text="'BÁO CÁO GIAI ĐOẠN ' + ${phase.phaseNumber}"
-                    th:disabled="${phase.status == 0}"
+                    th:disabled="${phase.status == 0 || topic.status == 2}"
                     sec:authorize="hasRole('STUDENT')"
                     th:onclick="'window.location.href=\'/topics/' + ${topic.id} + '/progress/' + ${phase.phaseNumber} + '\';'">
                 BÁO CÁO GIAI ĐOẠN
