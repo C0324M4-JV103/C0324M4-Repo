@@ -10,25 +10,17 @@ import java.util.List;
 
 public interface TeamService {
 
-    public Page<TeamDTO> getPageTeams(int page, String keyword, User user);
+    Page<TeamDTO> getPageTeams(int page, String keyword, User user);
     List<Team> findAll();
     Team save(Team team);
-    Team findByName(String name);
     Team findById(Long teamId);
     boolean existsByName(String name);
 
     void deleteTeam(Long teamId, User sender);
 
-    public Team getTeamById(Long id);
-
-    public Team getTeamByStudentId(Long studentId);
-    Team createNewTeam(TeamDTO teamDTO, Student currentStudent);
-
-    public Team findTeamByTopicId(Long topicId) ;
-
-
+    void createNewTeam(TeamDTO teamDTO, Student currentStudent);
 
     int countTeamsByTeacherId(Long teacherId);
 
-    Team teacherrgt(Long id, Long teacherId);
+    void registerTeacher(Long id, Long teacherId);
 }

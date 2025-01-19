@@ -2,9 +2,7 @@ package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.NotificationDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
-import com.c0324.casestudym5.model.Teacher;
-import com.c0324.casestudym5.model.Topic;
-import com.c0324.casestudym5.model.User;
+import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,9 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/teacher")
@@ -42,6 +38,7 @@ public class TeacherController {
         this.topicService = topicService;
         this.notificationService = notificationService;
     }
+
 
     @ModelAttribute
     public void addNotificationsToModel(Model model) {
@@ -129,5 +126,6 @@ public class TeacherController {
         topicService.rejectTopic(id);
         return "redirect:/teacher/topics";
     }
+
 }
 

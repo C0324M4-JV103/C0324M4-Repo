@@ -47,11 +47,6 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team findByName(String name) {
-        return teamRepository.findTeamByName(name);
-    }
-
-    @Override
     public Team findById(Long teamId) {
         return teamRepository.findById(teamId).orElse(null);
     }
@@ -113,18 +108,9 @@ public class TeamServiceImpl implements TeamService {
         }
     }
 
-    @Override
-    public Team getTeamById(Long id) {
-        return teamRepository.findById(id).orElse(null);
-    }
 
     @Override
-    public Team getTeamByStudentId(Long studentId) {
-        return teamRepository.findTeamByStudentsId(studentId);
-    }
-
-    @Override
-    public Team createNewTeam(TeamDTO teamDTO, Student currentStudent) {
+    public void createNewTeam(TeamDTO teamDTO, Student currentStudent) {
         Team newTeam = new Team();
         newTeam.setName(teamDTO.getName());
         newTeam.setStudents(List.of(currentStudent));
@@ -132,16 +118,11 @@ public class TeamServiceImpl implements TeamService {
         currentStudent.setTeam(newTeam);
         currentStudent.setLeader(true);
         studentService.save(currentStudent);
-        return newTeam;
     }
 
-    @Override
-    public Team findTeamByTopicId(Long topicId) {
-        return teamRepository.findTeamByTopicId(topicId);
-    }
 
     @Override
-    public Team teacherrgt(Long teamId, Long teacherId) {
+    public void registerTeacher(Long teamId, Long teacherId) {
         Team team = teamRepository.findById(teamId).orElse(null);
         if (team != null) {
             if (team.getTopic() != null && teacherId == 0) {
@@ -160,9 +141,7 @@ public class TeamServiceImpl implements TeamService {
                     teamRepository.save(team);
                 }
             }
-            return team;
         }
-        return null;
     }
 
 
