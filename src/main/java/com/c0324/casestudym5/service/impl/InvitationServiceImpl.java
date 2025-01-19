@@ -37,7 +37,6 @@ public class InvitationServiceImpl implements InvitationService {
 
     @Override
     public void inviteStudent(Long studentId, Student currentStudent, Team currentTeam) {
-        // Láº¥y email cá»§a sinh viÃªn Ä‘Æ°á»£c má»�i
         String email = studentService.getStudentEmailById(studentId);
         Student invitedStudent = studentService.findById(studentId);
         if (invitedStudent.getTeam() == null && !invitationRepository.existsByStudentAndTeam(invitedStudent, currentTeam)) {
