@@ -25,7 +25,24 @@
         </div>
     </div>
 </div>
-
+<!-- Add Bootstrap Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Xác nhận nộp</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                Nộp giai đoạn 4 sẽ đóng tất cả các giai đoạn. Bạn có chắc chắn muốn tiếp tục không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="confirmSubmit">Nộp</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="row d-flex justify-content-center align-items-center h-100 progress-form">
     <div class="col-12 col-md-12 col-lg-8 col-xl-6 offset-xl-1">
         <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
@@ -36,8 +53,8 @@
             <p class="text-center fw-bold mx-3 mb-0"></p>
         </div>
 
-        <form th:action="@{/topics/handle-progress-report/{id}(id=${topic.id})}" th:object="${reportTopic}" method="post" enctype="multipart/form-data">
-            <input type="hidden" th:field="*{phaseNumber}" />
+        <form id="progressForm" th:action="@{/topics/handle-progress-report/{id}(id=${topic.id})}" th:object="${reportTopic}" method="post" enctype="multipart/form-data">
+            <input type="hidden" id="phaseNumber" th:field="*{phaseNumber}" />
             <label class="form-label fw-bold" for="topicName">Tên đề tài</label>
             <div class="mb-4">
                 <p id="topicName" class="form-control form-control-lg" th:text="${topic.name}"></p>
@@ -45,7 +62,10 @@
 
             <label class="form-label fw-bold" for="file">File báo cáo</label>
             <div class="mb-4">
-                <input type="file" id="file" class="form-control form-control-lg" th:field="*{reportFile}" required/>
+                <input type="file" id="file" class="form-control form-control-lg" th:field="*{reportFile}" th:attr="required=${reportTopic.reportLink == null}"/>
+                <div th:if="${reportTopic.reportLink != null}" class="mt-2">
+                    <a class="btn btn-outline-secondary" th:href="@{${reportTopic.reportLink}}" target="_blank" th:text="${#strings.substring(reportTopic.reportLink, reportTopic.reportLink.lastIndexOf('/') + 1, reportTopic.reportLink.indexOf('?'))}"></a>
+                </div>
             </div>
 
             <!-- Progress Bar -->
@@ -97,6 +117,26 @@
         progressNumber.addEventListener('input', function () {
             const value = progressNumber.value;
             updateProgress(value);
+        });
+    });
+</script>
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const progressForm = document.getElementById('progressForm');
+        const confirmModal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        const confirmSubmit = document.getElementById('confirmSubmit');
+
+        progressForm.addEventListener('submit', function (event) {
+            const phaseNumber = document.getElementById('phaseNumber').value;
+            if (parseInt(phaseNumber) === 4) {
+                event.preventDefault();
+                confirmModal.show();
+            }
+        });
+
+        confirmSubmit.addEventListener('click', function () {
+            progressForm.submit();
         });
     });
 </script>

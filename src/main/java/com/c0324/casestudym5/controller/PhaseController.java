@@ -50,7 +50,6 @@ public class PhaseController {
         }
     }
 
-
     @GetMapping("/progress/{topicId}")
     public String showTopicProgress(@PathVariable Long topicId, Model model, Principal principal) {
         Topic topic = topicService.getTopicById(topicId);

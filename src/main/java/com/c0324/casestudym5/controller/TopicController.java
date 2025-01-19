@@ -78,15 +78,23 @@ public class TopicController {
         Topic topic = topicService.getTopicById(topicId);
         User currentUser = getCurrentUser();
         Student student = studentService.findStudentByUserId(currentUser.getId());
+        if (student == null) {
+            return "common/404";
+        }
         Team userTeam = student.getTeam();
         // check topic, approved and team
         if (topic == null || topic.getApproved() != AppConstants.TOPIC_APPROVED || !userTeam.getTopic().getId().equals(topic.getId())) {
             return "common/404";
         }
+        // check topic status
+        if (topic.getStatus() == 2) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Đề tài đã được hoàn thành.");
+            return "redirect:/progress/" + topic.getId();
+        }
         // check phase number
         if (phaseNum < 1 || phaseNum > 4) {
             redirectAttributes.addFlashAttribute("errorMessage", "Giai đoạn không hợp lệ");
-            return "redirect:/student/info-team"; // tam thoi chuyen ve trang info team
+            return "redirect:/progress/" + topic.getId();
         }
         // check status of phase if status = 0 => redirect to info team
         Phase phase = topic.getPhases().stream()
@@ -96,7 +104,7 @@ public class TopicController {
 
         if (phase == null || phase.getStatus() == 0) {
             redirectAttributes.addFlashAttribute("errorMessage", "Giai đoạn này chưa được mở.");
-            return "redirect:/student/info-team";
+            return "redirect:/progress/" + topic.getId();
         }
 
         ProgressReportDTO progressReportDTO = CommonMapper.mapPhaseToProgressReportDTO(phase);
@@ -109,7 +117,7 @@ public class TopicController {
     public String submitProgressReport(@PathVariable Long id, @ModelAttribute ProgressReportDTO progressReportDTO, BindingResult result, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             redirectAttributes.addFlashAttribute("errorMessage", "Báo cáo không hợp lệ");
-            return "redirect:/topics/" + id; // tam thoi chuyen ve trang topic detail
+            return "redirect:/progress/" + id;
         }
 
         Topic topic = topicService.getTopicById(id);

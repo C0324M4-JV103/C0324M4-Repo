@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link rel="stylesheet" href="/css/home-page.css">
     <link rel="stylesheet" href="/css/phase.css">
@@ -95,8 +96,10 @@
     <p style="font-size: 2rem; font-weight: 700">Nhóm: <span th:text="${team.name}"></span></p>
     <p style="font-size: 1.5rem; font-weight: 555">Tên đề tài: <span th:text="${topic.name}"></span></p>
 </div>
-<div class="text-center py-4" th:if="${topic.status == 0}"><strong style="color: red; font-size: 2rem">Đề tài đang được kiểm duyệt!</strong></div>
-<div class="container" th:if="${topic.status == 1}">
+<div class="text-center py-4" th:if="${topic.status == 0}"><strong style="color: red; font-size: 2rem">Đề tài đang được
+    kiểm duyệt!</strong></div>
+<div class="alert text-center" style="background-color: #282781" th:if="${topic.status == 2}"><strong style="color: white; font-size: 2rem">Nhóm của bạn đã hoàn thành đề tài!</strong></div>
+<div class="container" th:if="${topic.status == 1 || topic.status == 2}">
     <p class="fw-bold text-center fs-4">Thành viên trong nhóm</p>
     <div class="card-info-team-container">
         <div th:each="s : ${students}">
@@ -124,7 +127,8 @@
     <div th:each="phase : ${phases}">
         <div class="phase-row">
             <button class="phase-button" th:text="'BÁO CÁO GIAI ĐOẠN ' + ${phase.phaseNumber}"
-                    th:disabled="${phase.status == 0}"
+                    th:disabled="${phase.status == 0 || topic.status == 2}"
+                    sec:authorize="hasRole('STUDENT')"
                     th:onclick="'window.location.href=\'/topics/' + ${topic.id} + '/progress/' + ${phase.phaseNumber} + '\';'">
                 BÁO CÁO GIAI ĐOẠN
             </button>
@@ -149,10 +153,11 @@
             </div>
         </div>
     </div>
+
     <div class="card-phase">
         <ul class="nav nav-tabs custom-nav" id="myTab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="report-tab" data-bs-toggle="tab" href="#report" role="tab"
+                <a class="nav-link active" id="report-tab" data-bs-toggle="tab" href="#report" role="tab"
                    aria-controls="report" aria-selected="false" style="color: #2c3e50">BÁO CÁO CỦA SINH VIÊN</a>
             </li>
             <li class="nav-item" role="presentation">
@@ -165,7 +170,7 @@
         <div class="card-body">
             <div class="tab-content" id="myTabContent">
                 <!-- Tab 2: Báo Cáo Của Sinh Viên -->
-                <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
+                <div class="tab-pane fade show active" id="report" role="tabpanel" aria-labelledby="report-tab">
                     <h5 class="content-title text-center fw-bold">Báo cáo tiến độ của sinh viên</h5>
                     <div class="editor-container" th:id="show-report">
                         <div class="top1" th:each="report : ${phases}" th:id="'report-' + ${report.id}" th:if="${report.status == 2}">
@@ -194,6 +199,7 @@
                     </div>
                 </div>
             </div>
+
             <!-- Tab 3: :Thắc mắc của Sinh viên -->
             <div class="tab-pane fade" id="feedback" role="tabpanel" aria-labelledby="feedback-tab">
 <!--                <h4 class="content-title text-center fw-bold">Thắc mắc sinh viên</h4>-->
@@ -300,10 +306,10 @@
 </script>
 <div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/js/phase.js}"></script>
 <script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
 <script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
 <script th:src="@{/js/comment.js}"></script>
+<script th:src="@{/js/phase.js}"></script>
 <script th:src="@{/js/notification.js}"></script>
 <script th:src="@{/js/toast-noti.js}"></script>
 </body>
