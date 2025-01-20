@@ -48,9 +48,11 @@
 .phase-info {
     flex-grow: 1;
 }
+
 .progress-bar-animated {
     animation: progress-bar-stripes 2s linear infinite; /* 2s là thời gian, có thể tăng/giảm */
 }
+
 .progress {
     height: 25px;
     background-color: #d3d9dc;
@@ -113,23 +115,23 @@ h2 {
     background-color: #ffffff; /* Màu nền nhạt */
 }
 
-.editor-container {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-}
+/*.editor-container {*/
+/*    display: flex;*/
+/*    gap: 1rem;*/
+/*    margin-top: 1rem;*/
+/*}*/
 
-.avatar {
-    border-radius: 50%;
-    margin-right: 35px;
-}
+/*.avatar {*/
+/*    border-radius: 50%;*/
+/*    margin-right: 35px;*/
+/*}*/
 
-.message-avatar img {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
-}
+/*.message-avatar img {*/
+/*    width: 45px;*/
+/*    height: 45px;*/
+/*    border-radius: 50%;*/
+/*    object-fit: cover;*/
+/*}*/
 
 
 .editor-container {
@@ -140,25 +142,38 @@ h2 {
 
 
 .question-container {
-    border: none; /* Loại bỏ viền */
-    border-radius: 8px;
-    padding: 15px;
-    margin-bottom: 15px;
+    border: 1px solid #ccc; /* Thêm viền */
+    border-radius: 8px; /* Bo góc */
+    background-color: #f9f9f9; /* Màu nền nhẹ cho comment */
 }
+
 .top2 {
     display: none;
 }
 
-.question-container.with-border {
-    background-color: #dddde0;
-}
+
 .top2.show-form {
     display: block;
 }
 
+.profile-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
 .reply-container .form-control {
     flex-grow: 1; /* Đảm bảo input chiếm toàn bộ khoảng trống còn lại */
     margin-bottom: 0; /* Loại bỏ khoảng cách mặc định */
+}
+
+.question-container {
+    border: none; /* Loại bỏ viền */
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
 }
 
 /* Viền cho mỗi comment */
@@ -167,21 +182,50 @@ h2 {
     border-radius: 8px; /* Bo góc */
     background-color: #f9f9f9; /* Màu nền nhẹ cho comment */
 }
-.btn-send {
+
+.question-container.with-border {
+    background-color: #dddde0;
+}
+
+
+.divider {
+    border-top: 1px solid #6c757d;
+    margin: 20px auto;
+}
+
+.timestamp {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.btn-send, .btn-reply {
     background-color: #0088cc;
     color: white;
-    border-radius: 20px;
-    padding: 8px 20px;
+    border-radius: 15px;
     border: none;
     cursor: pointer;
-    margin-left: auto;
-    margin-top: 20px;
     display: block; /* Đảm bảo nút được hiển thị dưới cùng */
 }
 
-.btn-send:hover {
+.btn-send:hover, .btn-reply:hover {
     background-color: #005f77;
 }
+
+.btn-sm-reply {
+    font-size: 0.8rem;
+    background-color: #0088cc;
+    color: white;
+    border-radius: 15px;
+    border: none;
+    cursor: pointer;
+    display: block; /* Đảm bảo nút được hiển thị dưới cùng */
+}
+
+.btn-sm-reply:hover {
+    background-color: #119bbd;
+    color: #ffffff;
+}
+
 
 .input-container textarea {
     flex-grow: 1;
@@ -202,9 +246,14 @@ h2 {
 /*}*/
 
 .card {
-     border: 1px solid #ddd;
-     border-radius: 8px;
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cards {
+    width: 650px;
+    height: auto;
 }
 
 .card-header {

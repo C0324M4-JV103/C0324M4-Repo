@@ -431,3 +431,21 @@ swiper-slide {
     font-size: 0.8rem;
 }
 /*css cho Chuông thông báo*/
+
+
+
+/** toast thông báo mới **/
+#toast-container {
+    position: fixed;
+    padding: 5px;
+    top: 10px;
+    right: 10px;
+    width: auto;
+    z-index: 1050;
+}
+.toast-custom {
+    margin-top: 80px;
+    background-color: #28a745;
+    color: white; /* Màu chuông */
+}
+/** toast thông báo mới **/
