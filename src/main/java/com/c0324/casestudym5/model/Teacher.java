@@ -2,6 +2,7 @@ package com.c0324.casestudym5.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -14,6 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+
 public class Teacher {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,4 +48,8 @@ public class Teacher {
     @OneToMany(mappedBy = "teacher")
     @JsonManagedReference
     private List<Comment> replies;
+
+    public int getStatus() {
+        return !teams.isEmpty() ? 1 : 2;  // Trả về 1 nếu đã đăng ký, 2 nếu chưa đăng ký
+    }
 }

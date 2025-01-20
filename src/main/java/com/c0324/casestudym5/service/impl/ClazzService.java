@@ -11,8 +11,12 @@ import java.util.Optional;
 @Service
 public class ClazzService {
 
+    private final ClazzRepository clazzRepository;
+
     @Autowired
-    private ClazzRepository clazzRepository;
+    public ClazzService(ClazzRepository clazzRepository) {
+        this.clazzRepository = clazzRepository;
+    }
 
     public List<Clazz> getAllClazzes() {
         return clazzRepository.findAll();

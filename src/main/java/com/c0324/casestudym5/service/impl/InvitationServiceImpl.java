@@ -46,20 +46,16 @@ public class InvitationServiceImpl implements InvitationService {
             invitation.setInviter(currentStudent);
             invitationRepository.save(invitation);
         }
+        // Tạo subject và content cho email
         String subject = "Lời mời tham gia nhóm từ " + currentTeam.getName();
         mailService.sendMailInvitedTeamToStudent(email, subject, invitedStudent.getUser().getName(), currentStudent.getUser().getName(), currentTeam.getName());
-        // notification websocket
+        // Tạo notification websocket
         Notification notification = new Notification();
         notification.setSender(currentStudent.getUser());
         notification.setReceiver(invitedStudent.getUser());
         notification.setContent(" đã gửi đến bạn 1 lời mời tham gia Nhóm: " + currentTeam.getName());
         notification.setCreatedAt(new Date());
         notificationService.sendNotification(notification);
-    }
-
-    @Override
-    public void notifyStudentsAboutTopic(Long teamId, String topicName, String action, Long topicId, String teamName) {
-
     }
 
     @Transactional

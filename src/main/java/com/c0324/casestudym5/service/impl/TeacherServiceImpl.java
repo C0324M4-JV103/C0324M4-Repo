@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -55,12 +54,6 @@ public class TeacherServiceImpl implements TeacherService {
             return teacherRepository.findByIdOrNameOrEmail(searchQuery, pageable);
         }
         return teacherRepository.findAll(pageable); // Nếu không có tìm kiếm, trả về tất cả
-    }
-
-    // Lấy tất cả giáo viên
-    @Override
-    public List<Teacher> getAllTeachers() {
-        return teacherRepository.findAll();
     }
 
     // Lấy thông tin giáo viên theo ID
@@ -115,9 +108,14 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
+    public Page<Teacher> findAll(Pageable pageable) {
+        return teacherRepository.findAll(pageable);
+    }
+
+    @Override
     public void editTeacher(Long id, TeacherDTO teacherDTO, MultipartFile avatar) throws Exception {
         Optional<Teacher> optionalTeacher = teacherRepository.findById(id);
-        if (!optionalTeacher.isPresent()) {
+        if (optionalTeacher.isEmpty()) {
             throw new Exception("Teacher not found");
         }
 
@@ -152,7 +150,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public void deleteTeacherById(Long id) throws Exception {
         Optional<Teacher> teacherOptional = teacherRepository.findById(id);
-        if (!teacherOptional.isPresent()) {
+        if (teacherOptional.isEmpty()) {
             throw new Exception("Không tìm thấy giáo viên với ID: " + id);
         }
         Teacher teacher = teacherOptional.get();

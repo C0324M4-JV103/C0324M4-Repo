@@ -34,9 +34,10 @@
                     <li class="nav-item dropdown" sec:authorize="hasRole('STUDENT')">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">SINH VIÊN</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">ĐĂNG KÝ GVHD</a></li>
+                            <li><a class="dropdown-item" th:href="@{/student/list-teacher}">ĐĂNG KÝ GVHD</a></li>
+
                             <li><a class="dropdown-item" th:href="@{/student/team}">ĐĂNG KÝ NHÓM</a></li>
-                            <li><a class="dropdown-item" href="#">QUẢN LÝ TIẾN ĐỘ</a></li>
+                            <li><a class="dropdown-item" th:href="@{/student/progress}">QUẢN LÝ TIẾN ĐỘ</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown" sec:authorize="hasRole('TEACHER')">
@@ -46,7 +47,6 @@
                             <li><a class="dropdown-item" href="/topics">DANH SÁCH ĐỀ TÀI</a></li>
                             <li><a class="dropdown-item" th:href="@{/teacher/topics}">KIỂM DUYỆT ĐỀ TÀI</a></li>
                             <li><a class="dropdown-item" href="#">DANH SÁCH SINH VIÊN</a></li>
-                            <li><a class="dropdown-item" href="#">QUẢN LÝ TIẾN ĐỘ</a></li>
                             <li><a class="dropdown-item" th:href="@{/teacher/team}">QUẢN LÝ NHÓM SINH VIÊN</a></li>
                         </ul>
                     </li>

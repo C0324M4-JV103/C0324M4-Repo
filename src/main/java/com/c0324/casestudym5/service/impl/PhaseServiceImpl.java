@@ -5,10 +5,8 @@ import com.c0324.casestudym5.model.Topic;
 import com.c0324.casestudym5.repository.PhaseRepository;
 import com.c0324.casestudym5.service.PhaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,22 +19,6 @@ public class PhaseServiceImpl implements PhaseService {
         this.phaseRepository = phaseRepository;
     }
 
-    @Override
-    public void createPhasesForTopic(Topic topic) {
-        LocalDate approvedDate = LocalDate.now();
-        for (int i = 1; i <= 4; i++) {
-            Phase phase = new Phase();
-            phase.setTopic(topic);
-            phase.setPhaseNumber(i);
-            phase.setPhaseProgressPercent(0);
-            phase.setStatus(i == 1 ? 1 : 0);
-            phase.setStartDate(approvedDate.plusDays(i));
-            phase.setEndDate(approvedDate.plusDays(i + 6));
-
-            phaseRepository.save(phase);
-        }
-
-    }
     @Override
     public List<Phase> findPhasesByTopic(Topic topic) {
         return phaseRepository.findPhaseByTopicOrderByIdAsc(topic);

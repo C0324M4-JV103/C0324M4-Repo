@@ -113,28 +113,31 @@ h2 {
     background-color: #ffffff; /* Màu nền nhạt */
 }
 
-.cards {
-    width: 650px;
-    height: auto;
+.editor-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
 }
 
-.profile-img {
-    width: 48px;
-    height: 48px;
+.avatar {
+    border-radius: 50%;
+    margin-right: 35px;
+}
+
+.message-avatar img {
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     object-fit: cover;
 }
 
-.timestamp {
-    color: #6c757d;
-    font-size: 0.9rem;
+
+.editor-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
-
-.divider {
-    border-top: 1px solid #6c757d;
-    margin: 20px auto;
-}
 
 .question-container {
     border: none; /* Loại bỏ viền */
@@ -142,9 +145,15 @@ h2 {
     padding: 15px;
     margin-bottom: 15px;
 }
+.top2 {
+    display: none;
+}
 
 .question-container.with-border {
     background-color: #dddde0;
+}
+.top2.show-form {
+    display: block;
 }
 
 .reply-container .form-control {
@@ -157,4 +166,79 @@ h2 {
     border: 1px solid #ccc; /* Thêm viền */
     border-radius: 8px; /* Bo góc */
     background-color: #f9f9f9; /* Màu nền nhẹ cho comment */
+}
+.btn-send {
+    background-color: #0088cc;
+    color: white;
+    border-radius: 20px;
+    padding: 8px 20px;
+    border: none;
+    cursor: pointer;
+    margin-left: auto;
+    margin-top: 20px;
+    display: block; /* Đảm bảo nút được hiển thị dưới cùng */
+}
+
+.btn-send:hover {
+    background-color: #005f77;
+}
+
+.input-container textarea {
+    flex-grow: 1;
+    margin-left: 10px;
+    width: 1160px;
+    height: 100px;
+}
+
+.message-container {
+    border-bottom: 1px solid #e3e1e1; /* Tạo đường kẻ dưới mỗi message-container */
+    padding: 15px 0;
+}
+
+/*.message-container-reply-btn {*/
+/*    margin-left: 80px;*/
+/*    padding-left: 15px;*/
+/*    margin-top: 10px;*/
+/*}*/
+
+.card {
+     border: 1px solid #ddd;
+     border-radius: 8px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.card-footer {
+    background-color: #f8f9fa;
+    padding: 0.75rem 1rem;
+    border-top: 1px solid #ddd;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #004085;
+}
+
+.file-download-button {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: max-content;
 }

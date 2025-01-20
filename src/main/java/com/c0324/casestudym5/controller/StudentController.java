@@ -1,6 +1,7 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.NotificationDTO;
+import com.c0324.casestudym5.dto.RegisterTeacherDTO;
 import com.c0324.casestudym5.dto.RegisterTopicDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.*;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -25,7 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestMapping("/student")
@@ -36,15 +38,28 @@ public class StudentController {
     private final TopicService topicService;
     private final InvitationService invitationService;
     private final NotificationService notificationService;
+    private final TeacherService teacherService;
 
     @Autowired
-    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService, NotificationService notificationService) {
+    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService, NotificationService notificationService, TeacherService teacherService) {
         this.studentService = studentService;
         this.userService = userService;
         this.teamService = teamService;
         this.topicService = topicService;
         this.invitationService = invitationService;
         this.notificationService = notificationService;
+        this.teacherService = teacherService;
+    }
+
+    @ModelAttribute
+    public void addNotificationsToModel(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        User currentUser = userService.findByEmail(userEmail);
+        if (currentUser != null) {
+            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
+            model.addAttribute("notifications", notifications);
+        }
     }
 
     @InitBinder
@@ -72,11 +87,10 @@ public class StudentController {
     @GetMapping("/team")
     public String formRegisterTeam(@RequestParam(name = "page", required = false, defaultValue = "1") int page,
                                    @RequestParam(name = "search", required = false, defaultValue = "") String search,
-                                   Model model, Principal principal) {
+                                   Model model) {
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
-        User currentUser = userService.findByEmail(principal.getName());
-        List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
+
         if (!model.containsAttribute("team")) {
             model.addAttribute("team", new TeamDTO());
         }
@@ -95,7 +109,6 @@ public class StudentController {
         model.addAttribute("currentTeam", currentTeam);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
-        model.addAttribute("notifications", notifications);
 
         return "team/team-register";
     }
@@ -174,30 +187,37 @@ public class StudentController {
 
 
     @GetMapping("/info-team")
-    public String teamInfo(Model model, Pageable pageable, Principal principal) {
+    public String teamInfo(Model model, Pageable pageable) {
         Student currentStudent = getCurrentStudent();
         Team team = currentStudent.getTeam();
-        User currentUser = userService.findByEmail(principal.getName());
-        List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
 
-        model.addAttribute("student", currentStudent);;
+        model.addAttribute("student", currentStudent);
         model.addAttribute("team", team);
         model.addAttribute("student", currentStudent);
         model.addAttribute("list", availableStudents);
-        model.addAttribute("notifications", notifications);
         return "team/team-info";
 
     }
 
     @GetMapping("/register-topic")
-    public String showRegisterTopicForm(Model model, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+    public String showRegisterTopicForm(Model model,
+                                        @RequestParam(defaultValue = "0") int page,
+                                        @RequestParam(defaultValue = "10") int size,
+                                        RedirectAttributes redirectAttributes) {
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
         if (currentTeam == null) {
-            return "redirect:/student/team";
+            redirectAttributes.addFlashAttribute("errorMessage", "Bạn chưa có nhóm");
+            return "redirect:/student/info-team";
         }
         if (currentTeam.getTopic() != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã có đề tài hoặc đang đợi phê duyệt");
+            return "redirect:/student/info-team";
+        }
+        if (currentTeam.getTeacher() == null)
+        {
+            redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng đăng ký giáo viên trước khi đăng ký đề tài!");
             return "redirect:/student/info-team";
         }
         if (!model.containsAttribute("registerTopic")) {
@@ -269,6 +289,115 @@ public class StudentController {
         return "redirect:/student/info-team";
     }
 
+    @GetMapping("/progress")
+    public String redirectToProgress() {
+        Student currentStudent = getCurrentStudent();
+        Team currentTeam = currentStudent.getTeam();
+        if (currentTeam != null && currentTeam.getTopic() != null && currentTeam.getTopic().getApproved() == AppConstants.TOPIC_APPROVED) {
+            Long topicId = currentTeam.getTopic().getId();
+            return "redirect:/progress/" + topicId;
+        }
+        return "redirect:/student/info-team";
+    }
+
+    @GetMapping("/list-teacher")
+    public String getAllTeachers(@RequestParam(defaultValue = "0") int page, Model model) {
+        int pageSize = 10; // 10 giáo viên mỗi trang
+        Pageable pageable = PageRequest.of(page, pageSize);
+
+        // Lấy danh sách giáo viên
+        Page<Teacher> teacherPage = teacherService.findAll(pageable);
+
+        // Kiểm tra nếu teacherPage là null hoặc rỗng
+        if (teacherPage == null || teacherPage.getContent().isEmpty()) {
+            model.addAttribute("teachers", new ArrayList<>()); // Xử lý khi trang không có dữ liệu
+            model.addAttribute("teacherTeamCount", new HashMap<Long, Integer>()); // Map đội rỗng
+            model.addAttribute("totalPages", 0); // Không có trang nào
+            model.addAttribute("pageNumber", 0); // Mặc định là trang đầu tiên
+            model.addAttribute("errorMessage", "Không tìm thấy giáo viên.");
+            return "student/register-teacher";
+        }
+
+        List<Teacher> teachers = teacherPage.getContent();
+        Map<Long, Integer> teacherTeamCount = new HashMap<>();
+
+        for (Teacher teacher : teachers) {
+            int teamCount = teamService.countTeamsByTeacherId(teacher.getId());
+            teacherTeamCount.put(teacher.getId(), teamCount);
+        }
+
+        List<Long> registeredTeacherIds = new ArrayList<>();
+        Student currentStudent = getCurrentStudent();
+        if (currentStudent.getTeam() != null && currentStudent.getTeam().getTeacher() != null) {
+            registeredTeacherIds.add(currentStudent.getTeam().getTeacher().getId());
+        }
+
+        model.addAttribute("teachers", teachers);
+        model.addAttribute("teacherTeamCount", teacherTeamCount);
+        model.addAttribute("totalPages", teacherPage.getTotalPages());
+        model.addAttribute("pageNumber", page);
+        model.addAttribute("registeredTeacherIds", registeredTeacherIds);
+
+        return "student/register-teacher";
+    }
+
+    @PostMapping("/register-teacher")
+    public String registerTeacherForTopic(Long teacherId, RedirectAttributes redirectAttributes) {
+        try {
+            Student currentStudent = getCurrentStudent();
+
+            // Kiểm tra xem sinh viên có đội hay không
+            if (currentStudent.getTeam() == null) {
+                redirectAttributes.addFlashAttribute("message", "Bạn cần có một nhóm để đăng ký giáo viên hướng dẫn.");
+                redirectAttributes.addFlashAttribute("messageType", "error-message");
+                return "redirect:/student/list-teacher";
+            }
+
+            // Kiểm tra xem sinh viên có phải là leader không
+            if (!currentStudent.isLeader()) {
+                redirectAttributes.addFlashAttribute("message", "Chỉ nhóm trưởng mới có thể đăng ký giáo viên hướng dẫn.");
+                redirectAttributes.addFlashAttribute("messageType", "error-message");
+                return "redirect:/student/list-teacher";
+            }
+
+            // Kiểm tra xem giáo viên đã đủ nhóm chưa
+            int teamCount = teamService.countTeamsByTeacherId(teacherId);
+            if (teamCount >= 5) {
+                redirectAttributes.addFlashAttribute("message", "Giáo viên đã có đủ nhóm.");
+                redirectAttributes.addFlashAttribute("messageType", "error-message");
+                return "redirect:/student/list-teacher";
+            }
+
+            // Thực hiện đăng ký giáo viên
+            teamService.registerTeacher(currentStudent.getTeam().getId(), teacherId);
+
+        } catch (IllegalStateException ex) {
+            redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
+            return "redirect:/student/list-teacher";
+        }
+        return "redirect:/student/list-teacher";
+    }
 
 
+    @GetMapping("/teacher-details/{id}")
+    public ResponseEntity<RegisterTeacherDTO> getTeacherById(@PathVariable Long id) {
+        Optional<Teacher> teacherOptional = teacherService.getTeacherById(id);
+        if (teacherOptional.isPresent()) {
+            Teacher teacher = teacherOptional.get();
+            RegisterTeacherDTO teacherDTO = new RegisterTeacherDTO(
+                    teacher.getId(),
+                    teacher.getUser().getName(),
+                    teacher.getUser().getEmail(),
+                    teacher.getDegree(),
+                    teacher.getUser().getPhoneNumber(),
+                    teacher.getUser().getDob(),
+                    teacher.getUser().getAddress(),
+                    teacher.getUser().getGender(),
+                    teacher.getUser().getAvatar(),
+                    teacher.getFaculty() != null ? teacher.getFaculty().getName() : "Chưa có khoa" // Kiểm tra null
+            );
+            return ResponseEntity.ok(teacherDTO);
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

@@ -9,8 +9,7 @@ body {
     background-color: white;
 }
 
-/*Css xem chi tiết*/
-a.btn-secondary {
+.btn-secondary {
     background-color: #6c757d;
     color: white;
     font-size: 14px;

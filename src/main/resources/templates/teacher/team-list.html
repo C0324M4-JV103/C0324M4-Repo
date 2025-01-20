@@ -53,7 +53,7 @@
                     <span th:if="${team.deadline != null}" th:text="${#dates.format(team.deadline, 'dd/MM/yyyy')}"></span>
                 </td>
                 <td>
-                    <a href="#" class="btn btn-info">
+                    <a th:href="@{'/progress/' + ${team.topicId}}" class="btn btn-info" th:classappend="${team.topicId == null ? 'disabled' : ''}">
                         <i class="fas fa-eye"></i>
                     </a>
                     <a class="btn btn-danger" th:attr="data-team-name=${team.name}, data-team-id=${team.id}"  onclick="handleDeleteClick(this)">

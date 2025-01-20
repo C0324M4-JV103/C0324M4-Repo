@@ -9,7 +9,10 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+import com.c0324.casestudym5.model.Topic;
 
 @Service
 public class MailService {
@@ -54,30 +57,37 @@ public class MailService {
             context.setVariable("teamName", teamName);
             String content = templateEngine.process("common/invited-team-mail", context);
             helper.setText(content, true); // set true to send HTML content
-            queue.add(message);
+            mailSender.send(message);
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
         }
     }
 
     public void sendMailApprovedToTeam(String to, String subject, String teamName, String teacherName, String topicName, String action) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(to);
-            helper.setSubject(subject);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        executorService.submit(() -> {
+            try {
+                MimeMessage message = mailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+                helper.setTo(to);
+                helper.setSubject(subject);
+
             // Create the email content using Thymeleaf
-            Context context = new Context();
-            context.setVariable("teamName", teamName);
-            context.setVariable("teacherName", teacherName);
-            context.setVariable("topicName", topicName);
-            context.setVariable("action", action);
-            String content = templateEngine.process("common/topic-notification-mail", context);
-            helper.setText(content, true); // set true to send HTML content
-            queue.add(message);
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
-        }
+                Context context = new Context();
+                context.setVariable("teamName", teamName);
+                context.setVariable("teacherName", teacherName);
+                context.setVariable("topicName", topicName);
+                context.setVariable("action", action);
+                String content = templateEngine.process("common/topic-notification-mail", context);
+                helper.setText(content, true); // set true to send HTML content
+
+                mailSender.send(message);
+            } catch (Exception e) {
+                throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
+            }
+        });
+        executorService.shutdown();
     }
 
     public void sendRegisterTopicEmail(String to, String subject, String senderName, String teacherName, String topicName, String teamName) {
@@ -93,6 +103,28 @@ public class MailService {
             context.setVariable("topicName", topicName);
             context.setVariable("teamName", teamName);
             String content = templateEngine.process("common/register-topic-mail", context);
+
+            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
+            queue.add(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
+        }
+    }
+
+    public void sendSubmittedProgressReportEmail(String to, String subject, String senderName, String teacherName, Topic topic, String teamName, String phaseName) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            helper.setTo(to);
+            helper.setSubject(subject);
+
+            Context context = new Context();
+            context.setVariable("studentName", senderName);
+            context.setVariable("teacherName", teacherName);
+            context.setVariable("topic", topic);
+            context.setVariable("teamName", teamName);
+            context.setVariable("phaseName", phaseName);
+            String content = templateEngine.process("common/progress-report-mail", context);
 
             helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
             queue.add(message);

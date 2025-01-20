@@ -6,7 +6,6 @@ import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.repository.*;
 import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.StudentService;
-import com.c0324.casestudym5.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +31,7 @@ public class StudentServiceImpl implements StudentService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository, ClassRepository classRepository, MultiFileRepository multiFileRepository, RoleRepository roleRepository, FirebaseService firebaseService, UserService userService, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {this.studentRepository = studentRepository;
+    public StudentServiceImpl(StudentRepository studentRepository, ClassRepository classRepository, MultiFileRepository multiFileRepository, RoleRepository roleRepository, FirebaseService firebaseService, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {this.studentRepository = studentRepository;
         this.clazzRepository = classRepository;
         this.multiFileRepository = multiFileRepository;
         this.roleRepository = roleRepository;
@@ -97,6 +96,8 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findAllExceptCurrentStudent(id, pageable);
     }
 
+
+
     @Override
     public void createNewStudent(StudentDTO studentDTO, MultipartFile avatar) throws Exception {
         // Tạo đối tượng mới
@@ -130,6 +131,7 @@ public class StudentServiceImpl implements StudentService {
         // Tạo Student mới
         Student newStudent = new Student();
         newStudent.setUser(newUser);
+        newStudent.setCode(studentDTO.getCode());
         newStudent.setClazz(clazzRepository.findById(studentDTO.getClazzId()).orElseThrow(() -> new RuntimeException("Lớp học không hợp lệ")));
 
         // Lưu Student
@@ -144,13 +146,16 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findStudentsByTeamId(teamId);
     }
     @Override
-    public void editStudent(Long id, StudentDTO studentDTO, MultipartFile avatar, String existingAvatarUrl) throws Exception {
+    public void editStudent(Long id, StudentDTO studentDTO, MultipartFile avatar) throws Exception {
         Optional<Student> optionalStudent = studentRepository.findById(id);
         if (optionalStudent.isEmpty()) {
             throw new Exception("Teacher not found");
         }
 
         Student existingStudent = optionalStudent.get();
+
+        existingStudent.setCode(studentDTO.getCode());
+
         User existingUser = existingStudent.getUser();
 
         existingUser.setName(studentDTO.getName());
@@ -195,4 +200,12 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
+    @Override
+    public boolean existsByCode(String code) {
+        return studentRepository.findByCode(code).isPresent();
+    }
+
+
 }
+
+

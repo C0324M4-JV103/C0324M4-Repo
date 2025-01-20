@@ -7,6 +7,7 @@ import com.c0324.casestudym5.repository.TeamRepository;
 import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.util.CommonMapper;
 import org.hibernate.Hibernate;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,11 +47,6 @@ public class TeamServiceImpl implements TeamService {
     }
 
     @Override
-    public Team findByName(String name) {
-        return teamRepository.findTeamByName(name);
-    }
-
-    @Override
     public Team findById(Long teamId) {
         return teamRepository.findById(teamId).orElse(null);
     }
@@ -62,7 +58,7 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public Page<TeamDTO> getPageTeams(int page, String keyword, User user) {
-        Pageable pageable = PageRequest.of(page, 3);
+        Pageable pageable = PageRequest.of(page, 5);
         Teacher teacher = teacherRepository.findTeacherByUserEmail(user.getEmail());
         Page<Team> teams;
         if(keyword.isEmpty()){
@@ -70,7 +66,11 @@ public class TeamServiceImpl implements TeamService {
         } else {
             teams = teamRepository.searchTeamByNameAndTeacherId(teacher.getId(), keyword ,pageable);
         }
-        return teams.map(CommonMapper::mapToTeamDTO);
+        List<Team> filteredTeams = teams.stream()
+                .filter(team -> !team.getStudents().isEmpty())
+                .toList();
+        return new PageImpl<>(filteredTeams, pageable, filteredTeams.size())
+                .map(CommonMapper::mapToTeamDTO);
     }
 
     @Override
@@ -108,18 +108,9 @@ public class TeamServiceImpl implements TeamService {
         }
     }
 
-    @Override
-    public Team getTeamById(Long id) {
-        return teamRepository.findById(id).orElse(null);
-    }
 
     @Override
-    public Team getTeamByStudentId(Long studentId) {
-        return teamRepository.findTeamByStudentsId(studentId);
-    }
-
-    @Override
-    public Team createNewTeam(TeamDTO teamDTO, Student currentStudent) {
+    public void createNewTeam(TeamDTO teamDTO, Student currentStudent) {
         Team newTeam = new Team();
         newTeam.setName(teamDTO.getName());
         newTeam.setStudents(List.of(currentStudent));
@@ -127,12 +118,36 @@ public class TeamServiceImpl implements TeamService {
         currentStudent.setTeam(newTeam);
         currentStudent.setLeader(true);
         studentService.save(currentStudent);
-        return newTeam;
     }
 
+
     @Override
-    public Team findTeamByTopicId(Long topicId) {
-        return teamRepository.findTeamByTopicId(topicId);
+    public void registerTeacher(Long teamId, Long teacherId) {
+        Team team = teamRepository.findById(teamId).orElse(null);
+        if (team != null) {
+            if (team.getTopic() != null && teacherId == 0) {
+                throw new IllegalStateException("Đã đăng ký đề tài, không được hủy giáo viên.");
+            }
+            if (team.getTopic() != null) {
+                throw new IllegalStateException("Nhóm đã đăng ký đề tài, không thể đăng ký giáo viên mới.");
+            }
+            if (teacherId == 0) {
+                team.setTeacher(null);
+                teamRepository.save(team);
+            } else {
+                Teacher teacher = teacherRepository.findById(teacherId).orElse(null);
+                if (teacher != null) {
+                    team.setTeacher(teacher);
+                    teamRepository.save(team);
+                }
+            }
+        }
+    }
+
+
+    @Override
+    public int countTeamsByTeacherId(Long teacherId) {
+        return teamRepository.countByTeacherId(teacherId);
     }
 
 }

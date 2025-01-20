@@ -2,7 +2,12 @@ package com.c0324.casestudym5.util;
 
 import com.c0324.casestudym5.dto.*;
 import com.c0324.casestudym5.model.Comment;
+import com.c0324.casestudym5.dto.NotificationDTO;
+import com.c0324.casestudym5.dto.ProgressReportDTO;
+import com.c0324.casestudym5.dto.TeamDTO;
+import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.Notification;
+import com.c0324.casestudym5.model.Phase;
 import com.c0324.casestudym5.model.Team;
 import com.c0324.casestudym5.model.User;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +33,7 @@ public class CommonMapper {
         teamDTO.setMemberCount(team.getStudents().size());
         teamDTO.setDeadline(team.getTopic() != null ? team.getTopic().getDeadline() : null);
         teamDTO.setStatus(team.getTopic() != null ? team.getTopic().getStatus() : null);
+        teamDTO.setTopicId(team.getTopic() != null ? team.getTopic().getId() : null);
         return teamDTO;
     }
 
@@ -57,4 +63,14 @@ public class CommonMapper {
     }
 
 
+    public static ProgressReportDTO mapPhaseToProgressReportDTO(Phase phase){
+        ProgressReportDTO progressReportDTO = new ProgressReportDTO();
+        progressReportDTO.setPhaseNumber(phase.getPhaseNumber());
+        progressReportDTO.setPhaseProgressPercent(phase.getPhaseProgressPercent());
+        progressReportDTO.setReportContent(phase.getReportContent());
+        if (phase.getReportFile() != null) {
+            progressReportDTO.setReportLink(phase.getReportFile().getUrl());
+        }
+        return progressReportDTO;
+    }
 }

@@ -46,10 +46,8 @@ public class CommentService {
         List<Comment> comments = commentRepository.findTop3ByTopicIdOrderByCreatedAtDesc(topicId);
         List<CommentDTO> responses = new ArrayList<>();
 
-
         for (Comment comment : comments) {
             responses.add(CommonMapper.toCommentDTO(comment));
-            System.err.println("comment: " + comment);
         }
 
         return responses;
@@ -78,7 +76,7 @@ public class CommentService {
                     .timeDifference(DateTimeUtil.getTimeDifference(createdAt))
                     .senderName(creator.getName())
                     .senderAvatar(creator.getAvatar().getUrl())
-                    .isReply(false)
+                    .topicId(topicId)
                     .build();
             simpMessagingTemplate.convertAndSend("/socket/comment", response);
 
@@ -118,7 +116,7 @@ public class CommentService {
                     .timeDifference(DateTimeUtil.getTimeDifference(repliedAt))
                     .senderName(creator.getName())
                     .senderAvatar(creator.getAvatar().getUrl())
-                    .isReply(true)
+                    .topicId(topicId)
                     .build();
             // send to all online users subscribe : /user/socket/comment
             simpMessagingTemplate.convertAndSend("/socket/reply", response);

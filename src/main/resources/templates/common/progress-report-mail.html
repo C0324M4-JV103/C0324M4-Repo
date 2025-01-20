@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>Thông Báo Báo Cáo Tiến Độ</title>
+</head>
+<body style="margin:0; background: #f8f8f8;">
+<div style="background: #f8f8f8; padding: 0; line-height: 28px; height: 100%; width: 100%; color: #514d6a;">
+    <div style="max-width: 700px; padding: 50px 0; margin: 0 auto; font-size: 14px;">
+        <div style="padding: 40px; background: #fff;">
+            <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                <tbody>
+                <tr>
+                    <td>
+                        <b>Kính gửi <span th:text="${teacherName}">Giáo viên</span>,</b>
+                        <p><span th:text="${studentName}">Một sinh viên</span> trong nhóm <strong th:text="${teamName}">Tên nhóm</strong> đã nộp báo cáo tiến độ giai đoạn <strong th:text="${phaseName}">Số giai đoạn</strong> của đề tài <strong th:text="${topic.name}">Tên đề tài</strong>.</p>
+                        <a th:href="@{http://localhost:8080/topics/(id=${topic.id})}" style="display: inline-block; padding: 11px 30px; margin: 20px 0 30px; font-size: 15px; color: #fff; background: #282781; border-radius: 60px; text-decoration: none;">Xem Tiến Độ Đề Tài</a>
+                        <p>Xin cảm ơn!</p>
+                        <b>- <span th:text="${teamName}">Đội ngũ</span></b>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <br/>
+            <p style="text-align: center">
+                <span style="color: #ff0000;">*</span>
+                Đây là mail tự động vui lòng không phản hồi!
+            </p>
+        </div>
+        <div style="text-align: center; font-size: 12px; color: #b2b2b5; margin-top: 20px;">
+            <p>Codegym</p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

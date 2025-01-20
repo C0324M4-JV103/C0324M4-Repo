@@ -13,14 +13,14 @@ body {
 a.btn-secondary {
     background-color: #6c757d;
     color: white;
-    font-size: 14px;
+    font-size: 13px;
     margin-left: 20%;
-    border-radius: 8px;
 }
 
 .mt-5 {
     margin-top: 7rem !important;
 }
+
 .card {
     max-width: 900px;
     margin: 0 auto;
@@ -63,12 +63,12 @@ a.btn-secondary:hover {
     gap: 2rem;
 }
 
-@media (max-width: 768px) {
-    .profile-grid {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
-}
+/*@media (max-width: 768px) {*/
+/*    .profile-grid {*/
+/*        grid-template-columns: 1fr;*/
+/*        text-align: center;*/
+/*    }*/
+/*}*/
 
 .avatar-section {
     display: flex;

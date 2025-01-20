@@ -14,8 +14,12 @@ import java.util.List;
 @RequestMapping("/faculties")
 public class FacultyController {
 
+    private final FacultyRepository facultyRepository;
+
     @Autowired
-    private FacultyRepository facultyRepository;
+    public FacultyController(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
     @GetMapping
     public ResponseEntity<List<Faculty>> getAllFaculties() {

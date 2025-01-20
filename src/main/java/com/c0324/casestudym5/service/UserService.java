@@ -27,7 +27,7 @@ public interface UserService extends UserDetailsService {
 
     List<User> fillAll();
 
-    void createUser(UserDTO userDTO);
-
     boolean existsByEmail(String email);
+
+    boolean existsByPhoneNumber(String phoneNumber);
 }

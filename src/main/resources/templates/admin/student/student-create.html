@@ -28,6 +28,12 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="required" for="code">Mã sinh viên</label>
+                    <input class="form-control" id="code" type="text" th:field="*{code}">
+                    <div th:if="${#fields.hasErrors('code')}" th:errors="*{code}" class="text-danger"></div>
+                </div>
+
+                <div class="form-group">
                     <label class="required" for="dob">Ngày sinh</label>
                     <input class="form-control" id="dob" type="date" th:field="*{dob}">
                     <div th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="text-danger"></div>
