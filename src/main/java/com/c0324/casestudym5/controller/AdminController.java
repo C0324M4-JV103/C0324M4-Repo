@@ -4,9 +4,9 @@ import com.c0324.casestudym5.dto.StudentDTO;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.dto.TeacherDTO;
 import com.c0324.casestudym5.dto.UserDTO;
-import com.c0324.casestudym5.model.Student;
-import com.c0324.casestudym5.model.Teacher;
+import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.repository.ClassRepository;
+import com.c0324.casestudym5.repository.MultiFileRepository;
 import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.service.impl.ClazzService;
 import jakarta.servlet.http.HttpSession;
@@ -22,9 +22,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
+
 
 import static com.c0324.casestudym5.util.DateTimeUtil.calculateAge;
 
@@ -34,22 +37,24 @@ import static com.c0324.casestudym5.util.DateTimeUtil.calculateAge;
 public class AdminController {
 
     private final TeacherService teacherService;
-    private final FacultyService facultyService;
-    private final UserService userService;
     private final StudentService studentService;
     private final ClassRepository classRepository;
     private final ClazzService clazzService;
+    private final UserService userService;
+    private final FirebaseService firebaseService;
+    private final MultiFileRepository multiFileRepository;
+    private final FacultyService facultyService;
 
     @Autowired
-    public AdminController(TeacherService teacherService, FacultyService facultyService,
-                           StudentService studentService, ClassRepository classRepository,
-                           ClazzService clazzService, UserService userService) {
+    public AdminController(TeacherService teacherService, StudentService studentService, ClassRepository classRepository, ClazzService clazzService, UserService userService, FirebaseService firebaseService, MultiFileRepository multiFileRepository) {
         this.teacherService = teacherService;
         this.facultyService = facultyService;
         this.studentService = studentService;
         this.classRepository = classRepository;
         this.clazzService = clazzService;
         this.userService = userService;
+        this.firebaseService = firebaseService;
+        this.multiFileRepository = multiFileRepository;
     }
 
     // Teacher Functionality
@@ -213,6 +218,24 @@ public class AdminController {
 
 
 
+    // CalculateAge
+    private int calculateAge(Date dob) {
+        if (dob == null) {
+            return 0;
+        }
+        Calendar dobCal = Calendar.getInstance();
+        dobCal.setTime(dob);
+        Calendar today = Calendar.getInstance();
+
+        int age = today.get(Calendar.YEAR) - dobCal.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < dobCal.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+        return age;
+    }
+
+
     // Student Functionality
     @GetMapping("/student")
     public String index(Model model,
@@ -233,7 +256,7 @@ public class AdminController {
             isSearch = false;
         }
         model.addAttribute("pageTitle", "Danh sách sinh viên");
-        Pageable pageable = PageRequest.of(page, 2);
+        Pageable pageable = PageRequest.of(page, 5);
         Page<Student> students = studentService.getPageStudents(pageable, search);
         model.addAttribute("students", students);
         model.addAttribute("classes", classRepository.findAll());
@@ -253,14 +276,34 @@ public class AdminController {
     }
 
     @PostMapping("/create-student")
-    public String createStudent(@Valid @ModelAttribute("studentDTO") StudentDTO studentDTO,
-                                BindingResult bindingResult,
-                                @RequestParam("avatar") MultipartFile avatar,
-                                Model model,
-                                RedirectAttributes redirectAttributes) {
+    public String creatStudent(@Valid @ModelAttribute("studentDTO") StudentDTO studentDTO,
+                               BindingResult bindingResult,
+                               @RequestParam("avatar") MultipartFile avatar,
+                               Model model,
+                               RedirectAttributes redirectAttributes) {
+
+
+        String trimmedEmail = studentDTO.getEmail().trim();
+        String trimmedName = studentDTO.getName().trim();
+
+        String cleanedEmail = trimmedEmail.replaceAll("\\s+", " ");
+        String cleanedName = trimmedName.replaceAll("\\s+", " ");
+
+        studentDTO.setEmail(cleanedEmail);
+        studentDTO.setName(cleanedName);
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("clazzes", clazzService.getAllClazzes());
             return "admin/student/student-create";
+        }
+
+        if (studentDTO.getDob() != null) {
+            int age = calculateAge(studentDTO.getDob());
+            if (age < 18) {
+                bindingResult.rejectValue("dob", "error.studentDTO", "Sinh viên phải đủ 18 tuổi");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-create";
+            }
         }
 
         try {
@@ -269,7 +312,20 @@ public class AdminController {
                 model.addAttribute("clazzes", clazzService.getAllClazzes());
                 return "admin/student/student-create";
             }
-            studentService.createNewStudent(studentDTO, avatar); // Gọi CreateNewStudent từ studentService
+
+            if (studentService.existsByCode(studentDTO.getCode())) {
+                bindingResult.rejectValue("code", "error.studentDTO", "Mã sinh viên đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-create";
+            }
+
+            if (userService.existsByPhoneNumber(studentDTO.getPhoneNumber())) {
+                bindingResult.rejectValue("phoneNumber", "error.studentDTO", "Số điện thoại đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-create";
+            }
+
+            studentService.createNewStudent(studentDTO, avatar);
 
             redirectAttributes.addFlashAttribute("toastMessage", "Thêm sinh viên thành công!");
             redirectAttributes.addFlashAttribute("toastType", "success");
@@ -281,6 +337,8 @@ public class AdminController {
 
         return "redirect:/admin/student";
     }
+
+
 
     // Student Edit
     @GetMapping("/edit-student/{id}")
@@ -295,23 +353,43 @@ public class AdminController {
 
         Student student = studentOptional.get();
         StudentDTO studentDTO = new StudentDTO(student);
+        studentDTO.setCode(student.getCode());
 
         model.addAttribute("studentDTO", studentDTO);
         model.addAttribute("clazzes", clazzService.getAllClazzes());
 
         return "admin/student/student-edit";
     }
+
     @PostMapping("/edit-student/{id}")
-    public String editTeacher(@PathVariable Long id,
+    public String editStudent(@PathVariable Long id,
                               @Valid @ModelAttribute("studentDTO") StudentDTO studentDTO,
                               BindingResult bindingResult,
                               @RequestParam(value = "avatar", required = false) MultipartFile avatar,
                               Model model,
                               RedirectAttributes redirectAttributes) {
 
+        String trimmedEmail = studentDTO.getEmail().trim();
+        String trimmedName = studentDTO.getName().trim();
+
+        String cleanedEmail = trimmedEmail.replaceAll("\\s+", " ");
+        String cleanedName = trimmedName.replaceAll("\\s+", " ");
+
+        studentDTO.setEmail(cleanedEmail);
+        studentDTO.setName(cleanedName);
+
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("clazzes", clazzService.getAllClazzes());
             return "admin/student/student-edit";
+        }
+        if (studentDTO.getDob() != null) {
+            int age = calculateAge(studentDTO.getDob());
+            if (age < 18) {
+                bindingResult.rejectValue("dob", "error.studentDTO", "Sinh viên phải đủ 18 tuổi.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-edit";
+            }
         }
 
         try {
@@ -321,7 +399,18 @@ public class AdminController {
                 model.addAttribute("clazzes", clazzService.getAllClazzes());
                 return "admin/student/student-edit";
             }
-            studentService.editStudent(id, studentDTO, avatar, studentDTO.getAvatarUrl());
+
+            if (!studentDTO.getCode().equals(existingStudent.get().getCode()) && studentService.existsByCode(studentDTO.getCode())) {
+                bindingResult.rejectValue("code", "error.studentDTO", "Mã sinh viên đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-edit"; }
+
+            if (!studentDTO.getPhoneNumber().equals(existingStudent.get().getUser().getPhoneNumber()) && userService.existsByPhoneNumber(studentDTO.getPhoneNumber())) {
+                bindingResult.rejectValue("phoneNumber", "error.studentDTO", "Số điện thoại đã tồn tại.");
+                model.addAttribute("clazzes", clazzService.getAllClazzes());
+                return "admin/student/student-edit"; }
+
+            studentService.editStudent(id, studentDTO, avatar);
             redirectAttributes.addFlashAttribute("toastMessage", "Cập nhật sinh viên thành công!");
             redirectAttributes.addFlashAttribute("toastType", "success");
         } catch (Exception e) {
@@ -346,8 +435,10 @@ public class AdminController {
         }
         return "redirect:/admin/student";
     }
-}
 
+
+
+}
 
 
 

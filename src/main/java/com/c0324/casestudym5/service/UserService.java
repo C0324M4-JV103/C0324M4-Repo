@@ -30,4 +30,6 @@ public interface UserService extends UserDetailsService {
     void createUser(UserDTO userDTO);
 
     boolean existsByEmail(String email);
+
+    boolean existsByPhoneNumber(String phoneNumber);
 }

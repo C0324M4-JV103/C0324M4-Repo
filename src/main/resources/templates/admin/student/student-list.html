@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <link rel="stylesheet" href="/css/home-page.css">
-<head >
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách Sinh Viên</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"> <!--link các icon trong footer-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!--link các icon trong footer-->
     <link rel="stylesheet" href="/css/teachers.css">
     <link rel="stylesheet" href="/css/home-page.css">
 </head>
 <body>
 <div class="toast-container position-fixed top-0 end-0 p-3">
     <!-- Success Toast -->
-    <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert" aria-live="assertive"
+         aria-atomic="true">
         <div class="toast-header bg-success text-white">
             <strong class="me-auto">Thành công</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -23,7 +26,8 @@
     </div>
 
     <!-- Error Toast -->
-    <div th:if="${toastMessage != null and toastType == 'danger'}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div th:if="${toastMessage != null and toastType == 'danger'}" class="toast" role="alert" aria-live="assertive"
+         aria-atomic="true">
         <div class="toast-header bg-danger text-white">
             <strong class="me-auto">Cảnh báo</strong>
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -32,14 +36,6 @@
     </div>
 </div>
 
-<script>
-    window.onload = function () {
-        var toastElList = document.querySelectorAll('.toast');
-        var toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl));
-        toastList.forEach(toast => toast.show());
-    };
-
-</script>
 
 <!-- Navbar -->
 <div th:replace="layout.html :: nav"></div>
@@ -73,7 +69,7 @@
         <table class="table table-striped table-bordered">
             <thead class="table-dark" style="text-align: center">
             <tr>
-                <th>ID</th>
+                <th>STT</th>
                 <th>Tên</th>
                 <th>Lớp</th>
                 <th>Email</th>
@@ -88,9 +84,9 @@
                 </td>
             </tr>
             <tr th:each="s, index : ${students}">
-                <td class="text-center" style="vertical-align: middle;" th:text="${s.id}"></td>
+                <td class="text-center" style="vertical-align: middle;" th:text="${index.count}"></td>
                 <td style="vertical-align: middle;" th:text="${s.user.name}"></td>
-                <td style="vertical-align: middle;"th:text="${s.clazz != null ? s.clazz.name : ''}" ></td>
+                <td style="vertical-align: middle;" th:text="${s.clazz != null ? s.clazz.name : ''}"></td>
                 <td style="vertical-align: middle;" th:text="${s.user.email}"></td>
                 <td style="vertical-align: middle;" th:text="${s.user.phoneNumber}"></td>
                 <td style="vertical-align: middle; text-align: center;">
@@ -100,8 +96,11 @@
                     <a th:href="@{/admin/edit-student/{id}(id=${s.id})}" class="btn btn-warning">
                         <i class="fas fa-edit"></i>
                     </a>
-                    <form th:action="@{delete-student/{id}(id=${s.id})}" method="post" style="display:inline-block;" id="deleteForm">
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                    <form th:action="@{/admin/delete-student/{id}(id=${s.id})}" method="post"
+                          style="display:inline-block;" id="deleteForm">
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#confirmDeleteModal"
+                                th:data-name="${s.user.name}" th:data-id="${s.id}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </form>
@@ -116,14 +115,17 @@
                     <a class="page-link"
                        th:if="${!isSearch}" th:href="@{/admin/student(page=${i+1})}" th:text="${i + 1}"></a>
                     <a class="page-link"
-                       th:if="${isSearch}" th:href="@{/admin/student(page=${i+1}, name=${search.name}, email=${search.email}, clazzId=${search.clazzId})}" th:text="${i + 1}"></a>
+                       th:if="${isSearch}"
+                       th:href="@{/admin/student(page=${i+1}, name=${search.name}, email=${search.email}, clazzId=${search.clazzId})}"
+                       th:text="${i + 1}"></a>
                 </li>
             </ul>
         </nav>
     </div>
 </div>
 <!--Modal Delete-->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -131,17 +133,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Bạn có chắc chắn muốn xóa sinh viên này không?
+                Bạn có chắc chắn muốn xóa sinh viên <strong id="studentName"></strong> không?
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" onclick="document.getElementById('deleteForm').submit();">Xóa</button>
+                <button type="button" class="btn btn-danger" onclick="document.getElementById('deleteForm').submit();">
+                    Xóa
+                </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
             </div>
         </div>
     </div>
 </div>
-
 <div th:replace="layout :: footer"></div>
+
+<script th:src="@{/js/student.js}"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
