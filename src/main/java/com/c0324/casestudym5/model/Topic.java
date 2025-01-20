@@ -45,7 +45,7 @@ public class Topic {
     @JoinColumn(name="image_id")
     private MultiFile image;
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     private Set<Phase> phases;
 
     @Column(columnDefinition = "INT DEFAULT 0")

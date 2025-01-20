@@ -196,15 +196,16 @@ public class TopicServiceImpl implements TopicService {
         topicRepository.delete(topic);
 
         Long teamId = topic.getTeam().getId();
+        Teacher teacher = topic.getTeam().getTeacher();
         List<Student> students = studentRepository.findStudentsByTeamId(teamId);
         if (students != null) {
             String action = " đã được Giáo viên xem xét và không được thông qua.";
             String subject = "Thông báo kiểm duyệt đề tài của giáo viên ";
             for (Student student : students) {
-                mailService.sendMailApprovedToTeam(student.getUser().getEmail(), subject, student.getTeam().getName(), topic.getApprovedBy().getUser().getName(), student.getTeam().getTopic().getName(), action);
+                mailService.sendMailApprovedToTeam(student.getUser().getEmail(), subject, student.getTeam().getName(), teacher.getUser().getName(), student.getTeam().getTopic().getName(), action);
                 //Send notification to the team
                 Notification notification = new Notification();
-                notification.setSender(topic.getApprovedBy().getUser());
+                notification.setSender(teacher.getUser());
                 notification.setReceiver(student.getUser());
                 notification.setContent("đã từ chối đề tài " + topic.getName() + " của nhóm bạn.");
                 notificationService.sendNotification(notification);
