@@ -68,7 +68,7 @@ public class PhaseController {
         if (!isStudentInTeam && !isTeacherOfTeam) {
             return "common/404";
         }
-        MultiFile curUserAvatar = currentUser.getAvatar();
+        String curUserAvatar = currentUser.getAvatar().getUrl();
 
         model.addAttribute("team", team);
         model.addAttribute("topic", topic);
