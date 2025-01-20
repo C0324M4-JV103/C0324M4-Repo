@@ -22,7 +22,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Optional;
+
+import static com.c0324.casestudym5.util.DateTimeUtil.calculateAge;
 
 
 @RequestMapping("/admin")
@@ -91,9 +95,23 @@ public class AdminController {
                                 @RequestParam("avatar") MultipartFile avatar,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
+        // Trim dữ liệu đầu vào
+        teacherDTO.setEmail(teacherDTO.getEmail().trim());
+        teacherDTO.setName(teacherDTO.getName().trim());
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("faculties", facultyService.findAll());
             return "admin/teacher/teacher-create";
+        }
+
+        // Kiểm tra tuổi >= 22
+        if (teacherDTO.getDob() != null) {
+            int age = calculateAge(teacherDTO.getDob());
+            if (age < 22) {
+                bindingResult.rejectValue("dob", "error.teacherDTO", "Giáo viên phải đủ 22 tuổi.");
+                model.addAttribute("faculties", facultyService.findAll());
+                return "admin/teacher/teacher-create";
+            }
         }
 
         try {
@@ -142,9 +160,23 @@ public class AdminController {
                               Model model,
                               RedirectAttributes redirectAttributes) {
 
+        // Trim dữ liệu đầu vào
+        teacherDTO.setEmail(teacherDTO.getEmail().trim());
+        teacherDTO.setName(teacherDTO.getName().trim());
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("faculties", facultyService.findAll());
             return "admin/teacher/teacher-edit";
+        }
+
+        // Kiểm tra tuổi >= 22
+        if (teacherDTO.getDob() != null) {
+            int age = calculateAge(teacherDTO.getDob());
+            if (age < 22) {
+                bindingResult.rejectValue("dob", "error.teacherDTO", "Giáo viên phải đủ 22 tuổi.");
+                model.addAttribute("faculties", facultyService.findAll());
+                return "admin/teacher/teacher-edit";
+            }
         }
 
         try {
