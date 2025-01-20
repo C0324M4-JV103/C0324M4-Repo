@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface TeacherService {
@@ -14,7 +13,6 @@ public interface TeacherService {
 
     Page<Teacher> searchTeachers(String searchQuery, int page, int size);
 
-    List<Teacher> getAllTeachers();
     Optional<Teacher> getTeacherById(Long id);
     Teacher save(Teacher teacher);
     void createNewTeacher(TeacherDTO teacherDTO, MultipartFile avatar) throws Exception;

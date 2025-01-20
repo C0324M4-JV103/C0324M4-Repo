@@ -59,11 +59,6 @@ public class InvitationServiceImpl implements InvitationService {
         notificationService.sendNotification(notification);
     }
 
-    @Override
-    public void notifyStudentsAboutTopic(Long teamId, String topicName, String action, Long topicId, String teamName) {
-
-    }
-
     @Transactional
     @Override
     public void deleteAllByStudent(Student student) {

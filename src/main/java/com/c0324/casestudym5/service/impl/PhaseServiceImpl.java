@@ -5,10 +5,8 @@ import com.c0324.casestudym5.model.Topic;
 import com.c0324.casestudym5.repository.PhaseRepository;
 import com.c0324.casestudym5.service.PhaseService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service

@@ -192,7 +192,7 @@ public class StudentController {
         Team team = currentStudent.getTeam();
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
 
-        model.addAttribute("student", currentStudent);;
+        model.addAttribute("student", currentStudent);
         model.addAttribute("team", team);
         model.addAttribute("student", currentStudent);
         model.addAttribute("list", availableStudents);

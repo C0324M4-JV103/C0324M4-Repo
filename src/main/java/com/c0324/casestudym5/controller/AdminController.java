@@ -6,9 +6,9 @@ import com.c0324.casestudym5.dto.TeacherDTO;
 import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.repository.ClassRepository;
-import com.c0324.casestudym5.repository.MultiFileRepository;
 import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.service.impl.ClazzService;
+import com.c0324.casestudym5.util.DateTimeUtil;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Calendar;
 import java.util.Date;
-import java.time.LocalDate;
-import java.time.Period;
 import java.util.Optional;
-
-
-import static com.c0324.casestudym5.util.DateTimeUtil.calculateAge;
 
 
 @RequestMapping("/admin")
@@ -41,20 +35,19 @@ public class AdminController {
     private final ClassRepository classRepository;
     private final ClazzService clazzService;
     private final UserService userService;
-    private final FirebaseService firebaseService;
-    private final MultiFileRepository multiFileRepository;
     private final FacultyService facultyService;
 
     @Autowired
-    public AdminController(TeacherService teacherService, StudentService studentService, ClassRepository classRepository, ClazzService clazzService, UserService userService, FirebaseService firebaseService, MultiFileRepository multiFileRepository) {
+    public AdminController(TeacherService teacherService, StudentService studentService,
+                           ClassRepository classRepository, ClazzService clazzService,
+                           UserService userService, FacultyService facultyService) {
         this.teacherService = teacherService;
-        this.facultyService = facultyService;
+
         this.studentService = studentService;
         this.classRepository = classRepository;
         this.clazzService = clazzService;
         this.userService = userService;
-        this.firebaseService = firebaseService;
-        this.multiFileRepository = multiFileRepository;
+        this.facultyService = facultyService;
     }
 
     // Teacher Functionality
@@ -142,7 +135,7 @@ public class AdminController {
     public String editTeacherForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Teacher> teacherOptional = teacherService.getTeacherById(id);
 
-        if (!teacherOptional.isPresent()) {
+        if (teacherOptional.isEmpty()) {
             redirectAttributes.addFlashAttribute("toastMessage", "Không tìm thấy giáo viên.");
             redirectAttributes.addFlashAttribute("toastType", "danger");
             return "redirect:/admin/teacher";
@@ -223,16 +216,7 @@ public class AdminController {
         if (dob == null) {
             return 0;
         }
-        Calendar dobCal = Calendar.getInstance();
-        dobCal.setTime(dob);
-        Calendar today = Calendar.getInstance();
-
-        int age = today.get(Calendar.YEAR) - dobCal.get(Calendar.YEAR);
-
-        if (today.get(Calendar.DAY_OF_YEAR) < dobCal.get(Calendar.DAY_OF_YEAR)) {
-            age--;
-        }
-        return age;
+        return DateTimeUtil.calculateAge(dob);
     }
 
 
@@ -345,7 +329,7 @@ public class AdminController {
     public String editStudentForm(@PathVariable Long id, Model model, RedirectAttributes redirectAttributes) {
         Optional<Student> studentOptional = Optional.ofNullable(studentService.getStudent(id));
 
-        if (!studentOptional.isPresent()) {
+        if (studentOptional.isEmpty()) {
             redirectAttributes.addFlashAttribute("toastMessage", "Không tìm thấy sinh viên.");
             redirectAttributes.addFlashAttribute("toastType", "danger");
             return "redirect:/admin/student";

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -55,12 +54,6 @@ public class TeacherServiceImpl implements TeacherService {
             return teacherRepository.findByIdOrNameOrEmail(searchQuery, pageable);
         }
         return teacherRepository.findAll(pageable); // Nếu không có tìm kiếm, trả về tất cả
-    }
-
-    // Lấy tất cả giáo viên
-    @Override
-    public List<Teacher> getAllTeachers() {
-        return teacherRepository.findAll();
     }
 
     // Lấy thông tin giáo viên theo ID

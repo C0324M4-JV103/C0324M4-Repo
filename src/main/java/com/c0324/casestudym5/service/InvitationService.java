@@ -13,5 +13,4 @@ public interface InvitationService {
     boolean existsByStudentAndTeam(Student student, Team team);
     void deleteAllByStudent(Student student);
     void inviteStudent(Long studentId, Student currentStudent, Team currentTeam);
-    void notifyStudentsAboutTopic(Long teamId, String topicName, String action, Long topicId, String teamName); // send mail
 }

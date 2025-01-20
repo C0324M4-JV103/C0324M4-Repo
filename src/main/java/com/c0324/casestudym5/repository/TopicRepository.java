@@ -12,9 +12,6 @@ import java.util.List;
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
     Page<Topic> findByStatus(int status, Pageable pageable);
-//    Page<Topic> findByApprovedTrue(Pageable pageable);
-//    Page<Topic> findByApprovedFalse(Pageable pageable);
-    List<Topic> findByApprovedFalse();
     @Query("select t from Topic t where t.approved = 1 and t.status = 0")
     Page<Topic> findByApprovedTrueAndStatus(Pageable pageable);
 

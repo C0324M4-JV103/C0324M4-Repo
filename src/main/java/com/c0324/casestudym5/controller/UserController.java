@@ -7,6 +7,7 @@ import com.c0324.casestudym5.model.User;
 import com.c0324.casestudym5.service.NotificationService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.CommonMapper;
+import com.c0324.casestudym5.util.DateTimeUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -84,7 +85,7 @@ public class UserController {
             return "common/change-password-form";
         }
 
-        return "redirect:/";
+        return "redirect:/login?logout";
     }
 
     @GetMapping("/profile")
@@ -106,6 +107,16 @@ public class UserController {
             model.addAttribute("user", userDTO);
             model.addAttribute("emailError", "Email đã tồn tại");
             return "admin/edit-profile-form";
+        }
+
+        //check age < 22
+        if(userDTO.getDob() != null){
+            int age = DateTimeUtil.calculateAge(userDTO.getDob());
+            if(age < 22){
+                model.addAttribute("user", userDTO);
+                model.addAttribute("dobError", "Người dùng phải đủ 22 tuổi trở lên");
+                return "admin/edit-profile-form";
+            }
         }
         return "redirect:/";
     }

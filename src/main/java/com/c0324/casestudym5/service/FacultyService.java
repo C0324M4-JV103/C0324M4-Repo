@@ -11,8 +11,12 @@ import java.util.Optional;
 @Service
 public class FacultyService {
 
+    private final FacultyRepository facultyRepository;
+
     @Autowired
-    private FacultyRepository facultyRepository;
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
     public List<Faculty> findAll() {
         return facultyRepository.findAll();

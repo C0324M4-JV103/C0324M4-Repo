@@ -130,19 +130,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(UserDTO userDTO) {
-        if (userRepository.existsByEmail(userDTO.getEmail())) {
-            throw new IllegalArgumentException("Email đã tồn tại.");
-        }
-        User currentUser = getCurrentUser();
-        currentUser.setName(userDTO.getName());
-        currentUser.setEmail(userDTO.getEmail());
-        currentUser.setDob(userDTO.getDob());
-        currentUser.setGender(User.Gender.valueOf(userDTO.getGender()));
-        currentUser.setPhoneNumber(userDTO.getPhoneNumber());
-        currentUser.setAddress(userDTO.getAddress());
-        save(currentUser);
-    }
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }

@@ -139,11 +139,6 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public List<Topic> getPendingTopics() {
-        return topicRepository.findByApprovedTrueAndStatus(Pageable.unpaged()).getContent();
-    }
-
-    @Override
     @Transactional
     public void approveTopic(Long id) {
         Topic topic = getTopicById(id);
@@ -299,11 +294,6 @@ public class TopicServiceImpl implements TopicService {
         // Logic để lấy thông tin user đang đăng nhập
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return studentRepository.findByUserEmail(auth.getName()).getUser();
-    }
-
-    @Override
-    public List<Topic> getTopicCurrentStudent(Long id) {
-        return topicRepository.findByTeam_Id(id);
     }
 
     @Override
