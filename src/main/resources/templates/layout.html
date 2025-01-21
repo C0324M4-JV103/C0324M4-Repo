@@ -43,7 +43,7 @@
                     <li class="nav-item dropdown" sec:authorize="hasRole('TEACHER')">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">GIÁO VIÊN</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">ĐĂNG THÔNG BÁO</a></li>
+                            <li><a class="dropdown-item" href="blogs">ĐĂNG THÔNG BÁO</a></li>
                             <li><a class="dropdown-item" href="/topics">DANH SÁCH ĐỀ TÀI</a></li>
                             <li><a class="dropdown-item" th:href="@{/teacher/topics}">KIỂM DUYỆT ĐỀ TÀI</a></li>
                             <li><a class="dropdown-item" href="#">DANH SÁCH SINH VIÊN</a></li>
@@ -64,9 +64,6 @@
                         </a>
                         <div class="dropdown-menu notif-dd" aria-labelledby="navbarDropdown">
                             <div class="notif-content" id="notif-content">
-                                <div style="color: #da174a; padding: 10px 0; text-align: center" th:if="${notifications == null || notifications.isEmpty()}">
-                                    Không có thông báo nào!
-                                </div>
                                 <div th:each="notif : ${notifications}" class="notif-list">
                                     <div class="notif-img">
                                         <img th:src="${notif.senderAvatar}" alt="user">
@@ -87,7 +84,7 @@
                 </ul>
                 <div sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')">
                     <div class="dropdown user-profile d-flex justify-content-between align-items-center">
-                        <span sec:authentication="principal.username" style="color: white" class="me-3"></span>
+                        <span sec:authentication="principal.username"></span>
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <img src="https://www.thaimediafund.or.th/wp-content/uploads/2024/07/default-avatar-profile-icon-.jpg" alt="User profile" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                         </a>
@@ -136,84 +133,29 @@
     <div class="container py-5">
         <h1 class="main-title">THÔNG BÁO NỔI BẬT</h1>
         <swiper-container class="mySwiper" pagination="true" pagination-clickable="true" space-between="20" slides-per-view="3">
-            <swiper-slide>
+            <swiper-slide th:each="blog : ${blogs}">
                 <div class="card announcement-card">
                     <div class="announcement-image-container">
-                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                        <img src="/img/logocg.png" class="announcement-image" alt="Blog Image" style="object-fit: cover; height: 200px; width: 100%;">
                     </div>
                     <div class="card-body">
                         <div class="announcement-meta">
                             <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
-                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                            <span class="announcement-date">
+                                <i class="far fa-calendar me-1" style="color: #ff4444"></i>
+                                <span th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy')}">Date</span>
+                            </span>
                         </div>
-                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi người được nghỉ sớm</a>
-                        <a href="#" class="view-details">Xem chi tiết →</a>
-                    </div>
-                </div>
-            </swiper-slide>
-            <swiper-slide>
-                <div class="card announcement-card">
-                    <div class="announcement-image-container">
-                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
-                    </div>
-                    <div class="card-body">
-                        <div class="announcement-meta">
-                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
-                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
-                        </div>
-                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi người được nghỉ sớm</a>
-                        <a href="#" class="view-details">Xem chi tiết →</a>
-                    </div>
-                </div>
-            </swiper-slide>
-            <swiper-slide>
-                <div class="card announcement-card">
-                    <div class="announcement-image-container">
-                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
-                    </div>
-                    <div class="card-body">
-                        <div class="announcement-meta">
-                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
-                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
-                        </div>
-                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi người được nghỉ sớm</a>
-                        <a href="#" class="view-details">Xem chi tiết →</a>
-                    </div>
-                </div>
-            </swiper-slide>
-            <swiper-slide>
-                <div class="card announcement-card">
-                    <div class="announcement-image-container">
-                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
-                    </div>
-                    <div class="card-body">
-                        <div class="announcement-meta">
-                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
-                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
-                        </div>
-                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi người được nghỉ sớm</a>
-                        <a href="#" class="view-details">Xem chi tiết →</a>
-                    </div>
-                </div>
-            </swiper-slide>
-            <swiper-slide>
-                <div class="card announcement-card">
-                    <div class="announcement-image-container">
-                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
-                    </div>
-                    <div class="card-body">
-                        <div class="announcement-meta">
-                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
-                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
-                        </div>
-                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi người được nghỉ sớm</a>
-                        <a href="#" class="view-details">Xem chi tiết →</a>
+                        <a th:href="@{/blogs/{id}(id=${blog.id})}" class="card-title announcement-title"
+                           th:text="${blog.name}">Blog Title</a>
+                        <p class="card-text" th:text="${#strings.abbreviate(blog.description, 100)}">Description</p>
+                        <a th:href="@{/blogs/{id}(id=${blog.id})}" class="view-details">Xem chi tiết →</a>
                     </div>
                 </div>
             </swiper-slide>
         </swiper-container>
         <div class="btn-load-more">
-            <button class="btn btn-danger" style="font-size: 20px;">Xem thêm</button>
+            <a href="/blogs" class="btn btn-danger" style="font-size: 20px;">Xem thêm</a>
         </div>
     </div>
 </div>

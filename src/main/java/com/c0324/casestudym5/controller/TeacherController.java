@@ -135,6 +135,4 @@ public class TeacherController {
         topicService.rejectTopic(id);
         return "redirect:/teacher/topics";
     }
-
 }
-
