@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -44,11 +45,8 @@ public class Topic {
     @JoinColumn(name="image_id")
     private MultiFile image;
 
-    @OneToMany(mappedBy = "topic")
+    @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     private Set<Phase> phases;
-
-    @OneToMany(mappedBy = "topic")
-    private Set<PhaseReport> reports;
 
     @Column(columnDefinition = "INT DEFAULT 0")
     private int approved ;
@@ -56,4 +54,7 @@ public class Topic {
     @ManyToOne
     @JoinColumn(name = "teacher_id")
     private Teacher approvedBy;
+
+    @OneToMany(mappedBy = "topic")
+    private List<Comment> comments;
 }

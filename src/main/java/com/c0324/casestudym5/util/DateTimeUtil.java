@@ -3,6 +3,7 @@ package com.c0324.casestudym5.util;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.Duration;
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -36,4 +37,18 @@ public class DateTimeUtil {
             return diffInYears + " năm trước";
         }
     }
+
+    public static int calculateAge(Date birthDate) {
+        Calendar birth = Calendar.getInstance();
+        birth.setTime(birthDate);
+        Calendar today = Calendar.getInstance();
+
+        int age = today.get(Calendar.YEAR) - birth.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < birth.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+        return age;
+    }
+
 }

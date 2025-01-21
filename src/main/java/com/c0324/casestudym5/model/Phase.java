@@ -1,10 +1,10 @@
 package com.c0324.casestudym5.model;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,9 +26,25 @@ public class Phase {
     private Integer phaseNumber;
 
     @Column(columnDefinition = "INT DEFAULT 0", nullable = false)
+    private Integer phaseProgressPercent;
+
+    @Column(columnDefinition = "INT DEFAULT 0", nullable = false)
     private Integer status;
 
-    @OneToMany(mappedBy = "phase")
-    private Set<PhaseReport> reports;
+    private LocalDate startDate;
+
+    private LocalDate endDate;
+
+    private LocalDateTime reportDate;
+
+    @ManyToOne
+    @JoinColumn(name = "reporter_id", referencedColumnName = "id")
+    private User reporter;
+
+    @OneToOne
+    private MultiFile reportFile;
+
+    @Column(columnDefinition = "TEXT")
+    private String reportContent;
 
 }

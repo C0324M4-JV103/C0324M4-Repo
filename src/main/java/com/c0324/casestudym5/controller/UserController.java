@@ -1,13 +1,18 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.ChangePasswordDTO;
+import com.c0324.casestudym5.dto.NotificationDTO;
 import com.c0324.casestudym5.dto.UserDTO;
 import com.c0324.casestudym5.model.User;
+import com.c0324.casestudym5.service.NotificationService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.CommonMapper;
+import com.c0324.casestudym5.util.DateTimeUtil;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,21 +20,36 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
+    private final NotificationService notificationService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, NotificationService notificationService) {
         this.userService = userService;
+        this.notificationService = notificationService;
     }
 
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
+    }
+
+    @ModelAttribute
+    public void addNotificationsToModel(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userEmail = authentication.getName();
+        User currentUser = userService.findByEmail(userEmail);
+        if (currentUser != null) {
+            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
+            model.addAttribute("notifications", notifications);
+        }
     }
 
     @GetMapping("/change-password")
@@ -65,7 +85,7 @@ public class UserController {
             return "common/change-password-form";
         }
 
-        return "redirect:/";
+        return "redirect:/login?logout";
     }
 
     @GetMapping("/profile")
@@ -87,6 +107,16 @@ public class UserController {
             model.addAttribute("user", userDTO);
             model.addAttribute("emailError", "Email đã tồn tại");
             return "admin/edit-profile-form";
+        }
+
+        //check age < 22
+        if(userDTO.getDob() != null){
+            int age = DateTimeUtil.calculateAge(userDTO.getDob());
+            if(age < 22){
+                model.addAttribute("user", userDTO);
+                model.addAttribute("dobError", "Người dùng phải đủ 22 tuổi trở lên");
+                return "admin/edit-profile-form";
+            }
         }
         return "redirect:/";
     }

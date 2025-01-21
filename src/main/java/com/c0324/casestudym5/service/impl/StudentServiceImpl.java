@@ -1,15 +1,11 @@
 package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.StudentDTO;
-import com.c0324.casestudym5.model.MultiFile;
-import com.c0324.casestudym5.model.Role;
-import com.c0324.casestudym5.model.Student;
+import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
-import com.c0324.casestudym5.model.User;
 import com.c0324.casestudym5.repository.*;
 import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.StudentService;
-import com.c0324.casestudym5.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -34,7 +31,7 @@ public class StudentServiceImpl implements StudentService {
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository, ClassRepository classRepository, MultiFileRepository multiFileRepository, RoleRepository roleRepository, FirebaseService firebaseService, UserService userService, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {this.studentRepository = studentRepository;
+    public StudentServiceImpl(StudentRepository studentRepository, ClassRepository classRepository, MultiFileRepository multiFileRepository, RoleRepository roleRepository, FirebaseService firebaseService, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {this.studentRepository = studentRepository;
         this.clazzRepository = classRepository;
         this.multiFileRepository = multiFileRepository;
         this.roleRepository = roleRepository;
@@ -93,10 +90,13 @@ public class StudentServiceImpl implements StudentService {
             return studentRepository.findAllExceptCurrentStudent(currentStudentId, pageable);
         }
     }
+
     @Override
     public Page<Student> findAllExceptCurrentStudent(Long id, Pageable pageable) {
         return studentRepository.findAllExceptCurrentStudent(id, pageable);
     }
+
+
 
     @Override
     public void createNewStudent(StudentDTO studentDTO, MultipartFile avatar) throws Exception {
@@ -131,6 +131,7 @@ public class StudentServiceImpl implements StudentService {
         // Tạo Student mới
         Student newStudent = new Student();
         newStudent.setUser(newUser);
+        newStudent.setCode(studentDTO.getCode());
         newStudent.setClazz(clazzRepository.findById(studentDTO.getClazzId()).orElseThrow(() -> new RuntimeException("Lớp học không hợp lệ")));
 
         // Lưu Student
@@ -140,6 +141,77 @@ public class StudentServiceImpl implements StudentService {
 
     }
 
+    @Override
+    public List<Student> findStudentsByTeamId(Long teamId) {
+        return studentRepository.findStudentsByTeamId(teamId);
+    }
+
+    @Override
+    public void saveAll(List<Student> students) {
+        studentRepository.saveAll(students);
+    }
+
+    @Override
+    public void editStudent(Long id, StudentDTO studentDTO, MultipartFile avatar) throws Exception {
+        Optional<Student> optionalStudent = studentRepository.findById(id);
+        if (optionalStudent.isEmpty()) {
+            throw new Exception("Teacher not found");
+        }
+
+        Student existingStudent = optionalStudent.get();
+
+        existingStudent.setCode(studentDTO.getCode());
+
+        User existingUser = existingStudent.getUser();
+
+        existingUser.setName(studentDTO.getName());
+        existingUser.setEmail(studentDTO.getEmail());
+        existingUser.setDob(studentDTO.getDob());
+        existingUser.setGender(User.Gender.valueOf(studentDTO.getGender()));
+        existingUser.setPhoneNumber(studentDTO.getPhoneNumber());
+        existingUser.setAddress(studentDTO.getAddress());
+
+        if (avatar != null && !avatar.isEmpty()) {
+            String urlImage = firebaseService.uploadFileToFireBase(avatar, "avatars");
+            if (urlImage == null) {
+                throw new Exception("Failed to upload avatar");
+            }
+
+            MultiFile newAvatar = MultiFile.builder().url(urlImage).build();
+            multiFileRepository.save(newAvatar);
+            existingUser.setAvatar(newAvatar);
+        }else {
+            existingUser.setAvatar(existingUser.getAvatar());
+        }
+
+        // Cập nhật lớp học
+        Clazz newClazz = clazzRepository.findById(studentDTO.getClazzId()).orElseThrow(() -> new RuntimeException("Lớp học không hợp lệ"));
+        existingStudent.setClazz(newClazz);
+
+        userRepository.save(existingUser);
+        studentRepository.save(existingStudent);
+    }
+
+    @Override
+    public void deleteStudentById(Long id) throws Exception {
+        Optional<Student> studentOptional = studentRepository.findById(id);
+        if (studentOptional.isEmpty()) {
+            throw new Exception("Không tìm thấy sinh viên với ID: " + id);
+        }
+        Student student = studentOptional.get();
+        User user = student.getUser();
+        studentRepository.deleteById(id);
+        if (user != null) {
+            userRepository.delete(user);
+        }
+    }
+
+    @Override
+    public boolean existsByCode(String code) {
+        return studentRepository.findByCode(code).isPresent();
+    }
 
 
 }
+
+

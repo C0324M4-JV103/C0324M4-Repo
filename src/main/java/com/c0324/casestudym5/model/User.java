@@ -1,9 +1,8 @@
 package com.c0324.casestudym5.model;
 
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,6 @@ import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -64,11 +62,11 @@ public class User {
     private Set<Role> roles;
 
     @OneToMany(mappedBy = "sender")
-    @JsonManagedReference
+    @JsonBackReference
     private Set<Notification> sentNotifications;
 
     @OneToMany(mappedBy = "receiver")
-    @JsonManagedReference
+    @JsonBackReference
     private Set<Notification> receivedNotifications;
 
 }

@@ -1,14 +1,8 @@
 package com.c0324.casestudym5.service.impl;
 
 import com.c0324.casestudym5.dto.TeacherDTO;
-import com.c0324.casestudym5.model.MultiFile;
-import com.c0324.casestudym5.model.Role;
-import com.c0324.casestudym5.model.Teacher;
-import com.c0324.casestudym5.model.User;
-import com.c0324.casestudym5.repository.MultiFileRepository;
-import com.c0324.casestudym5.repository.RoleRepository;
-import com.c0324.casestudym5.repository.TeacherRepository;
-import com.c0324.casestudym5.repository.UserRepository;
+import com.c0324.casestudym5.model.*;
+import com.c0324.casestudym5.repository.*;
 import com.c0324.casestudym5.service.FirebaseService;
 import com.c0324.casestudym5.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,16 +25,19 @@ public class TeacherServiceImpl implements TeacherService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final FacultyRepository facultyRepository;
 
     @Autowired
     public TeacherServiceImpl(TeacherRepository teacherRepository, FirebaseService firebaseService,
-                              MultiFileRepository multiFileRepository, RoleRepository roleRepository, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+                              MultiFileRepository multiFileRepository, RoleRepository roleRepository,
+                              UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, FacultyRepository facultyRepository) {
         this.firebaseService = firebaseService;
         this.teacherRepository = teacherRepository;
         this.multiFileRepository = multiFileRepository;
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.facultyRepository = facultyRepository;
     }
 
     @Override
@@ -58,12 +54,6 @@ public class TeacherServiceImpl implements TeacherService {
             return teacherRepository.findByIdOrNameOrEmail(searchQuery, pageable);
         }
         return teacherRepository.findAll(pageable); // Nếu không có tìm kiếm, trả về tất cả
-    }
-
-    // Lấy tất cả giáo viên
-    @Override
-    public List<Teacher> getAllTeachers() {
-        return teacherRepository.findAll();
     }
 
     // Lấy thông tin giáo viên theo ID
@@ -88,6 +78,7 @@ public class TeacherServiceImpl implements TeacherService {
         newUser.setPhoneNumber(teacherDTO.getPhoneNumber());
         newUser.setAddress(teacherDTO.getAddress());
 
+
         // Lấy link ảnh
         String urlImage = firebaseService.uploadFileToFireBase(avatar, "avatars");
         if (urlImage == null) {
@@ -110,6 +101,63 @@ public class TeacherServiceImpl implements TeacherService {
         Teacher newTeacher = new Teacher();
         newTeacher.setUser(newUser);
         newTeacher.setDegree(teacherDTO.getDegree());
+        Faculty faculty = facultyRepository.findById(teacherDTO.getFacultyId())
+                .orElseThrow(() -> new Exception("Faculty not found"));
+        newTeacher.setFaculty(faculty);
         teacherRepository.save(newTeacher);
+    }
+
+    @Override
+    public Page<Teacher> findAll(Pageable pageable) {
+        return teacherRepository.findAll(pageable);
+    }
+
+    @Override
+    public void editTeacher(Long id, TeacherDTO teacherDTO, MultipartFile avatar) throws Exception {
+        Optional<Teacher> optionalTeacher = teacherRepository.findById(id);
+        if (optionalTeacher.isEmpty()) {
+            throw new Exception("Teacher not found");
+        }
+
+        Teacher existingTeacher = optionalTeacher.get();
+        User existingUser = existingTeacher.getUser();
+
+        existingUser.setName(teacherDTO.getName());
+        existingUser.setEmail(teacherDTO.getEmail());
+        existingUser.setDob(teacherDTO.getDob());
+        existingUser.setGender(User.Gender.valueOf(teacherDTO.getGender()));
+        existingUser.setPhoneNumber(teacherDTO.getPhoneNumber());
+        existingUser.setAddress(teacherDTO.getAddress());
+
+        if (avatar != null && !avatar.isEmpty()) {
+            String urlImage = firebaseService.uploadFileToFireBase(avatar, "avatars");
+            if (urlImage == null) {
+                throw new Exception("Failed to upload avatar");
+            }
+
+            MultiFile newAvatar = MultiFile.builder().url(urlImage).build();
+            multiFileRepository.save(newAvatar);
+            existingUser.setAvatar(newAvatar);
+        }
+        Faculty faculty = facultyRepository.findById(teacherDTO.getFacultyId())
+                .orElseThrow(() -> new Exception("Faculty not found"));
+        existingTeacher.setFaculty(faculty);
+        existingTeacher.setDegree(teacherDTO.getDegree());
+        userRepository.save(existingUser);
+        teacherRepository.save(existingTeacher);
+    }
+
+    @Override
+    public void deleteTeacherById(Long id) throws Exception {
+        Optional<Teacher> teacherOptional = teacherRepository.findById(id);
+        if (teacherOptional.isEmpty()) {
+            throw new Exception("Không tìm thấy giáo viên với ID: " + id);
+        }
+        Teacher teacher = teacherOptional.get();
+        User user = teacher.getUser();
+        teacherRepository.deleteById(id);
+        if (user != null) {
+            userRepository.delete(user);
+        }
     }
 }

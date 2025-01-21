@@ -8,17 +8,15 @@
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link rel="stylesheet" href="/css/home-page.css">
     <link rel="stylesheet" href="/css/team-info.css">
-    <style>
-
-    </style>
 </head>
 <body>
 <div th:replace="~{layout :: nav}"></div>
 
 <div class="container">
-    <div class="h-100 d-flex align-items-center justify-content-start" style="margin-top: 100px">
-        <a th:href="@{/student/team}" class="btn btn-secondary btn-lg" role="button" style="text-decoration: none;">
-            <i class="fas fa-arrow-left m-0" style="font-size: 1rem"></i> Trở về
+    <div class="h-100 d-flex align-items-center justify-content-start" style="margin-top: 100px;">
+        <a th:href="@{/student/team}" class="btn btn-outline-secondary btn-lg text-decoration-none fw-bold"
+           role="button">
+            Quay lại
         </a>
     </div>
     <div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
@@ -59,7 +57,8 @@
                     <span class="fas fa-id-card me-1"></span><strong>MSSV: </strong> <span th:text="${s.code}"></span>
                 </p>
                 <p class="text-start">
-                    <span class="fas fa-calendar-alt me-1"></span><strong>Ngày sinh: </strong> <span th:text="${#dates.format(s.user.dob, 'dd/MM/yyyy')}"></span>
+                    <span class="fas fa-calendar-alt me-1"></span><strong>Ngày sinh: </strong> <span
+                        th:text="${#dates.format(s.user.dob, 'dd/MM/yyyy')}"></span>
                 </p>
 
                 <span th:if="${s.isLeader}" class="leader-tag">Nhóm Trưởng</span>
@@ -71,14 +70,19 @@
     <div th:if="${team != null and team.topic == null}">
         <p class="text-register-topic">Nhóm của bạn chưa đăng ký đề tài.</p>
     </div>
-    <p class="text-center" th:if="${team.topic == null and team.students.contains(student) and student.isLeader and team.students.size() >= 3}">
+    <p class="text-center"
+       th:if="${team.topic == null and team.students.contains(student) and student.isLeader and team.students.size() >= 3}">
         <a th:href="@{/student/register-topic}" class="btn btn-primary my-3 add-topic">Đăng ký đề tài</a>
     </p>
     <div th:if="${team.topic != null}">
         <div class="topic-info p-3 text-center">
             <h3>Đề tài đã đăng ký</h3>
-            <a th:href="@{/topics/{id}(id=${team.topic.id})}" class="btn add-topic btn-lg mt-3" role="button" style="text-decoration: none;">
+            <a th:href="@{/topics/{id}(id=${team.topic.id})}" class="btn add-topic btn-lg mt-3" role="button"
+               style="text-decoration: none;">
                 <i class="fas fa-arrow-right m-0" style="font-size: 1rem"></i> Xem đề tài của nhóm
+            </a>
+            <a th:href="@{/progress/{id}(id=${team.topic.id})}" class="btn add-topic btn-lg mt-3" role="button" style="text-decoration: none;">
+                <i class="fas fa-arrow-right m-0" style="font-size: 1rem"></i> Xem tiến độ đề tài của nhóm
             </a>
         </div>
     </div>

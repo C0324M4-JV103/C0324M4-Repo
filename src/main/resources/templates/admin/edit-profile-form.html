@@ -58,6 +58,7 @@
                         <label class="control-label ">Ngày sinh:</label>
                         <label for="birthday"></label><input class="form-control" id="birthday" th:field="*{dob}"  type="date">
                         <div th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="text-danger"></div>
+                        <div th:if="${dobError}" th:text="${dobError}" class="text-danger"></div>
                     </div>
 
                     <div class="col-lg-4">
@@ -73,7 +74,7 @@
                         <label for="email" class="col-lg-3 control-label">Email:</label>
                         <input class="form-control" id="email" type="text" th:field="*{email}">
                         <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
-                        <div th:if="${emailError}" th:text="${error}" class="text-danger"></div>
+                        <div th:if="${emailError}" th:text="${emailError}" class="text-danger"></div>
                     </div>
                 </div>
                 <div class="form-group mb-3">

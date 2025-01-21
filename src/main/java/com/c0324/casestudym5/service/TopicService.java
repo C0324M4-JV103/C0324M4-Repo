@@ -1,6 +1,8 @@
 package com.c0324.casestudym5.service;
 
+import com.c0324.casestudym5.dto.ProgressReportDTO;
 import com.c0324.casestudym5.dto.RegisterTopicDTO;
+import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.model.Topic;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,9 +20,10 @@ public interface TopicService {
     Topic getTopicById(Long id);
 
     List<Topic> getLatestTopics(int limit);
-
-    List<Topic> getPendingTopics();
     void approveTopic(Long id);
     void rejectTopic(Long id);
     Page<Topic> getPendingTopicsPage(Pageable pageable);
+
+    String submitProgressReport(Long topicId, ProgressReportDTO progressReportDTO, Student student);
+
 }
