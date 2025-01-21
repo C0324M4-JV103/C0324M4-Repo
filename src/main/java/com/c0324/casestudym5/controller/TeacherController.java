@@ -101,6 +101,15 @@ public class TeacherController {
         return "redirect:/teacher/team";
     }
 
+    @MessageMapping("/set-deadline")
+    public String setDeadline(@Payload Map<String, Object> payload, Principal principal) {
+        Long teamId = Long.parseLong(payload.get("teamId").toString());
+        Date deadline = new Date((Long) payload.get("deadline"));
+        User sender = userService.findByEmail(principal.getName());
+//        teamService.setDeadline(teamId, deadline, sender);
+        return "redirect:/teacher/team";
+    }
+
     @GetMapping("/topics")
     public String getPendingTopics(Model model,
                                    @RequestParam(defaultValue = "0") int page,

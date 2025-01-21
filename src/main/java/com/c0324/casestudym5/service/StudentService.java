@@ -27,6 +27,7 @@ public interface StudentService {
     void editStudent(Long id, StudentDTO studentDTO, MultipartFile avatar) throws Exception;
     void deleteStudentById(Long id) throws Exception;
     List<Student> findStudentsByTeamId(Long teamId);
+    void saveAll(List<Student> students);
 
     boolean existsByCode(String code);
 }

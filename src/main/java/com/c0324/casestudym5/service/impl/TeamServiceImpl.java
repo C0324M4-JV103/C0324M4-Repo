@@ -77,34 +77,38 @@ public class TeamServiceImpl implements TeamService {
     @Transactional
     public void deleteTeam(Long teamId, User sender) {
         Team team = teamRepository.findById(teamId).orElse(null);
-        if(team != null){
-            //Update related topics
-            Hibernate.initialize(team.getTopic());
+        if (team != null) {
+            // Update related topics
             Topic topic = team.getTopic();
-            topic.setTeam(null);
-            //Update related students and send notification to them
-            Hibernate.initialize(team.getStudents());
+            if (topic != null) {
+                topic.setTeam(null);
+            }
+
+            //Send notification and email to students in team
             List<Student> students = team.getStudents();
             String subject = "Thông báo xóa nhóm - " + team.getName();
-            for(Student student : students){
+            for (Student student : students) {
+                // Remove team from student
                 student.setTeam(null);
                 student.setLeader(false);
-                studentService.save(student);
 
-                //Send email to student
+                // Send email to student
                 mailService.sendDeleteTeamEmail(student.getUser().getEmail(), subject, sender.getName(), student.getUser().getName(), team.getName());
 
-                //Send notification to student
+                // Send notification to student
                 Notification notification = Notification.builder()
                         .content(" đã xóa nhóm " + team.getName() + " mà bạn đang tham gia")
                         .sender(sender)
                         .receiver(student.getUser())
                         .build();
                 notificationService.sendNotification(notification);
-
             }
-            //Delete team
-            teamRepository.delete(team); 
+
+            // Batch update students
+            studentService.saveAll(students);
+
+            // Delete team
+            teamRepository.delete(team);
         }
     }
 

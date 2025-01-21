@@ -145,6 +145,12 @@ public class StudentServiceImpl implements StudentService {
     public List<Student> findStudentsByTeamId(Long teamId) {
         return studentRepository.findStudentsByTeamId(teamId);
     }
+
+    @Override
+    public void saveAll(List<Student> students) {
+        studentRepository.saveAll(students);
+    }
+
     @Override
     public void editStudent(Long id, StudentDTO studentDTO, MultipartFile avatar) throws Exception {
         Optional<Student> optionalStudent = studentRepository.findById(id);
