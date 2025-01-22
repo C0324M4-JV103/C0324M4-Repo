@@ -138,9 +138,6 @@ public class StudentServiceImpl implements StudentService {
 
         // Lưu Student
         studentRepository.save(newStudent);
-
-
-
     }
 
     @Override
