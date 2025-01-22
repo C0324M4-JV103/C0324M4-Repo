@@ -1,12 +1,16 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.NotificationDTO;
+import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.service.*;
+import com.c0324.casestudym5.service.impl.ClazzService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -32,14 +36,18 @@ public class TeacherController {
     private final UserService userService;
     private final TopicService topicService;
     private final NotificationService notificationService;
+    private final StudentService studentService;
+    private final ClazzService classService;
 
     @Autowired
-    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService, NotificationService notificationService) {
+    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService, NotificationService notificationService, StudentService studentService, ClazzService classService) {
         this.teacherService = teacherService;
         this.teamService = teamService;
         this.userService = userService;
         this.topicService = topicService;
         this.notificationService = notificationService;
+        this.studentService = studentService;
+        this.classService = classService;
     }
 
 
@@ -138,6 +146,37 @@ public class TeacherController {
     public String rejectTopic(@PathVariable Long id) {
         topicService.rejectTopic(id);
         return "redirect:/teacher/topics";
+    }
+
+    @GetMapping("/student-list")
+    public String getAllStudents(Model model,
+                                 StudentSearchDTO search,
+                                 @RequestParam(defaultValue = "0") int page, HttpSession session) {
+        boolean isSearch = true;
+        if (search.getName() != null && search.getName().isEmpty()) {
+            search.setName(null);
+        }
+        if (search.getEmail() != null && search.getEmail().isEmpty()) {
+            search.setEmail(null);
+        }
+        if (search.getClazzId() != null && search.getClazzId().toString().isEmpty()) {
+            search.setClazzId(null);
+        }
+        if (search.getName() == null && search.getEmail() == null && search.getClazzId() == null) {
+            isSearch = false;
+        }
+        User currentUser = userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        model.addAttribute("pageTitle", "Danh sách sinh viên");
+        Pageable pageable = PageRequest.of(page, 8);
+        Page<Student> students = studentService.findStudentsByTeacherId(currentUser.getId(),pageable, search);
+        model.addAttribute("students", students);
+        model.addAttribute("classes", classService.getAllClazzes());
+        model.addAttribute("search", search);
+        model.addAttribute("isSearch", isSearch);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", students.getTotalPages());
+        session.setAttribute("page", page);
+        return "teacher/student-list";
     }
 
 }

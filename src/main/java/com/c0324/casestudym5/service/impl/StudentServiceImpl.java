@@ -29,15 +29,17 @@ public class StudentServiceImpl implements StudentService {
     private final FirebaseService firebaseService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final TeacherRepository teacherRepository;
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository, ClassRepository classRepository, MultiFileRepository multiFileRepository, RoleRepository roleRepository, FirebaseService firebaseService, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {this.studentRepository = studentRepository;
+    public StudentServiceImpl(StudentRepository studentRepository, ClassRepository classRepository, MultiFileRepository multiFileRepository, RoleRepository roleRepository, FirebaseService firebaseService, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, TeacherRepository teacherRepository) {this.studentRepository = studentRepository;
         this.clazzRepository = classRepository;
         this.multiFileRepository = multiFileRepository;
         this.roleRepository = roleRepository;
         this.firebaseService = firebaseService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.teacherRepository = teacherRepository;
     }
 
     @Override
@@ -209,6 +211,15 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public boolean existsByCode(String code) {
         return studentRepository.findByCode(code).isPresent();
+    }
+
+    @Override
+    public Page<Student> findStudentsByTeacherId(Long userId, Pageable pageable, StudentSearchDTO search) {
+        Teacher teacher = teacherRepository.findTeacherByUserId(userId);
+        if (teacher == null) {
+            return null;
+        }
+        return studentRepository.findStudentsByTeacherIdAndSearchCriteria(teacher.getId(), search.getName(), search.getEmail(), search.getClazzId(), pageable);
     }
 
 

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <link th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}" rel="stylesheet"></head>
+<body>
+<div class="container p-5 text-center">
+    <img th:src="@{/img/error.jpg}" class="img-fluid" style="max-width: 400px;" alt="">
+    <h1>Sorry! Page not found</h1>
+    <a th:href="@{/}" class="btn btn-outline-primary btn-lg mt-3">Home
+        Page</a>
+</div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
