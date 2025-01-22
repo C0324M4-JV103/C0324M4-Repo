@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CODEGYM</title>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.24/dist/sweetalert2.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -13,6 +14,7 @@
 <body>
 <!-- Navbar -->
 <div th:replace="~{layout :: nav}"></div>
+<div id="toast-container"></div> <!--toast thông báo mới-->
 <!-- Register Topic Form -->
 <div class="topic-form">
     <div class="container-fluid h-custom">
@@ -121,6 +123,56 @@
 </div>
 <!-- Footer -->
 <div th:replace="~{layout :: footer}"></div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.24/dist/sweetalert2.min.js"></script>
+
+<script>
+    // Function to simulate file upload and show a loading alert with countdown
+    function showUploadAlert() {
+        // SweetAlert2 loading alert
+        Swal.fire({
+            title: 'Đang tải lên...',
+            html: 'Vui lòng chờ: <b>5</b> giây',  // Initial countdown
+            timer: 5000,  // Set countdown time in milliseconds (5 seconds)
+            timerProgressBar: true,
+            didOpen: () => {
+                Swal.showLoading();
+                // Countdown logic
+                const b = Swal.getHtmlContainer().querySelector('b');
+                let countdown = 5;
+                const interval = setInterval(() => {
+                    countdown--;
+                    b.textContent = countdown;  // Update countdown number
+                }, 1000);
+            },
+            willClose: () => {
+                clearInterval(interval);  // Clear interval when the alert closes
+            }
+        }).then((result) => {
+            // After countdown ends, show success message
+            if (result.dismiss === Swal.DismissReason.timer) {
+                Swal.fire(
+                    'Upload thành công!',
+                    'Tệp của bạn đã được tải lên thành công.',
+                    'success'
+                );
+            }
+        });
+    }
+
+    // Trigger the showUploadAlert function when the form is submitted (this is an example)
+    document.querySelector('form').addEventListener('submit', (event) => {
+        event.preventDefault(); // Prevent form submission for demo purposes
+        showUploadAlert();  // Show loading alert
+        // Simulate file upload process
+        setTimeout(() => {
+            // Here you can add the actual file upload logic
+            Swal.close();  // Close the loading alert when upload is done
+            alert('Upload done');
+        }, 5000);  // Simulate the upload time of 5 seconds
+    });
+</script>
+
+
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/notification.js}"></script>
 <script th:src="@{/js/toast-noti.js}"></script>

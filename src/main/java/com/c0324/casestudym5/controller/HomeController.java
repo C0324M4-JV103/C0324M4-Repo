@@ -6,7 +6,9 @@ import com.c0324.casestudym5.service.BlogsService;
 import com.c0324.casestudym5.service.NotificationService;
 import com.c0324.casestudym5.service.TopicService;
 import com.c0324.casestudym5.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,4 +46,13 @@ public class HomeController {
 
         return "common/home-page";
     }
+
+    @GetMapping("/mark-read")
+    public ResponseEntity<?> markNotificationsAsRead(HttpServletRequest request) {
+        String email = request.getUserPrincipal().getName();
+        User currentUser = userService.findByEmail(email);
+        notificationService.markAllAsRead(currentUser.getId());
+        return ResponseEntity.ok().build();
+    }
+
 }

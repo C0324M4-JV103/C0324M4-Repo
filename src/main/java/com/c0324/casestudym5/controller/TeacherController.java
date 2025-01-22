@@ -49,19 +49,6 @@ public class TeacherController {
         this.studentService = studentService;
         this.classService = classService;
     }
-
-
-    @ModelAttribute
-    public void addNotificationsToModel(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
-        User currentUser = userService.findByEmail(userEmail);
-        if (currentUser != null) {
-            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
-            model.addAttribute("notifications", notifications);
-        }
-    }
-
     @GetMapping("/detail/{id}")
     public String getTeacher(@PathVariable Long id, Model model) {
         Optional<Teacher> teacher = teacherService.getTeacherById(id);

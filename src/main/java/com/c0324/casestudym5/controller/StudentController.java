@@ -51,17 +51,6 @@ public class StudentController {
         this.teacherService = teacherService;
     }
 
-    @ModelAttribute
-    public void addNotificationsToModel(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
-        User currentUser = userService.findByEmail(userEmail);
-        if (currentUser != null) {
-            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
-            model.addAttribute("notifications", notifications);
-        }
-    }
-
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
@@ -294,14 +283,15 @@ public class StudentController {
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
         if (currentTeam == null) {
-            return "common/404";
+            return "redirect:/student/team";
         }
-        if (currentTeam.getTopic() != null && currentTeam.getTopic().getApproved() == AppConstants.TOPIC_APPROVED) {
-            Long topicId = currentTeam.getTopic().getId();
-            return "redirect:/progress/" + topicId;
+        if (currentTeam.getTopic() == null || currentTeam.getTopic().getApproved() != AppConstants.TOPIC_APPROVED) {
+            return "redirect:/student/info-team";
         }
-        return "redirect:/student/info-team";
+        Long topicId = currentTeam.getTopic().getId();
+        return "redirect:/progress/" + topicId;
     }
+
 
     @GetMapping("/list-teacher")
     public String getAllTeachers(@RequestParam(defaultValue = "0") int page, Model model) {

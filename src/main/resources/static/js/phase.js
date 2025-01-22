@@ -1,5 +1,3 @@
-
-
 function toggleQuestion(button) {
     const replyContainer = button.parentElement.querySelector('.reply-container');
     const questionContainer = button.closest('.question-container');
@@ -14,4 +12,3 @@ function toggleQuestion(button) {
         questionContainer.classList.remove('with-border');
     }
 }
-

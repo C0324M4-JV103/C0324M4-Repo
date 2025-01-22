@@ -39,17 +39,6 @@ public class PhaseController {
         this.notificationService = notificationService;
     }
 
-    @ModelAttribute
-    public void addNotificationsToModel(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
-        User currentUser = userService.findByEmail(userEmail);
-        if (currentUser != null) {
-            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
-            model.addAttribute("notifications", notifications);
-        }
-    }
-
     @GetMapping("/progress/{topicId}")
     public String showTopicProgress(@PathVariable Long topicId, Model model, Principal principal) {
         Topic topic = topicService.getTopicById(topicId);

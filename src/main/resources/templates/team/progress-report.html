@@ -13,7 +13,8 @@
 <body>
 <!-- Navbar -->
 <div th:replace="~{layout :: nav}"></div>
-<!-- Toast message -->
+<div id="toast-container"></div> <!--toast thông báo mới-->
+    <!-- Toast message -->
 <div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="warningToast">
         <div class="toast-header bg-danger text-white">

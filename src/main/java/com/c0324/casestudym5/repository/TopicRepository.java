@@ -13,6 +13,7 @@ import java.util.List;
 public interface TopicRepository extends JpaRepository<Topic, Long> {
     Page<Topic> findByStatus(int status, Pageable pageable);
     @Query("select t from Topic t where t.approved = 1")
+//    @Query("select t from Topic t where t.approved = 1 and t.status = 1")
     Page<Topic> findByApprovedTrueAndStatus(Pageable pageable);
 
     List<Topic> findByTeam_Id(Long id);
