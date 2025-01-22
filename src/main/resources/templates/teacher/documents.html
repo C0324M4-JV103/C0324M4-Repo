@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Upload and View Documents</title>
+</head>
+<body>
+<h2>Upload Document</h2>
+
+<!-- Hiển thị thông báo lỗi nếu có -->
+<div th:if="${error}">
+    <p style="color:red" th:text="${error}"></p>
+</div>
+
+<!-- Hiển thị thông báo thành công nếu có -->
+<div th:if="${success}">
+    <p style="color:green" th:text="${success}"></p>
+</div>
+
+<!-- Form upload tài liệu -->
+<form th:action="@{/documents/upload}" method="post" enctype="multipart/form-data">
+    <label for="name">Document Name:</label>
+    <input type="text" id="name" name="name" th:value="${name}" required/><br><br>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" required th:text="${description}"></textarea><br><br>
+
+    <label for="file">Choose File:</label>
+    <input type="file" id="file" name="file" required /><br><br>
+
+    <button type="submit">Upload</button>
+</form>
+
+<h3>Uploaded Documents</h3>
+<table border="1">
+    <thead>
+    <tr>
+        <th>Document Name</th>
+        <th>Description</th>
+        <th>Download Link</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- Hiển thị danh sách tài liệu đã upload -->
+    <tr th:each="document : ${documents}">
+        <td th:text="${document.name}"></td>
+        <td th:text="${document.description}"></td>
+        <td><a th:href="${document.fileUrl.url}" target="_blank">Download</a></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
