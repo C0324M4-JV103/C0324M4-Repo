@@ -39,17 +39,6 @@ public class PhaseController {
         this.notificationService = notificationService;
     }
 
-    @ModelAttribute
-    public void addNotificationsToModel(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
-        User currentUser = userService.findByEmail(userEmail);
-        if (currentUser != null) {
-            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
-            model.addAttribute("notifications", notifications);
-        }
-    }
-
     @GetMapping("/progress/{topicId}")
     public String showTopicProgress(@PathVariable Long topicId, Model model, Principal principal) {
         Topic topic = topicService.getTopicById(topicId);
@@ -68,7 +57,7 @@ public class PhaseController {
         if (!isStudentInTeam && !isTeacherOfTeam) {
             return "common/404";
         }
-        String curUserAvatar = currentUser.getAvatar().getUrl();
+        MultiFile curUserAvatar = currentUser.getAvatar();
 
         model.addAttribute("team", team);
         model.addAttribute("topic", topic);

@@ -6,49 +6,91 @@ document.addEventListener('DOMContentLoaded', function () {
         console.log('Connected: ' + frame);
         stompClient.subscribe('/user/socket/notification', function (response) {
             const notification = JSON.parse(response.body);
+            const unreadCount = notification.unreadCount || 0;
             console.log(notification);//log notification to console for debugging
+
+            updateNotificationCount(unreadCount);
             showNotification(notification)
-
             showToast(notification);
-
         });
     });
 
 
     function showNotification(notification) {
+        const notifCount = document.getElementById('notif-count');
+        notifCount.textContent = notification.unreadCount || 0;
+
         const notifContent = document.querySelector('#notif-content');
         const newNotification = `
         <div class="notif-list">
             <div class="notif-img">
-                <img src="${notification.senderAvatar}" alt="user">
+                <img src="${notification.notification.senderAvatar}" alt="user">
             </div>
             <div class="notif-detail">
-                <p><b>${notification.senderName}</b> ${notification.content}</p>
-                <p><small>${notification.timeDifference}</small></p>
+                <p><b>${notification.notification.senderName}</b> ${notification.notification.content}</p>
+                <p><small>${notification.notification.timeDifference}</small></p>
             </div>
         </div>
     `;
         notifContent.insertAdjacentHTML('afterbegin', newNotification);
     }
 
+    // click chuông => đã đọc
+    const bellIcon = document.getElementById('navbarDropdown');
+    bellIcon.addEventListener('click', function () {
+        const notifCount = document.getElementById('notif-count');
+        if (notifCount.textContent > 0) {
+            notifCount.style.display = 'none';
+        }
+        fetch('/mark-read', {
+            method: 'GET',
+            credentials: 'same-origin',
+        })
+            .then(data => {
+                updateNotificationCount(data.unreadCount); // update lại số lượng
+            })
+    });
+
+    function updateNotificationCount(count) {
+        const notifCount = document.getElementById('notif-count');
+        if (count > 0) {
+            notifCount.textContent = count;
+            notifCount.style.display = 'inline';
+        } else {
+            notifCount.textContent = '';
+            notifCount.style.display = 'none';
+        }
+    }
+
+
     function showToast() {
         const toastContainer = document.getElementById('toast-container');
         const toastHTML = `
-             <div class="toast toast-custom rounded w-auto show align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-                 <div class="d-flex align-items-center px-2 py-3">
-                     <i class="fas fa-bell me-2 fs-4"></i>
-                     <div class="text-white fw-bold">
-                            Bạn có 1 thông báo mới!
-                      </div>
-                      <button type="button" class="btn-close ms-3" data-bs-dismiss="toast" aria-label="Close"></button>
-                 </div>
-             </div>
+        <div class="toast toast-custom" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
+            <div class="toast-header bg-success text-white">
+                <i class="fa fa-bell me-2 "></i>
+                <strong class="me-auto">Thông báo</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <strong>Bạn nhận được 1 thông báo mới!</strong>
+            </div>
+        </div>
     `;
         toastContainer.insertAdjacentHTML('beforeend', toastHTML);
+        const toastElement = toastContainer.lastElementChild;
+
+        const toast = new bootstrap.Toast(toastElement);
+        toast.show();
 
         setTimeout(() => {
-            const toastElement = toastContainer.querySelector('.toast');
-            if (toastElement) toastElement.remove();
-        }, 5000); // tắt toast sau 5s
+            if (toastElement) {
+                toastElement.classList.add('fade-out');
+                toastElement.addEventListener('transitionend', () => {
+                    toastElement.remove();
+                });
+            }
+        }, 4000);
     }
+
 });

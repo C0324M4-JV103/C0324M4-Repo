@@ -57,8 +57,8 @@ public class CommonMapper {
                 .repliedTimeDifference(comment.getRepliedAt() != null ? DateTimeUtil.getTimeDifference(comment.getRepliedAt()) : null)
                 .studentName(comment.getStudent() != null ? comment.getStudent().getUser().getName() : "Ẩn danh")
                 .teacherName(comment.getTeacher() != null ? comment.getTeacher().getUser().getName() : "Ẩn danh")
-                .studentAvatar(comment.getStudent() != null ? comment.getStudent().getUser().getAvatar().getUrl() : AppConstants.URL_DEFAULT_AVATAR)
-                .teacherAvatar(comment.getTeacher() != null ? comment.getTeacher().getUser().getAvatar().getUrl() : AppConstants.URL_DEFAULT_AVATAR)
+                .studentAvatar(comment.getStudent().getUser().getAvatar() != null ? comment.getStudent().getUser().getAvatar().getUrl() : AppConstants.URL_DEFAULT_AVATAR)
+                .teacherAvatar(comment.getTeacher().getUser().getAvatar()!= null ? comment.getTeacher().getUser().getAvatar().getUrl() : AppConstants.URL_DEFAULT_AVATAR)
                 .build();
     }
 

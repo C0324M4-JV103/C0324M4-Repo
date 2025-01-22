@@ -47,15 +47,6 @@ public class TopicController {
         this.commentService = commentService;
     }
 
-    @ModelAttribute
-    public void addNotificationsToModel(Model model) {
-        User currentUser = getCurrentUser();
-        if (currentUser != null) {
-            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
-            model.addAttribute("notifications", notifications);
-        }
-    }
-
     @GetMapping("/topics")
     public String getTopics(@RequestParam(defaultValue = "0") int page, Model model) {
         PageRequest pageRequest = PageRequest.of(page, 12, Sort.by("id").descending());

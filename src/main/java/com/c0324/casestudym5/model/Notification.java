@@ -31,4 +31,7 @@ public class Notification {
 
     @Column(columnDefinition = "TIMESTAMP")
     private Date createdAt;
+
+    @Column(name = "is_read", nullable = false) // Thêm cột mới
+    private boolean isRead = false; // Mặc định là chưa đọc
 }
