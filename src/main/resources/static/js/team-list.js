@@ -43,25 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const newDeadlineDate = new Date(newDeadline);
         const currentDeadlineDate = new Date(currentDeadline.split('/').reverse().join('-'));
 
-        // // Check if newDeadline is before currentDeadline
-        // if (newDeadlineDate <= currentDeadlineDate) {
-        //     document.getElementById('deadlineError').textContent = "Hạn nộp mới phải sau hạn nộp hiện tại";
-        //     document.getElementById('newDeadline').value = newDeadlineDate;
-        //     const deadlineModal = bootstrap.Modal.getInstance(document.getElementById('deadlineModal'));
-        //     deadlineModal.show();
-        //     return;
-        // }
-        //
-        // //check if newDeadline - currentDeadline > 1 month
-        // const diffTime = Math.abs(newDeadlineDate - currentDeadlineDate);
-        // if(diffTime > 2592000000){
-        //     document.getElementById('deadlineError').textContent = "Hạn nộp mới không được quá 1 tháng so với hạn nộp hiện tại";
-        //     document.getElementById('newDeadline').value = newDeadlineDate;
-        //     const deadlineModal = bootstrap.Modal.getInstance(document.getElementById('deadlineModal'));
-        //     deadlineModal.show();
-        //     return;
-        // }
-
         if (newDeadlineDate <= currentDeadlineDate) {
             document.getElementById('deadlineError').textContent = "Hạn nộp mới phải sau hạn nộp hiện tại";
             return;
