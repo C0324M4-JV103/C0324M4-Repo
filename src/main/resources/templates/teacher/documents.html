@@ -1,52 +1,121 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <title>Upload and View Documents</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/documents.css">
+    <link rel="stylesheet" href="/css/home-page.css">
+    <title>Upload Document</title>
+    <style>
+        .table-container {
+            height: 350px;
+            overflow-y: auto;
+        }
+    </style>
 </head>
-<body>
-<h2>Upload Document</h2>
+<body class="pt-5">
 
-<!-- Hiển thị thông báo lỗi nếu có -->
-<div th:if="${error}">
-    <p style="color:red" th:text="${error}"></p>
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <!-- Success Toast -->
+    <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" th:text="${toastMessage}"></div>
+    </div>
+
+    <!-- Error Toast -->
+    <div th:if="${toastMessage != null and toastType == 'danger'}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Cảnh báo</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" th:text="${toastMessage}"></div>
+    </div>
 </div>
+<div th:replace="layout :: nav"></div>
+<h1 class="text-center mb-4">Thêm tài liệu</h1>
 
-<!-- Hiển thị thông báo thành công nếu có -->
-<div th:if="${success}">
-    <p style="color:green" th:text="${success}"></p>
-</div>
-
-<!-- Form upload tài liệu -->
-<form th:action="@{/documents/upload}" method="post" enctype="multipart/form-data">
-    <label for="name">Document Name:</label>
-    <input type="text" id="name" name="name" th:value="${name}" required/><br><br>
-
-    <label for="description">Description:</label>
-    <textarea id="description" name="description" required th:text="${description}"></textarea><br><br>
-
-    <label for="file">Choose File:</label>
-    <input type="file" id="file" name="file" required /><br><br>
-
-    <button type="submit">Upload</button>
+<form th:action="@{/teacher/documents/upload}" th:object="${documentDTO}" method="post" enctype="multipart/form-data" class="container">
+    <div class="mb-3">
+        <label for="name" class="form-label">Tên tài liệu</label>
+        <input type="text" id="name" th:field="*{name}" class="form-control">
+        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></div>
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Mô tả</label>
+        <textarea id="description" th:field="*{description}" class="form-control"></textarea>
+        <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="error"></div>
+    </div>
+    <div class="mb-3">
+        <label for="file" class="form-label">Chọn file</label>
+        <input type="file" id="file" th:field="*{fileUrl}" class="form-control">
+        <div th:if="${#fields.hasErrors('fileUrl')}" th:errors="*{fileUrl}" class="error"></div>
+    </div>
+    <div class="mb-3">
+        <label for="teacherId" class="form-label">ID giáo viên</label>
+        <input type="text" id="teacherId" th:field="*{teacher}" class="form-control">
+        <div th:if="${#fields.hasErrors('teacher')}" th:errors="*{teacher}" class="error"></div>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Tải lên</button>
 </form>
 
-<h3>Uploaded Documents</h3>
-<table border="1">
-    <thead>
-    <tr>
-        <th>Document Name</th>
-        <th>Description</th>
-        <th>Download Link</th>
-    </tr>
-    </thead>
-    <tbody>
-    <!-- Hiển thị danh sách tài liệu đã upload -->
-    <tr th:each="document : ${documents}">
-        <td th:text="${document.name}"></td>
-        <td th:text="${document.description}"></td>
-        <td><a th:href="${document.fileUrl.url}" target="_blank">Download</a></td>
-    </tr>
-    </tbody>
-</table>
+<div>
+    <h2 class="mt-5">Tài liệu đã tải lên</h2>
+    <div class="table-container">
+        <table class="table table-bordered table-striped">
+            <thead>
+            <tr>
+                <th>STT</th>
+                <th>Tên tài liệu</th>
+                <th>Mô tả</th>
+                <th>Giáo viên</th>
+                <th>Link tải</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="document,stat : ${documents}">
+                <td th:text="${stat.index + 1}"></td>
+                <td th:text="${document.name}"></td>
+                <td th:text="${document.description}"></td>
+                <td th:text="${document.teacher.user.name}"></td>
+                <td><a th:href="${document.fileUrl.url}" class="btn btn-link">Download</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Phân trang -->
+    <nav>
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/teacher/documents/upload(page=${currentPage - 1}, size=${pageSize})}"
+                   aria-label="Previous">Trước</a>
+            </li>
+            <li class="page-item"
+                th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${currentPage == pageNum} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/teacher/documents/upload(page=${pageNum}, size=${pageSize})}"
+                   th:text="${pageNum + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/teacher/documents/upload(page=${currentPage + 1}, size=${pageSize})}"
+                   aria-label="Next">Tiếp</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<div th:replace="layout :: footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.9/dist/sweetalert2.min.js"></script>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+
 </body>
 </html>
