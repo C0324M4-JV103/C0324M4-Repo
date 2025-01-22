@@ -293,7 +293,10 @@ public class StudentController {
     public String redirectToProgress() {
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
-        if (currentTeam != null && currentTeam.getTopic() != null && currentTeam.getTopic().getApproved() == AppConstants.TOPIC_APPROVED) {
+        if (currentTeam == null) {
+            return "common/404";
+        }
+        if (currentTeam.getTopic() != null && currentTeam.getTopic().getApproved() == AppConstants.TOPIC_APPROVED) {
             Long topicId = currentTeam.getTopic().getId();
             return "redirect:/progress/" + topicId;
         }
