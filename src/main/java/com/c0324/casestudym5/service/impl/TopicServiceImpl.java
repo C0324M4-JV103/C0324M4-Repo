@@ -10,6 +10,7 @@ import com.c0324.casestudym5.repository.TopicRepository;
 import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.repository.*;
 import com.c0324.casestudym5.util.AppConstants;
+import com.c0324.casestudym5.util.DateTimeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,12 +22,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import com.c0324.casestudym5.repository.TeacherRepository;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class TopicServiceImpl implements TopicService {
@@ -289,6 +289,44 @@ public class TopicServiceImpl implements TopicService {
             }
         }
         return "";
+    }
+
+    @Override
+    @Transactional
+    public void setNewDeadline(Long teamId, Date newDeadline, User setBy) {
+
+        Team team = teamRepository.findById(teamId).orElseThrow(() -> new RuntimeException("Không tìm thấy nhóm"));
+        Topic topic = team.getTopic();
+        if (topic == null) {
+            throw new RuntimeException("Nhóm chưa đăng ký đề tài");
+        }
+        if(topic.getDeadline().after(newDeadline)) {
+            throw new RuntimeException("Hạn nộp mới phải sau hạn nộp cũ");
+        }
+        List<Student> students = team.getStudents();
+
+        // set new deadline for the topic
+        topic.setDeadline(newDeadline);
+
+        // set last phase end date to new deadline
+        Phase lastPhase = phaseRepository.findByTopicIdAndPhaseNumber(topic.getId(), 4);
+        lastPhase.setEndDate(LocalDate.from(DateTimeUtil.convertDateToLocalDate(newDeadline).atStartOfDay()));
+        phaseRepository.save(lastPhase);
+
+        for(Student student : students) {
+            // Send notification to the team
+            Notification notification = new Notification();
+            notification.setSender(setBy);
+            notification.setReceiver(student.getUser());
+            notification.setContent("đã đặt lại hạn nộp cho đề tài " + topic.getName());
+            notificationService.sendNotification(notification);
+
+            // Send email to the team
+            String subject = "Thông báo thay đổi hạn nộp đề tài";
+            mailService.sendNewDeadlineEmail(student.getUser().getEmail(), subject, setBy.getName(), student.getUser().getName(), topic.getName(), topic.getId());
+        }
+
+        topicRepository.save(topic);
     }
 
     private User getCurrentUser() {

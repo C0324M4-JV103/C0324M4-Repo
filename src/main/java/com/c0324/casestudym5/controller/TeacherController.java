@@ -16,8 +16,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -102,11 +105,12 @@ public class TeacherController {
     }
 
     @MessageMapping("/set-deadline")
-    public String setDeadline(@Payload Map<String, Object> payload, Principal principal) {
+    public String setDeadline(@Payload Map<String, Object> payload, Principal principal) throws ParseException {
         Long teamId = Long.parseLong(payload.get("teamId").toString());
-        Date deadline = new Date((Long) payload.get("deadline"));
-        User sender = userService.findByEmail(principal.getName());
-//        teamService.setDeadline(teamId, deadline, sender);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date newDeadline = sdf.parse(payload.get("deadline").toString());
+        User setBy = userService.findByEmail(principal.getName());
+        topicService.setNewDeadline(teamId, newDeadline, setBy);
         return "redirect:/teacher/team";
     }
 
