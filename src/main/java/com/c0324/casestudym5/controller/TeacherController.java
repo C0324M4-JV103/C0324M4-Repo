@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.util.*;
@@ -141,10 +142,12 @@ public class TeacherController {
                                     Model model) {
         Page<Document> documentPage = documentService.getDocumentsPage(page, size);
         model.addAttribute("documentDTO", new DocumentDTO());
+        model.addAttribute("teachers", teacherService.getAllTeachers());
         model.addAttribute("documents", documentPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", documentPage.getTotalPages());
         model.addAttribute("totalItems", documentPage.getTotalElements());
+        model.addAttribute("pageSize", size);
         return "teacher/documents";
     }
 
@@ -152,35 +155,51 @@ public class TeacherController {
     @PostMapping("/documents/upload")
     public String uploadDocument(@Valid @ModelAttribute("documentDTO") DocumentDTO documentDTO,
                                  BindingResult bindingResult,
-                                 Model model) {
+                                 Model model, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
+            model.addAttribute("teachers", teacherService.getAllTeachers());
+            model.addAttribute("documentDTO", documentDTO);
             model.addAttribute("error", "Vui lòng kiểm tra thông tin đã nhập!");
             return "teacher/documents";
         }
 
         Optional<Teacher> teacherOptional = teacherService.getTeacherById(documentDTO.getTeacher().getId());
         if (teacherOptional.isEmpty()) {
+            model.addAttribute("teachers", teacherService.getAllTeachers());
+            model.addAttribute("documentDTO", documentDTO);
             model.addAttribute("error", "Không tìm thấy giáo viên.");
             return "teacher/documents";
         }
         Teacher teacher = teacherOptional.get();
 
+        // Upload file lên Firebase
         String fileUrl = firebaseService.uploadFileToFireBase(documentDTO.getFileUrl(), "documents");
         if (fileUrl == null) {
+            model.addAttribute("teachers", teacherService.getAllTeachers());
+            model.addAttribute("documentDTO", documentDTO);
             model.addAttribute("error", "Lỗi khi tải lên tài liệu.");
             return "teacher/documents";
         }
 
-        Document document = new Document();
-        document.setName(documentDTO.getName());
-        document.setDescription(documentDTO.getDescription());
-        document.setTeacher(teacher);
-        document.setStatus(documentDTO.isStatus());
+        try {
+            Document document = new Document();
+            document.setName(documentDTO.getName());
+            document.setDescription(documentDTO.getDescription());
+            document.setTeacher(teacher);
+            document.setStatus(documentDTO.isStatus());
 
-        documentService.saveDocument(document, fileUrl);
+            documentService.saveDocument(document, fileUrl);
+            redirectAttributes.addFlashAttribute("toastMessage", "Tải tài liệu thành công!");
+            redirectAttributes.addFlashAttribute("toastType", "success");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("toastMessage", "Đã có lỗi trong quá trình.");
+            redirectAttributes.addFlashAttribute("toastType", "danger");
+            System.out.println(e.getMessage());
+        }
 
-        model.addAttribute("success", "Tải tài liệu thành công!");
         return "redirect:/teacher/documents/upload";
     }
+
+
 }
 
