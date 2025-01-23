@@ -8,6 +8,7 @@ import com.c0324.casestudym5.service.NotificationService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.CommonMapper;
 import com.c0324.casestudym5.util.DateTimeUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -48,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordDTO changePasswordDTO, BindingResult bindingResult, Model model) {
+    public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordDTO changePasswordDTO, BindingResult bindingResult, Model model, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("changePassword", changePasswordDTO);
             return "common/change-password-form";
@@ -73,6 +74,10 @@ public class UserController {
             model.addAttribute("error", "Mật khẩu cũ không đúng");
             return "common/change-password-form";
         }
+
+        // Invalidate the session
+        request.getSession().invalidate();
+        model.addAttribute("toastType", "success");
 
         return "redirect:/login?logout";
     }
