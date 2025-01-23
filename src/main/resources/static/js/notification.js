@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showNotification(notification) {
         const notifCount = document.getElementById('notif-count');
-        notifCount.textContent = notification.unreadCount || 0;
+        notifCount.textContent = notification.unreadCount > 3 ? '3+' : notification.unreadCount || 0;
 
         const notifContent = document.querySelector('#notif-content');
         const newNotification = `
@@ -33,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
     `;
         notifContent.insertAdjacentHTML('afterbegin', newNotification);
+
     }
 
     // click chuông => đã đọc
@@ -54,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateNotificationCount(count) {
         const notifCount = document.getElementById('notif-count');
         if (count > 0) {
-            notifCount.textContent = count;
+            notifCount.textContent = count > 3 ? '3+' : count;
             notifCount.style.display = 'inline';
         } else {
             notifCount.textContent = '';

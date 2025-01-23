@@ -50,7 +50,7 @@
     <div class="card-info-team-container">
         <div th:each="s : ${team.students}">
             <div class="card-info-team">
-                <img src="https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-anh-the-dep-e1664379835782.jpg"
+                <img th:src="${s.user.avatar != null ? s.user.avatar.url : 'https://firebasestorage.googleapis.com/v0/b/cv-pdf-upload.appspot.com/o/casestudym5%2Favatar%2Fdefault-avatar.png?alt=media&token=a7b21608-1b68-45e0-9d6e-a5fcbcaac12e'}"
                      alt="image" width="100" height="100">
                 <h5 class="mt-3 no-wrap" th:text="${s.user.name}"></h5>
                 <p class="text-start">

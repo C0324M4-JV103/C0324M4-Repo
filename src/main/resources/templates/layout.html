@@ -49,9 +49,10 @@
                             <li><a class="dropdown-item" href="blogs">ĐĂNG THÔNG BÁO</a></li>
                             <li><a class="dropdown-item" href="/topics">DANH SÁCH ĐỀ TÀI</a></li>
                             <li><a class="dropdown-item" th:href="@{/teacher/topics}">KIỂM DUYỆT ĐỀ TÀI</a></li>
-                            <li><a class="dropdown-item"th:href="@{/teacher/student-list}">DANH SÁCH SINH VIÊN</a></li>
+                            <li><a class="dropdown-item" th:href="@{/teacher/student-list}">DANH SÁCH SINH VIÊN</a></li>
                             <li><a class="dropdown-item" th:href="@{/teacher/team}">QUẢN LÝ NHÓM SINH VIÊN</a></li>
-                            <li><a class="dropdown-item" th:href="@{/teacher/documents/upload}">TÀI LIỆU HƯỚNG DẪN</a></li>
+                            <li><a class="dropdown-item" th:href="@{/teacher/documents/upload}">TÀI LIỆU HƯỚNG DẪN</a>
+                            </li>
 
                         </ul>
                     </li>
@@ -63,15 +64,15 @@
                         </ul>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#">LIÊN HỆ</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown notif-icon" href="#" id="navbarDropdown" role="button"
-                           data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="fa fa-bell" style="font-size: 15px"></i>
-                            <span id="notif-count"
-                                  class="badge-notify"
-                                  th:classappend="${newNotificationsCount > 0 ? ' show' : ''}"
-                                  th:text="${newNotificationsCount}"></span>
-                        </a>
+                    <li class="nav-item dropdown"  sec:authorize="isAuthenticated()">
+                            <a class="nav-link dropdown notif-icon" href="#" id="navbarDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-bell" style="font-size: 15px"></i>
+                                <span id="notif-count"
+                                      class="badge-notify"
+                                      th:classappend="${newNotificationsCount > 0 ? ' show' : ''}"
+                                      th:text="${newNotificationsCount > 3 ? '3+' : newNotificationsCount}"></span>
+                            </a>
                         <div class="dropdown-menu notif-dd" aria-labelledby="navbarDropdown">
                             <div class="notif-content" id="notif-content">
                                 <div style="color: #da174a; padding: 10px 0; text-align: center"
@@ -99,18 +100,22 @@
                 </ul>
                 <div sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')">
                     <div class="dropdown user-profile d-flex justify-content-between align-items-center">
-                        <span sec:authentication="principal.username" style="color: white" class="me-3"></span>
+                        <strong th:if="${username}" th:text="${username}" style="color: white" class="me-3"></strong>
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <img th:src="${currentUser.avatar != null ? currentUser.avatar.url : 'https://firebasestorage.googleapis.com/v0/b/cv-pdf-upload.appspot.com/o/casestudym5%2Favatar%2Fdefault-avatar.png?alt=media&token=a7b21608-1b68-45e0-9d6e-a5fcbcaac12e'}"
                                  alt="User profile" class="rounded-circle"
                                  style="width: 40px; height: 40px; object-fit: cover;">
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" th:href="@{/user/profile}" style="font-size: 25px; font-weight: 700">THÔNG TIN CÁ NHÂN</a></li>
+                            <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" th:href="@{/user/profile}"
+                                                                    style="font-size: 25px; font-weight: 700">THÔNG TIN
+                                CÁ NHÂN</a></li>
                             <hr class="divider">
-                            <li><a class="dropdown-item" th:href="@{/user/change-password}" style="font-size: 25px; font-weight: 700">ĐỔI MẬT KHẨU</a></li>
+                            <li><a class="dropdown-item" th:href="@{/user/change-password}"
+                                   style="font-size: 25px; font-weight: 700">ĐỔI MẬT KHẨU</a></li>
                             <hr class="divider">
-                            <li><a class="dropdown-item" th:href="@{/logout}" style="font-size: 25px; font-weight: 700">ĐĂNG XUẤT</a></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}" style="font-size: 25px; font-weight: 700">ĐĂNG
+                                XUẤT</a></li>
                         </ul>
                     </div>
                 </div>
@@ -149,11 +154,13 @@
 <div th:fragment="noti">
     <div class="container py-5">
         <h1 class="main-title">THÔNG BÁO NỔI BẬT</h1>
-        <swiper-container class="mySwiper" pagination="true" pagination-clickable="true" space-between="20" slides-per-view="3">
+        <swiper-container class="mySwiper" pagination="true" pagination-clickable="true" space-between="20"
+                          slides-per-view="3">
             <swiper-slide th:each="blog : ${blogs}">
                 <div class="card announcement-card">
                     <div class="announcement-image-container">
-                        <img src="/img/logocg.png" class="announcement-image" alt="Blog Image" style="object-fit: cover; height: 200px; width: 100%;">
+                        <img src="/img/logocg.png" class="announcement-image" alt="Blog Image"
+                             style="object-fit: cover; height: 200px; width: 100%;">
                     </div>
                     <div class="card-body">
                         <div class="announcement-meta">

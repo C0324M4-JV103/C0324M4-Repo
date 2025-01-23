@@ -1,6 +1,7 @@
 package com.c0324.casestudym5.repository;
 
 import com.c0324.casestudym5.model.Notification;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,4 +18,9 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     @Query("select COUNT(n) from Notification n where n.receiver.id = :receiverId and n.isRead = false")
     int countUnreadByReceiverId(@Param("receiverId") Long receiverId); //lấy số lượng thông báo chưa đọc
+
+    @Query("select n from Notification n where n.receiver.id = :receiverId and n.isRead = false order by n.createdAt desc")
+    List<Notification> findTop3UnreadNotificationsByReceiverId(@Param("receiverId") Long receiverId, Pageable pageable);
+
+
 }
