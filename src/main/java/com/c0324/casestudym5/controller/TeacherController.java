@@ -1,7 +1,6 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.DocumentDTO;
-import com.c0324.casestudym5.dto.NotificationDTO;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.*;
@@ -16,14 +15,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 import java.text.ParseException;
@@ -38,21 +35,21 @@ public class TeacherController {
     private final TeamService teamService;
     private final UserService userService;
     private final TopicService topicService;
-    private final NotificationService notificationService;
     private final StudentService studentService;
     private final ClazzService classService;
     private final DocumentService documentService;
     private final FirebaseService firebaseService;
 
     @Autowired
-    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService, NotificationService notificationService, StudentService studentService, ClazzService classService) {
+    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService, StudentService studentService, ClazzService classService, DocumentService documentService, FirebaseService firebaseService) {
         this.teacherService = teacherService;
         this.teamService = teamService;
         this.userService = userService;
         this.topicService = topicService;
-        this.notificationService = notificationService;
         this.studentService = studentService;
         this.classService = classService;
+        this.documentService = documentService;
+        this.firebaseService = firebaseService;
     }
     @GetMapping("/detail/{id}")
     public String getTeacher(@PathVariable Long id, Model model) {
@@ -218,6 +215,5 @@ public class TeacherController {
         model.addAttribute("success", "Tải tài liệu thành công!");
         return "redirect:/teacher/documents/upload";
     }
-}
 
 }
