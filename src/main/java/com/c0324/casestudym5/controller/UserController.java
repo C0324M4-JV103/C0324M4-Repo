@@ -28,12 +28,10 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final NotificationService notificationService;
 
     @Autowired
-    public UserController(UserService userService, NotificationService notificationService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.notificationService = notificationService;
     }
 
     @InitBinder

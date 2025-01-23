@@ -98,7 +98,7 @@
                 </ul>
                 <div sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')">
                     <div class="dropdown user-profile d-flex justify-content-between align-items-center">
-                        <span sec:authentication="principal.username" style="color: white" class="me-3"></span>
+                        <span th:if="${username}" th:text="${username}" style="color: white" class="me-3"></span>
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                             <img th:src="${currentUser.avatar != null ? currentUser.avatar.url : 'https://firebasestorage.googleapis.com/v0/b/cv-pdf-upload.appspot.com/o/casestudym5%2Favatar%2Fdefault-avatar.png?alt=media&token=a7b21608-1b68-45e0-9d6e-a5fcbcaac12e'}"
                                  alt="User profile" class="rounded-circle"

@@ -38,8 +38,11 @@ public class NotifyController {
             model.addAttribute("notifications", notifications);
             model.addAttribute("currentUser", currentUser);
             model.addAttribute("newNotificationsCount", unreadCount);
+            model.addAttribute("username", currentUser.getName());
         }
     }
+
+
 }
 
 
