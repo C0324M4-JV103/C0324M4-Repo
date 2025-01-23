@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CODEGYM</title>
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.24/dist/sweetalert2.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -14,7 +14,6 @@
 <body>
 <!-- Navbar -->
 <div th:replace="~{layout :: nav}"></div>
-<div id="toast-container"></div> <!--toast thông báo mới-->
 <!-- Register Topic Form -->
 <div class="topic-form">
     <div class="container-fluid h-custom">
@@ -74,107 +73,122 @@
 
                     <!-- Submit button -->
                     <div class="text-center text-lg-start mt-4 pt-2">
-                        <button type="submit" class="btn btn-primary btn-lg w-100 w-lg-auto">Đăng ký</button>
+                        <button type="submit" class="btn btn-primary btn-lg w-100 w-lg-auto" id="submitButton">Đăng ký</button>
                     </div>
                 </form>
             </div>
 
             <!-- Topic list -->
             <div class="col-md-9 col-lg-6 col-xl-5 d-none d-md-block">
-                <table class="table table-hover table-bordered">
-                    <thead>
-                    <tr class="text-center">
-                        <th>ID</th>
-                        <th>Tên đề tài</th>
-                        <th>Chọn</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="topic : ${topics}">
-                        <td class="text-center" th:text="${topic.id}"></td>
-                        <td th:text="${topic.name}"></td>
-                        <td>
-                            <a th:href="@{/student/topic/{id}(id=${topic.id})}" class="btn btn-primary view-topic">View</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <!-- Pagination -->
-                <div class="d-flex justify-content-center" th:if="${totalPages > 1}">
-                    <ul class="pagination">
-                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                            <a class="page-link" th:href="@{'/student/register-topic?page=' + ${currentPage - 1}}" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
-                            <a class="page-link" th:href="@{'/student/register-topic?page=' + ${i}}" th:text="${i + 1}"></a>
-                        </li>
-                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                            <a class="page-link" th:href="@{'/student/register-topic?page=' + ${currentPage + 1}}" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
+                <div th:if="${#lists.isEmpty(topics)}">
+                    <p class="text-center text-danger fw-bold fs-4">Chưa có đề tài nào được duyệt hoặc hoàn tất</p>
+                </div>
+                <div th:unless="${#lists.isEmpty(topics)}">
+                    <table class="table table-hover table-bordered">
+                        <thead>
+                        <tr class="text-center">
+                            <th>ID</th>
+                            <th>Tên đề tài</th>
+                            <th>Chọn</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="topic : ${topics}">
+                            <td class="text-center" th:text="${topic.id}"></td>
+                            <td th:text="${topic.name}"></td>
+                            <td>
+                                <a th:href="@{/student/topic/{id}(id=${topic.id})}" class="btn btn-primary view-topic">Xem</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <!-- Pagination -->
+                    <div id="pagination-container" class="d-flex justify-content-center" th:if="${totalPages > 1}">
+                        <ul class="pagination">
+                            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                <a class="page-link" href="#" th:attr="data-page=${currentPage - 1}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                                <a class="page-link" href="#" th:attr="data-page=${i}" th:text="${i + 1}"></a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                                <a class="page-link" href="#" th:attr="data-page=${currentPage + 1}" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Xác nhận điều hướng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Nếu bạn chuyển sang trang tiếp theo, tất cả dữ liệu trong biểu mẫu sẽ bị mất. Bạn có muốn tiếp tục không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="confirmNavigate">Tiếp tục</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Footer -->
 <div th:replace="~{layout :: footer}"></div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.24/dist/sweetalert2.min.js"></script>
-
-<script>
-    // Function to simulate file upload and show a loading alert with countdown
-    function showUploadAlert() {
-        // SweetAlert2 loading alert
-        Swal.fire({
-            title: 'Đang tải lên...',
-            html: 'Vui lòng chờ: <b>5</b> giây',  // Initial countdown
-            timer: 5000,  // Set countdown time in milliseconds (5 seconds)
-            timerProgressBar: true,
-            didOpen: () => {
-                Swal.showLoading();
-                // Countdown logic
-                const b = Swal.getHtmlContainer().querySelector('b');
-                let countdown = 5;
-                const interval = setInterval(() => {
-                    countdown--;
-                    b.textContent = countdown;  // Update countdown number
-                }, 1000);
-            },
-            willClose: () => {
-                clearInterval(interval);  // Clear interval when the alert closes
-            }
-        }).then((result) => {
-            // After countdown ends, show success message
-            if (result.dismiss === Swal.DismissReason.timer) {
-                Swal.fire(
-                    'Upload thành công!',
-                    'Tệp của bạn đã được tải lên thành công.',
-                    'success'
-                );
-            }
-        });
-    }
-
-    // Trigger the showUploadAlert function when the form is submitted (this is an example)
-    document.querySelector('form').addEventListener('submit', (event) => {
-        event.preventDefault(); // Prevent form submission for demo purposes
-        showUploadAlert();  // Show loading alert
-        // Simulate file upload process
-        setTimeout(() => {
-            // Here you can add the actual file upload logic
-            Swal.close();  // Close the loading alert when upload is done
-            alert('Upload done');
-        }, 5000);  // Simulate the upload time of 5 seconds
-    });
-</script>
-
-
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/js/notification.js}"></script>
 <script th:src="@{/js/toast-noti.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+<!-- Disable submit button after form submission -->
+<script>
+    document.querySelector('form').addEventListener('submit', function() {
+        document.getElementById('submitButton').disabled = true;
+    });
+</script>
+<!-- Confirm navigation when form is not empty -->
+<script>
+    $(document).ready(function() {
+        var targetPage;
+
+        function isFormEmpty() {
+            var isEmpty = true;
+            $('form input[type="text"], form input[type="file"]').each(function() {
+                if ($(this).val() !== '') {
+                    isEmpty = false;
+                    return false; // Break the loop
+                }
+            });
+            return isEmpty;
+        }
+
+        $('#pagination-container').on('click', '.page-link', function(e) {
+            e.preventDefault();
+            targetPage = $(this).data('page');
+            if (isFormEmpty()) {
+                window.location.href = '/student/register-topic?page=' + targetPage;
+            } else {
+                $('#confirmModal').modal('show');
+            }
+        });
+
+        $('#confirmNavigate').on('click', function() {
+            window.location.href = '/student/register-topic?page=' + targetPage;
+        });
+    });
+</script>
 </body>
 </html>

@@ -283,13 +283,13 @@ public class StudentController {
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
         if (currentTeam == null) {
-            return "redirect:/student/team";
+            return "common/404";
         }
-        if (currentTeam.getTopic() == null || currentTeam.getTopic().getApproved() != AppConstants.TOPIC_APPROVED) {
-            return "redirect:/student/info-team";
+        if (currentTeam.getTopic() != null && currentTeam.getTopic().getApproved() == AppConstants.TOPIC_APPROVED) {
+            Long topicId = currentTeam.getTopic().getId();
+            return "redirect:/progress/" + topicId;
         }
-        Long topicId = currentTeam.getTopic().getId();
-        return "redirect:/progress/" + topicId;
+        return "redirect:/student/info-team";
     }
 
 

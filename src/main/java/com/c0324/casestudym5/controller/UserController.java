@@ -20,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -47,7 +48,8 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordDTO changePasswordDTO, BindingResult bindingResult, Model model, HttpServletRequest request) {
+    public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordDTO changePasswordDTO, BindingResult bindingResult,
+                                 Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("changePassword", changePasswordDTO);
             return "common/change-password-form";
@@ -75,7 +77,7 @@ public class UserController {
 
         // Invalidate the session
         request.getSession().invalidate();
-        model.addAttribute("toastType", "success");
+        redirectAttributes.addFlashAttribute("toastType", "success");
 
         return "redirect:/login?logout";
     }

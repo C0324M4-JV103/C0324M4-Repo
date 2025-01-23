@@ -39,12 +39,12 @@ public class NotificationService {
         save(notification);
         NotificationDTO response = CommonMapper.toNotificationDTO(notification);
 
-        // Gửi thông báo và số thông báo chưa đọc tới client
         int unreadCount = countUnreadNotifications(receiver.getId());
 
         simpMessagingTemplate.convertAndSendToUser(
                 receiver.getEmail(), "/socket/notification",
-                Map.of("notification", response, "unreadCount", unreadCount)
+                Map.of("notification", response,
+                        "unreadCount", unreadCount)
         );
         notificationRepository.save(notification);
 
@@ -57,8 +57,10 @@ public class NotificationService {
                 .collect(Collectors.toList());
     }
 
+
     public void markAllAsRead(Long receiverId) {
         List<Notification> notifications = notificationRepository.findByReceiverIdAndIsReadFalse(receiverId);
+
         for (Notification notification : notifications) {
             notification.setRead(true);
         }
