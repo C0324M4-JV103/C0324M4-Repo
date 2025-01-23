@@ -74,13 +74,11 @@
                         </a>
                         <div class="dropdown-menu notif-dd" aria-labelledby="navbarDropdown">
                             <div class="notif-content" id="notif-content">
-<<<<<<<<< Temporary merge branch 1
-=========
                                 <div style="color: #da174a; padding: 10px 0; text-align: center"
                                      th:if="${notifications == null || notifications.isEmpty()}">
                                     Không có thông báo nào!
                                 </div>
->>>>>>>>> Temporary merge branch 2
+
                                 <div th:each="notif : ${notifications}" class="notif-list">
                                     <div class="notif-img">
                                         <img th:src="${notif.senderAvatar}" alt="user">
