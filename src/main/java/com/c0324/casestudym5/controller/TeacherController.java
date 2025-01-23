@@ -1,12 +1,16 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.NotificationDTO;
+import com.c0324.casestudym5.dto.StudentSearchDTO;
 import com.c0324.casestudym5.dto.TeamDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.service.*;
+import com.c0324.casestudym5.service.impl.ClazzService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -16,8 +20,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -29,14 +36,18 @@ public class TeacherController {
     private final UserService userService;
     private final TopicService topicService;
     private final NotificationService notificationService;
+    private final StudentService studentService;
+    private final ClazzService classService;
 
     @Autowired
-    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService, NotificationService notificationService) {
+    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService, NotificationService notificationService, StudentService studentService, ClazzService classService) {
         this.teacherService = teacherService;
         this.teamService = teamService;
         this.userService = userService;
         this.topicService = topicService;
         this.notificationService = notificationService;
+        this.studentService = studentService;
+        this.classService = classService;
     }
     @GetMapping("/detail/{id}")
     public String getTeacher(@PathVariable Long id, Model model) {
@@ -88,6 +99,16 @@ public class TeacherController {
         return "redirect:/teacher/team";
     }
 
+    @MessageMapping("/set-deadline")
+    public String setDeadline(@Payload Map<String, Object> payload, Principal principal) throws ParseException {
+        Long teamId = Long.parseLong(payload.get("teamId").toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date newDeadline = sdf.parse(payload.get("deadline").toString());
+        User setBy = userService.findByEmail(principal.getName());
+        topicService.setNewDeadline(teamId, newDeadline, setBy);
+        return "redirect:/teacher/team";
+    }
+
     @GetMapping("/topics")
     public String getPendingTopics(Model model,
                                    @RequestParam(defaultValue = "0") int page,
@@ -114,5 +135,35 @@ public class TeacherController {
         return "redirect:/teacher/topics";
     }
 
-}
+    @GetMapping("/student-list")
+    public String getAllStudents(Model model,
+                                 StudentSearchDTO search,
+                                 @RequestParam(defaultValue = "0") int page, HttpSession session) {
+        boolean isSearch = true;
+        if (search.getName() != null && search.getName().isEmpty()) {
+            search.setName(null);
+        }
+        if (search.getEmail() != null && search.getEmail().isEmpty()) {
+            search.setEmail(null);
+        }
+        if (search.getClazzId() != null && search.getClazzId().toString().isEmpty()) {
+            search.setClazzId(null);
+        }
+        if (search.getName() == null && search.getEmail() == null && search.getClazzId() == null) {
+            isSearch = false;
+        }
+        User currentUser = userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        model.addAttribute("pageTitle", "Danh sách sinh viên");
+        Pageable pageable = PageRequest.of(page, 8);
+        Page<Student> students = studentService.findStudentsByTeacherId(currentUser.getId(),pageable, search);
+        model.addAttribute("students", students);
+        model.addAttribute("classes", classService.getAllClazzes());
+        model.addAttribute("search", search);
+        model.addAttribute("isSearch", isSearch);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", students.getTotalPages());
+        session.setAttribute("page", page);
+        return "teacher/student-list";
+    }
 
+}

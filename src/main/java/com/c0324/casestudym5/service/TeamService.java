@@ -23,4 +23,5 @@ public interface TeamService {
     int countTeamsByTeacherId(Long teacherId);
 
     void registerTeacher(Long id, Long teacherId);
+
 }

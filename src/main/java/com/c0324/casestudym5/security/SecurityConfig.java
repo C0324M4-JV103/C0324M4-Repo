@@ -4,15 +4,16 @@ import com.c0324.casestudym5.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-
 @Configuration
-public class SecurityConfig  {
+@EnableMethodSecurity
+public class SecurityConfig {
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -22,8 +23,8 @@ public class SecurityConfig  {
     @Bean
     public DaoAuthenticationProvider authenticationProvider(UserService userService){
         DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
-        auth.setUserDetailsService(userService);// set custom user details service
-        auth.setPasswordEncoder(passwordEncoder()); // set password encoder
+        auth.setUserDetailsService(userService);
+        auth.setPasswordEncoder(passwordEncoder());
         return auth;
     }
 
@@ -32,6 +33,8 @@ public class SecurityConfig  {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/fonts/**" , "/logout", "/webjars/**").permitAll()
+                        .requestMatchers("/blogs", "/blogs/{id}").permitAll() // Cho phép xem blog
+                        .requestMatchers("/blogs/create/**", "/blogs/edit/**", "/blogs/delete/**").hasAnyRole("ADMIN", "TEACHER") // Quyền thêm/sửa/xóa blog
                         .requestMatchers("/user/**", "/home", "/app/**").hasAnyRole("TEACHER", "STUDENT", "ADMIN")
                         .requestMatchers("/teacher/**").hasAnyRole("TEACHER", "ADMIN")
                         .requestMatchers("/student/**").hasAnyRole("STUDENT", "ADMIN", "TEACHER")
@@ -57,5 +60,4 @@ public class SecurityConfig  {
 
         return http.build();
     }
-
 }
