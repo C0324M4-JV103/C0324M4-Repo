@@ -22,9 +22,11 @@
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="#">
-                <img src="https://cdn.codegym.vn/wp-content/uploads/2020/05/Logo-CodeGym-W-05.png" alt="CodeGym Logo" style="height: 40px;">
+                <img src="https://cdn.codegym.vn/wp-content/uploads/2020/05/Logo-CodeGym-W-05.png" alt="CodeGym Logo"
+                     style="height: 40px;">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -32,7 +34,8 @@
                     <li class="nav-item"><a class="nav-link" href="/">TRANG CHỦ</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">TIN TỨC</a></li>
                     <li class="nav-item dropdown" sec:authorize="hasRole('STUDENT')">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">SINH VIÊN</a>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">SINH
+                            VIÊN</a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" th:href="@{/student/list-teacher}">ĐĂNG KÝ GVHD</a></li>
 
@@ -48,6 +51,8 @@
                             <li><a class="dropdown-item" th:href="@{/teacher/topics}">KIỂM DUYỆT ĐỀ TÀI</a></li>
                             <li><a class="dropdown-item"th:href="@{/teacher/student-list}">DANH SÁCH SINH VIÊN</a></li>
                             <li><a class="dropdown-item" th:href="@{/teacher/team}">QUẢN LÝ NHÓM SINH VIÊN</a></li>
+                            <li><a class="dropdown-item" th:href="@{/teacher/documents/upload}">TÀI LIỆU HƯỚNG DẪN</a></li>
+
                         </ul>
                     </li>
                     <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
@@ -69,10 +74,13 @@
                         </a>
                         <div class="dropdown-menu notif-dd" aria-labelledby="navbarDropdown">
                             <div class="notif-content" id="notif-content">
+<<<<<<<<< Temporary merge branch 1
+=========
                                 <div style="color: #da174a; padding: 10px 0; text-align: center"
                                      th:if="${notifications == null || notifications.isEmpty()}">
                                     Không có thông báo nào!
                                 </div>
+>>>>>>>>> Temporary merge branch 2
                                 <div th:each="notif : ${notifications}" class="notif-list">
                                     <div class="notif-img">
                                         <img th:src="${notif.senderAvatar}" alt="user">
@@ -159,8 +167,72 @@
                         </div>
                         <a th:href="@{/blogs/{id}(id=${blog.id})}" class="card-title announcement-title"
                            th:text="${blog.name}">Blog Title</a>
-                        <p class="card-text" th:text="${#strings.abbreviate(blog.description, 100)}">Description</p>
+                        <p class="card-text" th:text="${#strings.abbreviate(blog.description, 100)}">Mô tả</p>
                         <a th:href="@{/blogs/{id}(id=${blog.id})}" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi
+                            người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi
+                            người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi
+                            người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi
+                            người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
                     </div>
                 </div>
             </swiper-slide>
@@ -231,7 +303,9 @@
                     <img th:if="${topic.image}" th:src="${topic.image.url}" class="card-img" alt="Topic image">
                     <div class="card-body">
                         <h5 class="card-title" th:text="${topic.name}">Tên dự án</h5>
-                        <p class="card-text" th:text="${#strings.isEmpty(topic.content) ? '' : (#strings.length(topic.content) <= 100 ? topic.content : #strings.substring(topic.content, 0, 100) + '...')}">Nội dung dự án</p>
+                        <p class="card-text"
+                           th:text="${#strings.isEmpty(topic.content) ? '' : (#strings.length(topic.content) <= 100 ? topic.content : #strings.substring(topic.content, 0, 100) + '...')}">
+                            Nội dung dự án</p>
                         <div class="mt-auto">
                             <a th:href="@{/topics/{id}(id=${topic.id})}" class="btn btn-primary">Xem chi tiết</a>
                         </div>
@@ -253,7 +327,8 @@
             <div class="row">
                 <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
                     <div class="logo">Code<span>gym</span></div>
-                    <p class="mb-4">Hệ thống quản lý thực hiện đề tài tốt nghiệp khoa CNTT- Software Requirements Specification V2.0</p>
+                    <p class="mb-4">Hệ thống quản lý thực hiện đề tài tốt nghiệp khoa CNTT- Software Requirements
+                        Specification V2.0</p>
                     <div class="contact-info">
                         <div>
                             <i class="fas fa-map-marker-alt contact-icon"></i>
@@ -330,7 +405,8 @@
                 <a class="page-link" th:href="@{/student/team(search=${search}, page = 1)}">Trang đầu</a>
             </li>
             <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage - 1})}" aria-label="Previous">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage - 1})}"
+                   aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
             </li>
@@ -339,7 +415,8 @@
                 <a class="page-link" th:href="@{/student/team(search=${search}, page=${i})}" th:text="${i}"></a>
             </li>
             <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage + 1})}" aria-label="Next">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage + 1})}"
+                   aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
