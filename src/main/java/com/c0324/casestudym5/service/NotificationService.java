@@ -8,7 +8,6 @@ import com.c0324.casestudym5.util.CommonMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -68,6 +67,7 @@ public class NotificationService {
     }
 
     public int countUnreadNotifications(Long userId) {
-        return notificationRepository.countUnreadByReceiverId(userId); //lấy số lượng thông báo chưa đọc
+        List<Notification> notificationList = notificationRepository.findTop3NotificationsByReceiverId(userId);
+        return (int) notificationList.stream().filter(notification -> !notification.isRead()).count();
     }
 }
