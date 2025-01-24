@@ -5,7 +5,8 @@
 <head>
     <title>Danh sách thông báo</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link rel="stylesheet" href="/css/home-page.css">
     <link rel="stylesheet" href="/css/blog.css">
@@ -26,7 +27,8 @@
         <!-- Hiển thị thông báo -->
         <div class="toast-container position-fixed top-0 end-0 p-3">
             <!-- Success Toast -->
-            <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert" aria-live="assertive"
+            <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert"
+                 aria-live="assertive"
                  aria-atomic="true">
                 <div class="toast-header bg-success text-white">
                     <strong class="me-auto">Thành công</strong>
@@ -36,7 +38,8 @@
             </div>
 
             <!-- Error Toast -->
-            <div th:if="${toastMessage != null and toastType == 'danger'}" class="toast" role="alert" aria-live="assertive"
+            <div th:if="${toastMessage != null and toastType == 'danger'}" class="toast" role="alert"
+                 aria-live="assertive"
                  aria-atomic="true">
                 <div class="toast-header bg-danger text-white">
                     <strong class="me-auto">Cảnh báo</strong>
@@ -55,7 +58,8 @@
             <div class="col-md-4" th:each="blog : ${blogs}">
                 <div class="card announcement-card">
                     <div class="announcement-image-container">
-                        <img src="/img/logocg.png" class="announcement-image" alt="Blog Image" style="object-fit: cover; height: 200px; width: 100%;">
+                        <img src="/img/logocg.png" class="announcement-image" alt="Blog Image"
+                             style="object-fit: cover; height: 200px; width: 100%;">
                     </div>
                     <div class="card-body">
                         <div class="announcement-meta">
@@ -145,6 +149,10 @@
 
 <div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
 <script>
     // Tự động hiển thị toast khi có thông báo
     var toastElList = [].slice.call(document.querySelectorAll('.toast'))

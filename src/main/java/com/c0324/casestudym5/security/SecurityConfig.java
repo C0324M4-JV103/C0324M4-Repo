@@ -34,7 +34,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/css/**", "/js/**", "/images/**", "/fonts/**" , "/logout", "/webjars/**").permitAll()
                         .requestMatchers("/blogs", "/blogs/{id}").permitAll() // Cho phép xem blog
-                        .requestMatchers("/blogs/create/**", "/blogs/edit/**", "/blogs/delete/**").hasAnyRole("ADMIN", "TEACHER") // Quyền thêm/sửa/xóa blog
+                        .requestMatchers("/blogs/**").hasAnyRole("ADMIN", "TEACHER") // Quyền thêm/sửa/xóa blog
                         .requestMatchers("/user/**", "/home", "/app/**").hasAnyRole("TEACHER", "STUDENT", "ADMIN")
                         .requestMatchers("/teacher/**").hasAnyRole("TEACHER", "ADMIN")
                         .requestMatchers("/student/**").hasAnyRole("STUDENT", "ADMIN", "TEACHER")

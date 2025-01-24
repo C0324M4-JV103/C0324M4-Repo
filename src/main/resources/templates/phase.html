@@ -80,12 +80,12 @@
             </button>
             <div class="phase-info">
                 <div class="date-range">
-                    Giai đoạn <span th:text="${phase.phaseNumber}"></span>: Từ
+                    Giai đoạn <span th:text="${phase.phaseNumber}"></span> : Từ
                     <span class="highlight-date" th:text="${#temporals.format(phase.startDate, 'dd/MM/yyyy')}"></span>
                     đến
                     <span class="highlight-date" th:text="${#temporals.format(phase.endDate, 'dd/MM/yyyy')}"></span>
 
-                    <span class="status-badge"
+                    <span class="status-badge fw-bold"
                           th:classappend="${phase.status == 1 ? 'badge-danger' : (phase.status == 0 ? 'badge-secondary' : 'badge-success')}"
                           th:text="${phase.status == 1 ? 'Đang thực hiện' : (phase.status == 0 ? 'Chưa mở' : 'Hoàn thành')}"></span>
                 </div>
@@ -94,6 +94,7 @@
                          th:classappend="${phase.status == 0 ? 'bg-secondary' : (phase.status == 1 ? 'bg-danger' : 'bg-info')}"
                          role="progressbar"
                          th:style="'width: ' + ${phase.status == 0 ? '0%' : (phase.status == 1 ? '10' : phase.phaseProgressPercent) + '%'}">
+                        <span class="progress-text" th:if="${phase.status == 2}" th:text="${phase.phaseProgressPercent} + '%'"></span>
                     </div>
                 </div>
             </div>
