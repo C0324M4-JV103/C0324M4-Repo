@@ -17,7 +17,13 @@
     </style>
 </head>
 <body class="pt-5">
-
+<script>
+    window.onload = function () {
+        var toastElList = document.querySelectorAll('.toast');
+        var toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl));
+        toastList.forEach(toast => toast.show());
+    };
+</script>
 <div class="toast-container position-fixed top-0 end-0 p-3">
     <!-- Success Toast -->
     <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -37,6 +43,7 @@
         <div class="toast-body" th:text="${toastMessage}"></div>
     </div>
 </div>
+
 <div th:replace="layout :: nav"></div>
 <h1 class="text-center mb-4">Thêm tài liệu</h1>
 
@@ -57,8 +64,10 @@
         <div th:if="${#fields.hasErrors('fileUrl')}" th:errors="*{fileUrl}" class="error"></div>
     </div>
     <div class="mb-3">
-        <label for="teacherId" class="form-label">ID giáo viên</label>
-        <input type="text" id="teacherId" th:field="*{teacher}" class="form-control">
+        <select th:field="*{teacher.id}" th:if="${teachers != null}">
+            <option value="">Chọn giáo viên</option>
+            <option th:each="teacher : ${teachers}" th:value="${teacher.id}" th:text="${teacher.user.name}"></option>
+        </select>
         <div th:if="${#fields.hasErrors('teacher')}" th:errors="*{teacher}" class="error"></div>
     </div>
     <button type="submit" class="btn btn-primary w-100">Tải lên</button>
@@ -92,25 +101,26 @@
     <!-- Phân trang -->
     <nav>
         <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+            <li class="page-item" th:classappend="${(currentPage != null and currentPage == 0) ? 'disabled' : ''}">
                 <a class="page-link"
-                   th:href="@{/teacher/documents/upload(page=${currentPage - 1}, size=${pageSize})}"
+                   th:href="@{/teacher/documents/upload(page=${(currentPage != null ? currentPage - 1 : 0)}, size=${pageSize})}"
                    aria-label="Previous">Trước</a>
             </li>
             <li class="page-item"
-                th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                th:each="pageNum : ${#numbers.sequence(0, (totalPages != null ? totalPages - 1 : 0))}"
                 th:classappend="${currentPage == pageNum} ? 'active'">
                 <a class="page-link"
                    th:href="@{/teacher/documents/upload(page=${pageNum}, size=${pageSize})}"
                    th:text="${pageNum + 1}"></a>
             </li>
-            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+            <li class="page-item" th:classappend="${(currentPage != null and currentPage == (totalPages != null ? totalPages - 1 : 0)) ? 'disabled' : ''}">
                 <a class="page-link"
-                   th:href="@{/teacher/documents/upload(page=${currentPage + 1}, size=${pageSize})}"
+                   th:href="@{/teacher/documents/upload(page=${(currentPage != null ? currentPage + 1 : 0)}, size=${pageSize})}"
                    aria-label="Next">Tiếp</a>
             </li>
         </ul>
     </nav>
+
 </div>
 
 <div th:replace="layout :: footer"></div>

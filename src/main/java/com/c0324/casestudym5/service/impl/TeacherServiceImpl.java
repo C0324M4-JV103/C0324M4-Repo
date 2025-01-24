@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -47,13 +48,13 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public Page<Teacher> searchTeachers(String searchQuery, int page, int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        if (searchQuery != null && !searchQuery.isEmpty()) {
-            return teacherRepository.findByIdOrNameOrEmail(searchQuery, pageable);
+    public Page<Teacher> searchTeachers(String email, String name, String phoneNumber, Pageable pageable) {
+        if ((email == null || email.isEmpty()) &&
+                (name == null || name.isEmpty()) &&
+                phoneNumber == null) {
+            return teacherRepository.findAll(pageable);
         }
-        return teacherRepository.findAll(pageable); // Nếu không có tìm kiếm, trả về tất cả
+        return teacherRepository.getPageTeacher(pageable, email, name, phoneNumber);
     }
 
     // Lấy thông tin giáo viên theo ID
@@ -159,5 +160,9 @@ public class TeacherServiceImpl implements TeacherService {
         if (user != null) {
             userRepository.delete(user);
         }
+    }
+
+    public List<Teacher> getAllTeachers() {
+        return teacherRepository.findAll();
     }
 }

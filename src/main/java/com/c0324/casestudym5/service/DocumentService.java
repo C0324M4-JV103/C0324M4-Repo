@@ -39,5 +39,9 @@ public class DocumentService {
         document.setFileUrl(file);
         documentRepository.save(document);
     }
+
+    public Page<Document> getDocuments(Pageable pageable) {
+        return documentRepository.findAll(pageable);
+    }
 }
 
