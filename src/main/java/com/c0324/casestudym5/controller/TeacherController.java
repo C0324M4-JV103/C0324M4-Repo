@@ -232,8 +232,4 @@ public class TeacherController {
 
         return "redirect:/teacher/documents/upload";
     }
-
-
-}
-
 }
