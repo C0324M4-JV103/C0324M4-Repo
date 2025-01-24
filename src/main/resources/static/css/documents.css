@@ -1,6 +1,12 @@
 .pt-5 {
     padding-top: 5rem !important;
 }
+
+select {
+    padding: 10px;
+    word-wrap: normal;
+}
+
 .table-container {
     height: 350px;
     overflow-y: auto;

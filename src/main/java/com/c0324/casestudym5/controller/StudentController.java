@@ -39,9 +39,10 @@ public class StudentController {
     private final InvitationService invitationService;
     private final NotificationService notificationService;
     private final TeacherService teacherService;
+    private final DocumentService documentService;
 
     @Autowired
-    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService, NotificationService notificationService, TeacherService teacherService) {
+    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService, NotificationService notificationService, TeacherService teacherService, DocumentService documentService) {
         this.studentService = studentService;
         this.userService = userService;
         this.teamService = teamService;
@@ -49,6 +50,7 @@ public class StudentController {
         this.invitationService = invitationService;
         this.notificationService = notificationService;
         this.teacherService = teacherService;
+        this.documentService = documentService;
     }
 
     @InitBinder
@@ -391,5 +393,22 @@ public class StudentController {
             return ResponseEntity.ok(teacherDTO);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/documents")
+    public String getAllDocuments(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "3") int size,
+                                  Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Document> documentPage = documentService.getDocuments(pageable);
+
+        model.addAttribute("documents", documentPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", documentPage.getTotalPages());
+        model.addAttribute("totalItems", documentPage.getTotalElements());
+        model.addAttribute("pageSize", size);
+
+        return "student/document-view";
     }
 }

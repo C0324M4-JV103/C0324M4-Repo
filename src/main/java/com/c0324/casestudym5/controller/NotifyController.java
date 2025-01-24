@@ -41,6 +41,8 @@ public class NotifyController {
             model.addAttribute("username", currentUser.getName());
         }
     }
+
+
 }
 
 

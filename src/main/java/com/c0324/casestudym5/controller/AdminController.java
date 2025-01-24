@@ -52,21 +52,29 @@ public class AdminController {
 
     // Teacher Functionality
     @GetMapping("/teacher")
-    public String getAllTeachers(@RequestParam(required = false) String searchQuery,
+    public String getAllTeachers(@RequestParam(required = false) String email,
+                                 @RequestParam(required = false) String name,
+                                 @RequestParam(required = false) String phoneNumber,  // Sửa lại đây
                                  @RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "5") int size, Model model) {
         Page<Teacher> teacherPage;
-        if (searchQuery != null && !searchQuery.isEmpty()) {
-            teacherPage = teacherService.searchTeachers(searchQuery, page, size);
+
+        // Kiểm tra điều kiện tìm kiếm
+        if ((email != null && !email.isEmpty()) ||
+                (name != null && !name.isEmpty()) ||
+                (phoneNumber != null && !phoneNumber.isEmpty())) {
+            teacherPage = teacherService.searchTeachers(email, name, phoneNumber, PageRequest.of(page, size));
         } else {
-            // Nếu không có searchQuery, lấy tất cả giáo viên với phân trang
             teacherPage = teacherService.getTeachersPage(page, size);
         }
+
         model.addAttribute("teachers", teacherPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", teacherPage.getTotalPages());
         model.addAttribute("totalItems", teacherPage.getTotalElements());
-        model.addAttribute("searchQuery", searchQuery);
+        model.addAttribute("email", email);
+        model.addAttribute("name", name);
+        model.addAttribute("phoneNumber", phoneNumber);
 
         if (model.containsAttribute("toastMessage")) {
             String toastMessage = (String) model.getAttribute("toastMessage");
@@ -75,8 +83,8 @@ public class AdminController {
             model.addAttribute("toastType", toastType);
         }
         return "admin/teacher/teacher-list";
-
     }
+
 
     @GetMapping("/teacher/create")
     public String createTeacherForm(Model model) {
