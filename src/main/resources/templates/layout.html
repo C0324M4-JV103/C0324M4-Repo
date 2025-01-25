@@ -81,20 +81,38 @@
                                     Không có thông báo nào!
                                 </div>
 
+<!--                                <div th:each="notif : ${notifications}" class="notif-list">-->
+<!--                                    <div class="notif-img">-->
+<!--                                        <img th:src="${notif.senderAvatar}" alt="user">-->
+<!--                                    </div>-->
+<!--                                    <div class="notif-detail">-->
+<!--                                        <p>-->
+<!--                                            <b th:text="${notif.senderName}"></b>-->
+<!--                                            <span th:text="${notif.content}"></span>-->
+<!--                                        </p>-->
+<!--                                        <p>-->
+<!--                                            <small th:text="${notif.timeDifference}"></small>-->
+<!--                                        </p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
                                 <div th:each="notif : ${notifications}" class="notif-list">
-                                    <div class="notif-img">
-                                        <img th:src="${notif.senderAvatar}" alt="user">
-                                    </div>
-                                    <div class="notif-detail">
-                                        <p>
-                                            <b th:text="${notif.senderName}"></b>
-                                            <span th:text="${notif.content}"></span>
-                                        </p>
-                                        <p>
-                                            <small th:text="${notif.timeDifference}"></small>
-                                        </p>
-                                    </div>
+                                    <a th:href="${notif.url}" class="notif-link" style="text-decoration: none; color: inherit;">
+                                        <div class="notif-img">
+                                            <img th:src="${notif.senderAvatar}" alt="user" style="border-radius: 50%; width: 40px; height: 40px;">
+                                        </div>
+                                        <div class="notif-detail" style="margin-left: 10px;">
+                                            <p>
+                                                <b th:text="${notif.senderName}"></b>
+                                                <span th:text="${notif.content}"></span>
+                                            </p>
+                                            <p>
+                                                <small th:text="${notif.timeDifference}"></small>
+                                            </p>
+                                        </div>
+                                    </a>
                                 </div>
+
                             </div>
                         </div>
                     </li>

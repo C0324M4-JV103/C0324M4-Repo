@@ -22,4 +22,7 @@ public class NotificationDTO {
 
     private String senderAvatar;
 
+    private String url;
+
+
 }

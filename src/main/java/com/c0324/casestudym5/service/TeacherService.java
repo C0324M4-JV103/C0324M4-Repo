@@ -22,4 +22,6 @@ public interface TeacherService {
 
     Page<Teacher> findAll(Pageable pageable);
     List<Teacher> getAllTeachers();
+
+    Teacher getTeacherByEmail(String email);
 }

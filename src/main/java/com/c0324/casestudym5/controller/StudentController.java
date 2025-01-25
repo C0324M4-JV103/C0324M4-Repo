@@ -152,29 +152,19 @@ public class StudentController {
 
     @PostMapping("/invitation/handle")
     public String handleInvitation(Long invitationId, boolean accept, RedirectAttributes redirectAttributes) {
+        String result = invitationService.handleInvitation(invitationId, accept);
 
-        Invitation invitation = invitationService.findById(invitationId);
-
-        Student student = invitation.getStudent();
-        Team team = invitation.getTeam();
-
-        if (accept) {
-            if (team.getStudents().size() < 5) {
-                student.setTeam(team);
-                studentService.save(student);
-                // xóa khỏi db khi xác nhận
-                invitationService.deleteAllByStudent(student);
-                redirectAttributes.addFlashAttribute("successMessage", "Bạn đã tham gia nhóm thành công!");
-                return "redirect:/student/info-team";
-            } else {
-                redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ thành viên!");
-            }
-        } else {
-            invitationService.delete(invitation);
+        if ("success".equals(result)) {
+            redirectAttributes.addFlashAttribute("successMessage", "Bạn đã tham gia nhóm thành công!");
+            return "redirect:/student/info-team";
+        } else if ("full".equals(result)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ thành viên!");
+        } else if ("declined".equals(result)) {
             redirectAttributes.addFlashAttribute("errorMessage", "Bạn đã từ chối lời mời!");
         }
         return "redirect:/student/team";
     }
+
 
 
     @GetMapping("/info-team")

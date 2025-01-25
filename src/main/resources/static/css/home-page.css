@@ -3,7 +3,10 @@ body {
     background-color: white;
     color: #4A5568;
 }
-
+.notif-link {
+    display: flex;
+    align-items: center;
+}
 #body-fixed {
     height: 600px !important;
 }

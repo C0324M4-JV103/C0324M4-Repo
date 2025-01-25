@@ -18,22 +18,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function showNotification(notification) {
         const notifCount = document.getElementById('notif-count');
+        const url = notification.notification?.url || null;
+
         notifCount.textContent = notification.unreadCount > 3 ? '3+' : notification.unreadCount || 0;
 
         const notifContent = document.querySelector('#notif-content');
-        const newNotification = `
+        const newNotification = url ? `
         <div class="notif-list">
-            <div class="notif-img">
-                <img src="${notification.notification.senderAvatar}" alt="user">
-            </div>
-            <div class="notif-detail">
-                <p><b>${notification.notification.senderName}</b> ${notification.notification.content}</p>
-                <p><small>${notification.notification.timeDifference}</small></p>
-            </div>
-        </div>
-    `;
+            <a href="${url}" class="notif-link" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
+                <div class="notif-img">
+                    <img src="${notification.notification.senderAvatar}" alt="user">
+                </div>
+                <div class="notif-detail">
+                    <p><b>${notification.notification.senderName}</b> ${notification.notification.content}</p>
+                    <p><small>${notification.notification.timeDifference}</small></p>
+                </div>
+            </a>
+        </div>` :
+            `<div class="notif-list">
+                <div class="notif-img">
+                    <img src="${notification.notification.senderAvatar}" alt="user">
+                </div>
+                <div class="notif-detail">
+                    <p><b>${notification.notification.senderName}</b> ${notification.notification.content}</p>
+                    <p><small>${notification.notification.timeDifference}</small></p>
+                </div>
+            </a>
+        </div>`
+        ;
         notifContent.insertAdjacentHTML('afterbegin', newNotification);
-
     }
 
     // click chuông => đã đọc

@@ -116,10 +116,11 @@ public class TeacherController {
     @GetMapping("/topics")
     public String getPendingTopics(Model model,
                                    @RequestParam(defaultValue = "0") int page,
-                                   @RequestParam(defaultValue = "6") int size) {
-
+                                   @RequestParam(defaultValue = "6") int size, Principal principal) {
+        String email = principal.getName();
+        Teacher currentTeacher = teacherService.getTeacherByEmail(email);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Topic> topicPage = topicService.getPendingTopicsPage(pageRequest);
+        Page<Topic> topicPage = topicService.getTopicByTeacher(currentTeacher.getId(),pageRequest);
 
         model.addAttribute("topics", topicPage.getContent());
         model.addAttribute("currentPage", page);

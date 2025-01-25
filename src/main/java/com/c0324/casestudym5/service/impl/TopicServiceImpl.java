@@ -333,6 +333,11 @@ public class TopicServiceImpl implements TopicService {
         topicRepository.save(topic);
     }
 
+    @Override
+    public Page<Topic> getTopicByTeacher(Long id, PageRequest pageRequest) {
+        return topicRepository.findTopicsByTeacher(id, pageRequest);
+    }
+
     private User getCurrentUser() {
         // Logic để lấy thông tin user đang đăng nhập
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
