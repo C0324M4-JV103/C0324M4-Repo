@@ -24,7 +24,7 @@ public interface TopicService {
 
     List<Topic> getLatestTopics(int limit);
     void approveTopic(Long id);
-    void rejectTopic(Long id);
+    void rejectTopic(Long id, String reason);
     Page<Topic> getPendingTopicsPage(Pageable pageable);
 
     String submitProgressReport(Long topicId, ProgressReportDTO progressReportDTO, Student student);

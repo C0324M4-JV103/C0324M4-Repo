@@ -153,7 +153,7 @@ public class TopicServiceImpl implements TopicService {
             String subject = "Thông báo kiểm duyệt đề tài của giáo viên ";
             for (Student student : students) {
                 try {
-                    mailService.sendMailApprovedToTeam(student.getUser().getEmail(), subject, student.getTeam().getName(), topic.getApprovedBy().getUser().getName(), student.getTeam().getTopic().getName(), action);
+                    mailService.sendMailApprovedToTeam(topic,student.getUser().getEmail(), subject, student.getTeam().getName(), topic.getApprovedBy().getUser().getName(), student.getTeam().getTopic().getName(),topic.getId(), action);
                     // Send notification to the team
                     Notification notification = new Notification();
                     notification.setSender(topic.getApprovedBy().getUser());
@@ -191,7 +191,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public void rejectTopic(Long id) {
+    public void rejectTopic(Long id, String reason) {
         Topic topic = getTopicById(id);
         topicRepository.delete(topic);
 
@@ -202,16 +202,20 @@ public class TopicServiceImpl implements TopicService {
             String action = " đã được Giáo viên xem xét và không được thông qua.";
             String subject = "Thông báo kiểm duyệt đề tài của giáo viên ";
             for (Student student : students) {
-                mailService.sendMailApprovedToTeam(student.getUser().getEmail(), subject, student.getTeam().getName(), teacher.getUser().getName(), student.getTeam().getTopic().getName(), action);
-                //Send notification to the team
+                mailService.sendMailRejectToTeam(
+                        topic, student.getUser().getEmail(), subject, student.getTeam().getName(),
+                        teacher.getUser().getName(), student.getTeam().getTopic().getName(), topic.getId(), action, reason
+                );
+
                 Notification notification = new Notification();
                 notification.setSender(teacher.getUser());
                 notification.setReceiver(student.getUser());
-                notification.setContent("đã từ chối đề tài " + topic.getName() + " của nhóm bạn.");
+                notification.setContent("đã từ chối đề tài " + topic.getName() + " của nhóm bạn với lý do: " + reason);
                 notificationService.sendNotification(notification);
             }
         }
     }
+
 
     @Override
     public Page<Topic> getPendingTopicsPage(Pageable pageable) {

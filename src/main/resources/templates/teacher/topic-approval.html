@@ -14,10 +14,12 @@
         .header-spacing {
             margin-top: 120px;
         }
+
         .btn {
             min-width: 100px; /* Đặt độ rộng tối thiểu cho các nút */
             text-align: center;
         }
+
         .table-responsive {
             min-height: 500px;
         }
@@ -62,16 +64,20 @@
                 <td>
                     <button type="button" class="btn btn-success" th:if="${topic.approved == 0}"
                             data-bs-toggle="modal" data-bs-target="#approveModal"
-                            th:data-id="${topic.id}" th:data-name="${topic.name}">Duyệt</button>
+                            th:data-id="${topic.id}" th:data-name="${topic.name}">Duyệt
+                    </button>
                     <button th:if="${topic.approved == 1}" class="btn btn-success"
-                            style="pointer-events: none;" disabled>Đã duyệt</button>
+                            style="pointer-events: none;" disabled>Đã duyệt
+                    </button>
                 </td>
                 <td>
                     <button type="button" class="btn btn-danger" th:if="${topic.approved == 0}"
                             data-bs-toggle="modal" data-bs-target="#rejectModal"
-                            th:data-id="${topic.id}" th:data-name="${topic.name}">Hủy</button>
+                            th:data-id="${topic.id}" th:data-name="${topic.name}">Hủy
+                    </button>
                     <button th:if="${topic.approved == 2}" class="btn btn-danger"
-                            style="pointer-events: none;" disabled>Đã hủy</button>
+                            style="pointer-events: none;" disabled>Đã hủy
+                    </button>
                 </td>
 
             </tr>
@@ -87,7 +93,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Bạn có chắc chắn muốn duyệt đề tài <span id="approveTopicName" class="fw-bold"></span> này không?
+                        Bạn có chắc chắn muốn duyệt đề tài <span id="approveTopicName" class="fw-bold"></span> không?
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay lại</button>
@@ -106,11 +112,17 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        Bạn có chắc chắn muốn hủy đề tài <span id="rejectTopicName" class="fw-bold"></span> này không?
+                        <p>Bạn có chắc chắn muốn hủy đề tài <span id="rejectTopicName" class="fw-bold"></span> không?
+                        </p>
+                        <textarea id="reasonTextarea" class="form-control" rows="2" placeholder="Nhập lý do hủy...?"
+                                  required></textarea>
+                        <div id="reasonError" class="text-danger mt-2" style="display: none;">
+                            Vui lòng nhập lý do trước khi hủy.
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Quay lại</button>
-                        <button type="button" class="btn btn-danger" id="confirmReject">Xác nhận hủy</button>
+                        <button type="button" class="btn btn-danger" id="confirmReject">Hủy</button>
                     </div>
                 </div>
             </div>
@@ -118,7 +130,7 @@
 
 
         <nav class="py-4">
-            <ul class="pagination justify-content-center"  th:if="${totalPages >= 1}">
+            <ul class="pagination justify-content-center" th:if="${totalPages >= 1}">
                 <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
                     <a class="page-link" th:href="@{/teacher/topics(page=${currentPage - 1})}">Trước</a>
                 </li>
@@ -134,72 +146,13 @@
     </div>
 </div>
 <div th:replace="~{layout :: footer}"></div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const approveModal = document.getElementById('approveModal');
-        const rejectModal = document.getElementById('rejectModal');
-        const approveButton = document.getElementById('confirmApprove');
-        const rejectButton = document.getElementById('confirmReject');
-        const approveTopicName = document.getElementById('approveTopicName');
-        const rejectTopicName = document.getElementById('rejectTopicName');
-        const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-        const handleTopicAction = (action, topicId) => {
-            $.ajax({
-                url: `/teacher/topics/${topicId}/${action}`,
-                type: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                success: function (response) {
-                    location.reload();
-                },
-                error: function (xhr, status, error) {
-                    const toast = document.createElement('div');
-                    toast.classList.add('toast');
-                    toast.textContent = 'Có lỗi xảy ra, vui lòng thử lại';
-                    document.body.appendChild(toast);
-
-                    // Xoá toast sau 3 giây
-                    setTimeout(function() {
-                        toast.remove();
-                    }, 3000);
-                    // alert('Có lỗi xảy ra, vui lòng thử lại.');
-                }
-            });
-        };
-
-        approveModal.addEventListener('show.bs.modal', (event) => {
-            const button = event.relatedTarget;
-            const topicId = button.getAttribute('data-id');
-            const topicName = button.getAttribute('data-name');
-            approveButton.setAttribute('data-id', topicId);
-            approveTopicName.textContent = topicName;
-        });
-
-        rejectModal.addEventListener('show.bs.modal', (event) => {
-            const button = event.relatedTarget;
-            const topicId = button.getAttribute('data-id');
-            const topicName = button.getAttribute('data-name');
-            rejectButton.setAttribute('data-id', topicId);
-            rejectTopicName.textContent = topicName;
-        });
-
-        approveButton.addEventListener('click', () => {
-            const topicId = approveButton.getAttribute('data-id');
-            handleTopicAction('approve', topicId);
-        });
-
-        rejectButton.addEventListener('click', () => {
-            const topicId = rejectButton.getAttribute('data-id');
-            handleTopicAction('reject', topicId);
-        });
-    });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
 <script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/approved-topics.js}"></script>
 <script th:src="@{/js/notification.js}"></script>
-<script th:src="@{/js/toast-noti.js}"></script></body>
+<script th:src="@{/js/toast-noti.js}"></script>
+</body>
 </html>

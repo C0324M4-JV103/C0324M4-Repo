@@ -134,8 +134,9 @@ public class TeacherController {
     }
 
     @PostMapping("/topics/{id}/reject")
-    public String rejectTopic(@PathVariable Long id) {
-        topicService.rejectTopic(id);
+    public String rejectTopic(@PathVariable Long id, @RequestBody Map<String, String> body) {
+        String reason = body.get("reason");
+        topicService.rejectTopic(id, reason);
         return "redirect:/teacher/topics";
     }
 
