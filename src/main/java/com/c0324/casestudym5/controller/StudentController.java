@@ -171,6 +171,9 @@ public class StudentController {
     public String teamInfo(Model model, Pageable pageable) {
         Student currentStudent = getCurrentStudent();
         Team team = currentStudent.getTeam();
+        if (team == null){
+            return "/common/404";
+        }
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
 
         model.addAttribute("team", team);
