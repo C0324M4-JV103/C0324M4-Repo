@@ -65,7 +65,7 @@ public class InvitationServiceImpl implements InvitationService {
         throw new IllegalStateException("Không tìm thấy leader trong nhóm này.");
     }
     public User findLeaderUserByTeam(Team team) {
-        return findLeaderByTeam(team).getUser(); // Lấy User từ student là leader
+        return findLeaderByTeam(team).getUser();
     }
     @Transactional
     @Override
@@ -87,7 +87,7 @@ public class InvitationServiceImpl implements InvitationService {
                 notification.setReceiver(leader);
                 notification.setContent(" đã chấp nhận tham gia nhóm " + team.getName() + " của bạn.");
                 notification.setCreatedAt(new Date());
-                notification.setUrl("student/info-team");
+                notification.setUrl("/student/info-team");
                 notificationService.sendNotification(notification);
                 return "success";
             } else {

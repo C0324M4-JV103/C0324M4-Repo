@@ -100,6 +100,7 @@ public class TeamServiceImpl implements TeamService {
                         .content(" đã xóa nhóm " + team.getName() + " mà bạn đang tham gia")
                         .sender(sender)
                         .receiver(student.getUser())
+                        .url(null)
                         .build();
                 notificationService.sendNotification(notification);
             }

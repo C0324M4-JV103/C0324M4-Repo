@@ -111,7 +111,8 @@ public class TopicServiceImpl implements TopicService {
                 Notification notification = new Notification();
                 notification.setSender(student.getUser());
                 notification.setReceiver(teacher);
-                notification.setContent("đã đăng ký đề tài và chờ sự bạn phê duyệt");
+                notification.setContent("đã đăng ký đề tài và chờ bạn phê duyệt");
+                notification.setUrl("/teacher/topics");
                 notificationService.sendNotification(notification);
             }
         }
@@ -159,6 +160,7 @@ public class TopicServiceImpl implements TopicService {
                     notification.setSender(topic.getApprovedBy().getUser());
                     notification.setReceiver(student.getUser());
                     notification.setContent("đã phê duyệt đề tài " + topic.getName() + " của nhóm bạn.");
+                    notification.setUrl("/topics/" + id);
                     notificationService.sendNotification(notification);
                 } catch (Exception e) {
                     System.err.println("Error sending email: " + e.getMessage());
@@ -211,6 +213,7 @@ public class TopicServiceImpl implements TopicService {
                 notification.setSender(teacher.getUser());
                 notification.setReceiver(student.getUser());
                 notification.setContent("đã từ chối đề tài " + topic.getName() + " của nhóm bạn với lý do: " + reason);
+                notification.setUrl(null);
                 notificationService.sendNotification(notification);
             }
         }
@@ -269,6 +272,7 @@ public class TopicServiceImpl implements TopicService {
             notification.setSender(getCurrentUser());
             notification.setReceiver(teacher);
             notification.setContent("đã báo cáo tiến độ giai đoạn " + progressReportDTO.getPhaseNumber() + " của đề tài " + topic.getName());
+            notification.setUrl("/progress/" + topicId);
             notificationService.sendNotification(notification);
         }
 
@@ -323,6 +327,7 @@ public class TopicServiceImpl implements TopicService {
             notification.setSender(setBy);
             notification.setReceiver(student.getUser());
             notification.setContent("đã đặt lại hạn nộp cho đề tài " + topic.getName());
+            notification.setUrl(null);
             notificationService.sendNotification(notification);
 
             // Send email to the team
