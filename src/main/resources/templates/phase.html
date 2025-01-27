@@ -24,7 +24,17 @@
         </div>
     </div>
 </div>
-
+<div th:if="${success != null}" class="toast-container position-fixed top-0 end-0 p-3">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="success">
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Hoàn thành</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+            <strong th:text="${success}"></strong>
+        </div>
+    </div>
+</div>
 <div th:if="${successMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="successToast">
         <div class="toast-header bg-success text-white">
@@ -73,7 +83,7 @@
     <div th:each="phase : ${phases}">
         <div class="phase-row">
             <button class="phase-button" th:text="'BÁO CÁO GIAI ĐOẠN ' + ${phase.phaseNumber}"
-                    th:disabled="${phase.status == 0 || topic.status == 2}"
+                    th:disabled="${phase.status == 0 and topic.status == 2}"
                     sec:authorize="hasRole('STUDENT')"
                     th:onclick="'window.location.href=\'/topics/' + ${topic.id} + '/progress/' + ${phase.phaseNumber} + '\';'">
                 BÁO CÁO GIAI ĐOẠN
@@ -93,7 +103,7 @@
                     <div class="progress-bar progress-bar-striped progress-bar-animated"
                          th:classappend="${phase.status == 0 ? 'bg-secondary' : (phase.status == 1 ? 'bg-danger' : 'bg-info')}"
                          role="progressbar"
-                         th:style="'width: ' + ${phase.status == 0 ? '0%' : (phase.status == 1 ? '10' : phase.phaseProgressPercent) + '%'}">
+                         th:style="'width: ' + ${phase.status == 0 ? '0%' : (phase.status == 1 ? '1' : phase.phaseProgressPercent) + '%'}">
                         <span class="progress-text" th:if="${phase.status == 2}" th:text="${phase.phaseProgressPercent} + '%'"></span>
                     </div>
                 </div>
@@ -198,7 +208,7 @@
                                         <!-- Giảng viên trả lời -->
                                         <div class="teacher-reply"
                                              th:if="${comment.reply != null && comment.reply != ''}">
-                                            <div class="d-flex gap-3 mb-3">
+                                            <div class="d-flex gap-3">
                                                 <img th:src="${comment.teacherAvatar}"
                                                      width="50px" height="50px"
                                                      alt="Profile" class="profile-img">
@@ -211,7 +221,7 @@
                                                         <span class="timestamp"
                                                               th:text="${comment.repliedTimeDifference}">0 06/04/2021</span>
                                                     </div>
-                                                    <p class="mb-2" th:text="${comment.reply}"></p>
+                                                    <p class="mb-0" th:text="${comment.reply}"></p>
                                                 </div>
                                             </div>
                                         </div>
@@ -237,30 +247,6 @@
         </div>
     </div>
 </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var myTab = document.getElementById('myTabContent');
-        var tabPanes = myTab.querySelectorAll('.tab-pane');
-
-        // Initially hide all tab panes except the active one
-        tabPanes.forEach(function (tabPane) {
-            if (!tabPane.classList.contains('show') || !tabPane.classList.contains('active')) {
-                tabPane.classList.add('d-none');
-            }
-        });
-
-        var tabLinks = document.querySelectorAll('#myTab a[data-bs-toggle="tab"]');
-        tabLinks.forEach(function (tabLink) {
-            tabLink.addEventListener('shown.bs.tab', function (event) {
-                tabPanes.forEach(function (tabPane) {
-                    tabPane.classList.add('d-none');
-                });
-                var activeTabPane = document.querySelector(event.target.getAttribute('href'));
-                activeTabPane.classList.remove('d-none');
-            });
-        });
-    });
-</script>
 <div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>

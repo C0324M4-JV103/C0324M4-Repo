@@ -75,6 +75,15 @@ public class StudentController {
         return studentService.findStudentByUserId(currentUser.getId());
     }
 
+
+    @GetMapping("/menu")
+    public String studentMenu() {
+        Student currentStudent = getCurrentStudent();
+        if (currentStudent.getTeam() != null) {
+            return "redirect:/student/info-team";
+        }
+        return "redirect:/student/team";
+    }
     @GetMapping("/team")
     public String formRegisterTeam(@RequestParam(name = "page", required = false, defaultValue = "1") int page,
                                    @RequestParam(name = "search", required = false, defaultValue = "") String search,
@@ -85,19 +94,20 @@ public class StudentController {
         if (!model.containsAttribute("team")) {
             model.addAttribute("team", new TeamDTO());
         }
+
+        if (currentTeam != null && !currentStudent.isLeader()){
+            return "common/404";
+        }
+
         Page<Student> availableStudents = studentService.getAvailableStudents(page, search, currentStudent.getId());
         List<Invitation> invitation = invitationService.findByStudent(currentStudent);
 
-        boolean isInTeam = (currentTeam != null);
-        boolean isLeader = (currentTeam != null && currentStudent.isLeader());
-
         model.addAttribute("search", search);
         model.addAttribute("currentPage", page);
-        model.addAttribute("isInTeam", isInTeam);
-        model.addAttribute("isLeader", isLeader);
-        model.addAttribute("invitation", invitation);
-        model.addAttribute("list", availableStudents);// hiện thông tin lời mời
+        model.addAttribute("invitation", invitation); // hiện thông tin lời mời
+        model.addAttribute("list", availableStudents);
         model.addAttribute("currentTeam", currentTeam);
+        model.addAttribute("currentStudent", currentStudent);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
 
@@ -159,8 +169,10 @@ public class StudentController {
             return "redirect:/student/info-team";
         } else if ("full".equals(result)) {
             redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ thành viên!");
+            redirectAttributes.addFlashAttribute("errorType", "full");
         } else if ("declined".equals(result)) {
             redirectAttributes.addFlashAttribute("errorMessage", "Bạn đã từ chối lời mời!");
+            redirectAttributes.addFlashAttribute("errorType", "declined");
         }
         return "redirect:/student/team";
     }
@@ -172,7 +184,7 @@ public class StudentController {
         Student currentStudent = getCurrentStudent();
         Team team = currentStudent.getTeam();
         if (team == null){
-            return "/common/404";
+            return "common/404";
         }
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
 

@@ -33,16 +33,27 @@
                             Tải file mô tả
                         </a>
                     </div>
-
                     <div class="topic-meta mt-3">
                         <div class="topic-meta-item">
-                            <i class="fas fa-users"></i>
-                            <span th:if="${topic.team}" th:text="${topic.team.name}">Tên nhóm</span>
+                            <i class="fa-solid fa-user"></i>
+                            <span th:if="${topic.team}" class="ms-1" th:text="${topic.team.name}">Tên nhóm</span>
                         </div>
                         <div class="topic-meta-item">
-                            <i class="fas fa-check-circle"></i>
+                            <i class="fa-solid fa-user-secret"></i>
+
                             <span th:if="${topic.approvedBy}" th:text="${topic.approvedBy.user.name}">Người duyệt</span>
                         </div>
+
+<!--                        <div class="topic-meta-item">-->
+<!--                            <span th:switch="${topic.approved}">-->
+<!--                                <i th:case="0" class="fas fa-clock text-warning"></i>-->
+<!--                                <i th:case="1" class="fas fa-check-circle text-success"></i>-->
+<!--                            </span>-->
+<!--                            <span th:switch="${topic.approved}">-->
+<!--                                <span th:case="0">Đang chờ duyệt</span>-->
+<!--                                <span th:case="1">Đã duyệt</span>-->
+<!--                            </span>-->
+<!--                        </div>-->
                     </div>
                 </div>
             </div>

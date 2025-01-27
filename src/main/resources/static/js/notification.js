@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </a>
         </div>` :
             `<div class="notif-list">
+            <a href="" class="notif-link" style="text-decoration: none; color: inherit; display: flex; align-items: center;">
                 <div class="notif-img">
                     <img src="${notification.notification.senderAvatar}" alt="user">
                 </div>

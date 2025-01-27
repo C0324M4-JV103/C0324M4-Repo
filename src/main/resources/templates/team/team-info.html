@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <title>INFOR TEAM</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link rel="stylesheet" href="/css/home-page.css">
     <link rel="stylesheet" href="/css/team-info.css">
 </head>
 <body>
 <div th:replace="~{layout :: nav}"></div>
-<div id="toast-container" ></div> <!--toast thông báo mới-->
+<div id="toast-container"></div> <!--toast thông báo mới-->
 <div class="container">
     <div class="h-100 d-flex align-items-center justify-content-start" style="margin-top: 100px;"></div>
     <div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
@@ -39,10 +40,11 @@
     </div>
     <div class="info-section">
         <p>Thông tin nhóm: <span th:text="${team.name}"></span></p>
-        <h3 class="mb-5">Số lượng thành viên: <span th:text="${team.students.size()}"></span>/5</h3>
+        <h3>Số lượng thành viên: <span th:text="${team.students.size()}"></span>/5</h3>
+        <a th:if="${student.isLeader() && team.students.size() < 5}" th:href="@{/student/team}" class="btn btn-success add-sv fw-bold rounded-pill">+ Mời sinh viên</a>
     </div>
 
-    <div class="card-info-team-container">
+    <div class="card-info-team-container mt-5">
         <div th:each="s : ${team.students}">
             <div class="card-info-team">
                 <img th:src="${s.user.avatar != null ? s.user.avatar.url : 'https://firebasestorage.googleapis.com/v0/b/cv-pdf-upload.appspot.com/o/casestudym5%2Favatar%2Fdefault-avatar.png?alt=media&token=a7b21608-1b68-45e0-9d6e-a5fcbcaac12e'}"
@@ -55,7 +57,6 @@
                     <span class="fas fa-calendar-alt me-1"></span><strong>Ngày sinh: </strong> <span
                         th:text="${#dates.format(s.user.dob, 'dd/MM/yyyy')}"></span>
                 </p>
-
                 <span th:if="${s.isLeader}" class="leader-tag">Nhóm Trưởng</span>
                 <span th:unless="${s.isLeader}" class="member-tag">Thành viên</span>
             </div>
@@ -67,7 +68,7 @@
     </div>
     <p class="text-center"
        th:if="${team.topic == null and team.students.contains(student) and student.isLeader and team.students.size() >= 3}">
-        <a th:href="@{/student/register-topic}" class="btn btn-primary my-3 add-topic">Đăng ký đề tài</a>
+        <a th:href="@{/student/register-topic}" class="btn btn-primary fw-bold my-3 add-topic rounded-pill">Đăng ký đề tài</a>
     </p>
     <div th:if="${team.topic != null}">
         <div class="topic-info p-3 text-center">
@@ -76,7 +77,8 @@
                style="text-decoration: none;">
                 <i class="fas fa-arrow-right m-0" style="font-size: 1rem"></i> Xem đề tài của nhóm
             </a>
-            <a th:href="@{/progress/{id}(id=${team.topic.id})}" class="btn add-topic btn-lg mt-3" role="button" style="text-decoration: none;">
+            <a th:href="@{/progress/{id}(id=${team.topic.id})}" class="btn add-topic btn-lg mt-3" role="button"
+               style="text-decoration: none;">
                 <i class="fas fa-arrow-right m-0" style="font-size: 1rem"></i> Xem tiến độ đề tài của nhóm
             </a>
         </div>
