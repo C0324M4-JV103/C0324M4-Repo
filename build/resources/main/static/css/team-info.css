@@ -1,0 +1,139 @@
+.card-info-team-container {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    min-height: 450px;
+}
+
+.card-info-team {
+    width: 215px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 10px;
+}
+
+.card-info-team img {
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+}
+
+.leader-tag {
+    color: #ffffff;
+    background-color: #28a745; /* Màu nền cho Nhóm Trưởng */
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.member-tag {
+    color: #ffffff;
+    background-color: #2887d7; /* Màu nền cho Thành viên */
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.text-danger {
+    color: red;
+}
+
+.text-success {
+    color: green;
+}
+
+.info-section {
+    color: #282781;
+    margin-top: 50px;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.info-section span {
+    color: #232121;
+}
+
+h5 {
+    font-size: 18px;
+    color: #282781;
+    font-weight: 700;
+}
+
+.btn-register {
+    display: block;
+    margin: 60px auto;
+    padding: 12px 25px;
+    background-color: #ffffff;
+    color: #090808;
+    border-width: 1px;
+    border-color: black;
+    border-radius: 50px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.btn-register:hover {
+    background-color: #2887D7;
+    color: white;
+    transform: translateY(-4px);
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-wrap {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Hiển thị dấu ba chấm (...) khi tràn */
+    width: 100%;
+    display: block;
+}
+
+.add-topic {
+    font-size: 1.5rem;
+    text-align: center;
+    background: #fd6f3c;
+    border-color: #b15333;
+    margin-bottom: 3rem;
+}
+.add-sv{
+    text-align: center;
+    background: #fd6f3c;
+    color: white;
+    margin-left: 850px;
+}
+
+.add-topic:hover, .add-sv:hover {
+    background: #282781;
+    border-color: #282781;
+}
+
+.text-register-topic {
+    font-size: 1.6rem;
+    color: red;
+    font-weight: 500;
+    text-align: center;
+}
+
+.topic-info {
+    border-radius: 0.25rem;
+    margin-bottom: 3rem;
+}
+
+.topic-info a {
+    color: white;
+}
+
+.topic-info a:hover {
+    color: white;
+}
+

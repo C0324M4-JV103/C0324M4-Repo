@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+</head>
+<body>
+<!--Navbar-->
+<div th:fragment="nav">
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="https://cdn.codegym.vn/wp-content/uploads/2020/05/Logo-CodeGym-W-05.png" alt="CodeGym Logo"
+                     style="height: 40px;">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="/">TRANG CHỦ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">TIN TỨC</a></li>
+                    <li class="nav-item dropdown" sec:authorize="hasRole('STUDENT')">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">SINH
+                            VIÊN</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/student/list-teacher}">ĐĂNG KÝ GVHD</a></li>
+
+                            <li>
+                                <a class="dropdown-item" th:href="${isInTeam ? '/student/info-team' : '/student/menu'}">
+                                    <span th:text="${isInTeam ? 'NHÓM CỦA TÔI' : 'ĐĂNG KÝ NHÓM'}"></span>
+                                </a>
+                            </li>
+                            <li><a class="dropdown-item" th:href="@{/student/progress}">QUẢN LÝ TIẾN ĐỘ</a></li>
+                            <li><a class="dropdown-item" th:href="@{/student/documents}">THÔNG TIN HƯỚNG DẪN</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="hasRole('TEACHER')">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">GIÁO VIÊN</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="blogs">ĐĂNG THÔNG BÁO</a></li>
+                            <li><a class="dropdown-item" href="/topics">DANH SÁCH ĐỀ TÀI</a></li>
+                            <li><a class="dropdown-item" th:href="@{/teacher/topics}">KIỂM DUYỆT ĐỀ TÀI</a></li>
+                            <li><a class="dropdown-item" th:href="@{/teacher/student-list}">DANH SÁCH SINH VIÊN</a></li>
+                            <li><a class="dropdown-item" th:href="@{/teacher/team}">QUẢN LÝ NHÓM SINH VIÊN</a></li>
+                            <li><a class="dropdown-item" th:href="@{/teacher/documents/upload}">TÀI LIỆU HƯỚNG DẪN</a>
+                            </li>
+
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown" sec:authorize="hasRole('ADMIN')">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">QUẢN LÝ</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" th:href="@{/admin/student}">QUẢN LÝ SINH VIÊN</a></li>
+                            <li><a class="dropdown-item" th:href="@{/admin/teacher}">QUẢN LÝ GIÁO VIÊN</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">LIÊN HỆ</a></li>
+                    <li class="nav-item dropdown"  sec:authorize="isAuthenticated()">
+                            <a class="nav-link dropdown notif-icon" href="#" id="navbarDropdown" role="button"
+                               data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fa fa-bell" style="font-size: 15px"></i>
+                                <span id="notif-count"
+                                      class="badge-notify"
+                                      th:classappend="${newNotificationsCount > 0 ? ' show' : ''}"
+                                      th:text="${newNotificationsCount > 3 ? '3+' : newNotificationsCount}"></span>
+                            </a>
+                        <div class="dropdown-menu notif-dd" aria-labelledby="navbarDropdown">
+                            <div class="notif-content" id="notif-content">
+                                <div style="color: #da174a; padding: 10px 0; text-align: center"
+                                     th:if="${notifications == null || notifications.isEmpty()}">
+                                    Không có thông báo nào!
+                                </div>
+
+<!--                                <div th:each="notif : ${notifications}" class="notif-list">-->
+<!--                                    <div class="notif-img">-->
+<!--                                        <img th:src="${notif.senderAvatar}" alt="user">-->
+<!--                                    </div>-->
+<!--                                    <div class="notif-detail">-->
+<!--                                        <p>-->
+<!--                                            <b th:text="${notif.senderName}"></b>-->
+<!--                                            <span th:text="${notif.content}"></span>-->
+<!--                                        </p>-->
+<!--                                        <p>-->
+<!--                                            <small th:text="${notif.timeDifference}"></small>-->
+<!--                                        </p>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+
+                                <div th:each="notif : ${notifications}" class="notif-list">
+                                    <a th:href="${notif.url}" class="notif-link" style="text-decoration: none; color: inherit;">
+                                        <div class="notif-img">
+                                            <img th:src="${notif.senderAvatar}" alt="user" style="border-radius: 50%; width: 40px; height: 40px;">
+                                        </div>
+                                        <div class="notif-detail" style="margin-left: 10px;">
+                                            <p>
+                                                <b th:text="${notif.senderName}"></b>
+                                                <span th:text="${notif.content}"></span>
+                                            </p>
+                                            <p>
+                                                <small th:text="${notif.timeDifference}"></small>
+                                            </p>
+                                        </div>
+                                    </a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div sec:authorize="hasAnyRole('ADMIN', 'TEACHER', 'STUDENT')">
+                    <div class="dropdown user-profile d-flex justify-content-between align-items-center">
+                        <strong th:if="${username}" th:text="${username}" style="color: white" class="me-3"></strong>
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <img th:src="${currentUser.avatar != null ? currentUser.avatar.url : 'https://firebasestorage.googleapis.com/v0/b/cv-pdf-upload.appspot.com/o/casestudym5%2Favatar%2Fdefault-avatar.png?alt=media&token=a7b21608-1b68-45e0-9d6e-a5fcbcaac12e'}"
+                                 alt="User profile" class="rounded-circle"
+                                 style="width: 40px; height: 40px; object-fit: cover;">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li sec:authorize="hasRole('ADMIN')"><a class="dropdown-item" th:href="@{/user/profile}"
+                                                                    style="font-size: 25px; font-weight: 700">THÔNG TIN
+                                CÁ NHÂN</a></li>
+                            <hr class="divider">
+                            <li><a class="dropdown-item" th:href="@{/user/change-password}"
+                                   style="font-size: 25px; font-weight: 700">ĐỔI MẬT KHẨU</a></li>
+                            <hr class="divider">
+                            <li><a class="dropdown-item" th:href="@{/logout}" style="font-size: 25px; font-weight: 700">ĐĂNG
+                                XUẤT</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+<!--Section-->
+<div th:fragment="section">
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="hero-content animate-fade-in">
+                        <h4 class="mb-3">Tuyển sinh học viên lập trình</h4>
+                        <h1 class="hero-title">Tiếp Cận Với Môi Trường Giáo Dục Đầy Chuyên Nghiệp</h1>
+                        <p>
+                            Tại CODEGYM chúng tôi tôn vinh sự sáng tạo và khám phá, và cam kết giúp các sinh viên trang
+                            bị đầy kiến thức, kỹ năng và tư duy cần thiết để đạt được thành công trong cuộc sống và sự
+                            nghiệp.
+                        </p><br>
+                        <a href="#" class="hero-button" style="font-size: 30px">TÌM HIỂU THÊM</a>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="/img/giangvien.png"
+                         alt="Student" class="hero-image">
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!--Thông báo-->
+<div th:fragment="noti">
+    <div class="container py-5">
+        <h1 class="main-title">THÔNG BÁO NỔI BẬT</h1>
+        <swiper-container class="mySwiper" pagination="true" pagination-clickable="true" space-between="20"
+                          slides-per-view="3">
+            <swiper-slide th:each="blog : ${blogs}">
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="Blog Image"
+                             style="object-fit: cover; height: 200px; width: 100%;">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date">
+                                <i class="far fa-calendar me-1" style="color: #ff4444"></i>
+                                <span th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy')}">Date</span>
+                            </span>
+                        </div>
+                        <a th:href="@{/blogs/{id}(id=${blog.id})}" class="card-title announcement-title"
+                           th:text="${blog.name}">Blog Title</a>
+                        <p class="card-text" th:text="${#strings.abbreviate(blog.description, 100)}">Mô tả</p>
+                        <a th:href="@{/blogs/{id}(id=${blog.id})}" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi
+                            người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi
+                            người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi
+                            người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+            <swiper-slide>
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="CodeGym">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag"><i class="fas fa-bell me-1"></i>Thông Báo</span>
+                            <span class="announcement-date"><i class="far fa-calendar me-1" style="color: #ff4444"></i>19/07/2024</span>
+                        </div>
+                        <a href="#" class="card-title announcement-title">Thông báo về việc nghỉ tết 40 ngày, tất cả mọi
+                            người được nghỉ sớm</a>
+                        <a href="#" class="view-details">Xem chi tiết →</a>
+                    </div>
+                </div>
+            </swiper-slide>
+        </swiper-container>
+        <div class="btn-load-more">
+            <a href="/blogs" class="btn btn-danger" style="font-size: 20px;">Xem thêm</a>
+        </div>
+    </div>
+</div>
+
+<!--Giảng viên-->
+<div th:fragment="teacher">
+    <div class="container">
+        <h1 class="main-title">ĐỘI NGŨ GIẢNG VIÊN</h1>
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-anh-the-dep-e1664379835782.jpg"
+                         class="card-img-top" alt="Giảng viên 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Nguyễn Văn Anh Tú</h5>
+                        <p class="card-text">Tiến sĩ Khoa học Máy tính</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="https://smilemedia.vn/wp-content/uploads/2022/09/cach-chup-hinh-the-dep-590x800.jpeg"
+                         class="card-img-top" alt="Giảng viên 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Trần Thị Dịu Nhi</h5>
+                        <p class="card-text">Thạc sĩ Kỹ thuật Phần mềm</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="https://tiemanhsky.com/wp-content/uploads/2020/03/61103071_2361422507447925_6222318223514140672_n_1.jpg"
+                         class="card-img-top" alt="Giảng viên 3">
+                    <div class="card-body">
+                        <h5 class="card-title">Lâm Tâm Như</h5>
+                        <p class="card-text">Chuyên gia Trí tuệ Nhân tạo</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-4">
+                <div class="card h-100">
+                    <img src="https://kenh14cdn.com/2019/3/7/5301629225053921961409043040056750658027520n-1551924968498331276673.jpg"
+                         class="card-img-top" alt="Giảng viên 4">
+                    <div class="card-body">
+                        <h5 class="card-title">Lê Tâm Băng</h5>
+                        <p class="card-text">Giảng viên An ninh Mạng</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!--Các dự án nổi bật-->
+<div th:fragment="project">
+    <div class="container mb-5">
+        <h2 class="main-title">CÁC ĐỀ TÀI MỚI NHẤT</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4" th:each="topic : ${topics}">
+                <div class="card h-100 d-flex flex-column">
+                    <img th:if="${topic.image}" th:src="${topic.image.url}" class="card-img" alt="Topic image">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${topic.name}">Tên dự án</h5>
+                        <p class="card-text"
+                           th:text="${#strings.isEmpty(topic.content) ? '' : (#strings.length(topic.content) <= 100 ? topic.content : #strings.substring(topic.content, 0, 100) + '...')}">
+                            Nội dung dự án</p>
+                        <div class="mt-auto">
+                            <a th:href="@{/topics/{id}(id=${topic.id})}" class="btn btn-primary">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <a href="/topics" class="btn btn-danger" style="font-size: 20px;">Xem thêm</a>
+        </div>
+    </div>
+    <div class="mb-3" style="visibility: hidden;">Đây là text trống tạo margin</div>
+</div>
+
+<!--Footer-->
+<div th:fragment="footer">
+    <footer class="footer py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                    <div class="logo">Code<span>gym</span></div>
+                    <p class="mb-4">Hệ thống quản lý thực hiện đề tài tốt nghiệp khoa CNTT- Software Requirements
+                        Specification V2.0</p>
+                    <div class="contact-info">
+                        <div>
+                            <i class="fas fa-map-marker-alt contact-icon"></i>
+                            <a class="text-decoration-none text-secondary" href="https://www.google.com/maps/place/CodeGym+%C4%90%C3%A0+N%E1%BA%B5ng/@16.0783598,108.2071614,17z/data=!3m1!4b1!4m6!3m5!1s0x314219a486b7f699:0xae6269b629a63e82!8m2!3d16.0783598!4d108.2097363!16s%2Fg%2F11fb0sqpxd?entry=ttu&g_ep=EgoyMDI1MDEyMC4wIKXMDSoASAFQAw%3D%3D" target="_blank" rel="noopener noreferrer">
+                                295, Nguyễn Tất Thành, Hải Châu, Đà Nẵng.
+                            </a>
+                        </div>
+                        <div>
+                            <i class="fas fa-envelope contact-icon"></i>
+                            marketing@codegym.vn
+                        </div>
+                        <div>
+                            <i class="fas fa-phone contact-icon"></i>
+                            0966 238 202
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                    <h3 class="footer-heading">Các hoạt động & Tài nguyên</h3>
+                    <div class="products">
+                        <div>
+                            <a href="" target="_blank" class="post-title">Cựu học viên</a>
+                        </div>
+                    </div>
+                    <div class="products">
+                        <div>
+                            <a href="" target="_blank" class="post-title">Hoạt động cộng đồng</a>
+                        </div>
+                    </div>
+                    <div class="products">
+                        <div>
+                            <a href="" target="_blank" class="post-title">Tài liệu tải về</a>
+                        </div>
+                    </div>
+                    <div class="products">
+                        <div>
+                            <a href="" target="_blank" class="post-title">Blog chia sẻ kiến thức</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12">
+                    <h3 class="footer-heading">Đăng ký nhận thông tin</h3>
+                    <div class="input-group mb-3">
+                        <input type="email" class="form-control" placeholder="Nhập email của bạn">
+                        <button class="btn subscribe-btn text-white" type="button">Xác nhận</button>
+                    </div>
+                    <hr class="divider">
+                    <h3 class="footer-heading">Liên kết mạng xã hội</h3>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/codegym.vn" target="_blank">
+                            <i class="fab fa-facebook"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/company/codegym/" target="_blank">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@CodeGym" target="_blank">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                        <a href="https://www.tiktok.com/@codegymvietnam" target="_blank">
+                            <i class="fab fa-tiktok"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!--Phân trang đăng ký nhóm sinh viên (VietLQ)-->
+<div th:fragment="paging">
+    <div class="d-flex justify-content-center" th:if="${!list.isEmpty()}">
+        <ul class="pagination rounded-pill">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page = 1)}">Trang đầu</a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage - 1})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page=${i})}" th:text="${i}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page=${currentPage + 1})}"
+                   aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a class="page-link" th:href="@{/student/team(search=${search}, page=${totalPages})}">Trang cuối</a>
+            </li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý sinh viên - Sửa sinh viên</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/student.css">
+    <link rel="stylesheet" href="/css/home-page.css">
+</head>
+<body>
+<!-- Navbar -->
+<div th:replace="layout.html :: nav"></div>
+<div class="containers shadow-lg">
+    <form role="form" th:action="@{/admin/edit-student/{id}(id=${studentDTO.id})}" th:object="${studentDTO}" method="post" enctype="multipart/form-data">
+        <div class="form-grid">
+            <div class="title_header">
+                <h2>Chi Tiết Sinh Viên</h2>
+            </div>
+
+            <div class="form-fields">
+                <div class="form-group">
+                    <label class="required" for="name">Tên sinh viên</label>
+                    <input class="form-control" id="name" type="text" th:field="*{name}">
+                    <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="code">Mã sinh viên</label>
+                    <input class="form-control" id="code" type="text" th:field="*{code}">
+                    <div th:if="${#fields.hasErrors('code')}" th:errors="*{code}" class="text-danger"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="dob">Ngày sinh</label>
+                    <input class="form-control" id="dob" type="date" th:field="*{dob}">
+                    <div th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="text-danger"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="clazzId">Lớp</label>
+                    <select class="form-control" id="clazzId" th:field="*{clazzId}">
+                        <option value=''>Chọn lớp</option>
+                        <option th:each="c : ${clazzes}" th:text="${c.name}" th:value="${c.id}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('clazzId')}" th:errors="*{clazzId}" class="text-danger"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="email">Email</label>
+                    <input class="form-control" id="email" type="text" th:field="*{email}">
+                    <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="gender">Giới tính</label>
+                    <select class="form-control" id="gender" th:field="*{gender}">
+                        <option value=''>Chọn Giới tính</option>
+                        <option th:value="MALE" th:text="'Nam'"></option>
+                        <option th:value="FEMALE" th:text="'Nữ'"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="text-danger"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="phoneNumber">Số điện thoại</label>
+                    <input class="form-control" id="phoneNumber" type="text" th:field="*{phoneNumber}">
+                    <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="required" for="address">Địa chỉ</label>
+                    <input class="form-control" id="address" type="text" th:field="*{address}">
+                    <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-danger"></div>
+                </div>
+                <div class="form-group d-flex align-items-center">
+                    <div class="me-3">
+                        <img
+                                id="avatar-preview"
+                                th:src="@{${studentDTO.avatarUrl}}"
+                                alt="Ảnh đại diện"
+                                style="width: 200px; height: 200px; display: block; margin-top: 10px;">
+                    </div>
+                    <div>
+                        <label class="required" for="avatar">Cập nhật ảnh đại diện mới</label>
+                        <input
+                                class="form-control"
+                                id="avatar"
+                                type="file"
+                                name="avatar"
+                                accept=".jpg,.png,.jpeg"
+                                onchange="previewImage(event)">
+                        <input type="hidden" name="existingAvatarUrl" th:value="${studentDTO.avatarUrl}">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="buttons">
+            <button type="submit" class="btn btn-save">Lưu</button>
+            <a class="btn btn-cancel" th:href="@{/admin/student}">Thoát</a>
+        </div>
+    </form>
+</div>
+<div th:replace="layout :: footer"></div>
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            const output = document.getElementById('avatar-preview');
+            output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+</script>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

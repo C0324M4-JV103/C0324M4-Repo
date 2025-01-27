@@ -1,0 +1,26 @@
+.margin-bottom{
+    margin-bottom: 10%;
+}
+.margin-top{
+    margin-top: 10%;
+}
+.table td, .table th {
+    text-align: center;
+    vertical-align: middle;
+}
+.table-container {
+    width: 90%;
+    margin: 0 auto; /* Để căn giữa bảng */
+}
+
+.search-container {
+    margin-top: 100px; /* Khoảng cách phía trên */
+    margin-bottom: 20px; /* Khoảng cách phía dưới */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Chuyển vị trí sang bên phải */
+}
+
+.search-container input {
+    margin-right: 20px; /* Khoảng cách giữa input và button */
+}

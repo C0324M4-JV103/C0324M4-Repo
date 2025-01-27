@@ -1,0 +1,150 @@
+.approval-table {
+    width: 100%;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.approval-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.approval-table th {
+    background: #f8f9fa;
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+    color: #2c3e50;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.approval-table td {
+    padding: 15px;
+    border-bottom: 1px solid #dee2e6;
+    vertical-align: middle;
+}
+
+/* STT column */
+.approval-table td:first-child {
+    width: 50px;
+    text-align: center;
+    color: #6c757d;
+}
+
+/* Tên đề tài column */
+.approval-table td:nth-child(2) {
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+/* Mã đề tài column */
+.approval-table td:nth-child(3) {
+    color: #6c757d;
+}
+
+/* Action buttons */
+button {
+    padding: 10px 15px; /* Kích thước padding cho nút */
+    font-size: 16px; /* Kích thước chữ */
+    border: none; /* Không có đường viền mặc định */
+    border-radius: 5px; /* Bo góc cho nút */
+    cursor: pointer; /* Hiển thị con trỏ khi di chuột qua nút */
+    transition: background-color 0.3s, color 0.3s; /* Hiệu ứng chuyển đổi khi hover */
+}
+
+/* Nút chính */
+.btn-approve {
+    background-color: #28a745; /* Màu nền cho nút duyệt */
+    color: white; /* Màu chữ */
+}
+
+.btn-reject {
+    background-color: #dc3545; /* Màu nền cho nút hủy */
+    color: white; /* Màu chữ */
+}
+
+/* Nút đã duyệt và đã hủy */
+.btn-secondary.light {
+    background-color: #d3d3d3; /* Màu nền nhạt hơn */
+    color: #6c757d; /* Màu chữ */
+    border: 1px solid #ced4da; /* Đường viền nhạt */
+    cursor: not-allowed; /* Hiển thị con trỏ không thể nhấn */
+    opacity: 0.65; /* Độ mờ cho nút không thể nhấn */
+}
+
+/* Hiệu ứng hover cho nút */
+button:hover:not(:disabled) {
+    opacity: 0.8; /* Độ mờ khi hover */
+}
+
+/* Đảm bảo rằng nút không thể nhấn có độ mờ */
+button:disabled {
+    opacity: 0.65; /* Độ mờ cho nút không thể nhấn */
+    cursor: not-allowed; /* Hiển thị con trỏ không thể nhấn */
+}
+/* Main title */
+.main-title {
+    color: #dc3545;
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 1rem;
+}
+
+.main-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #dc3545;
+}
+
+/* Action column */
+.action-column {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+.approval-table {
+    margin-top: 2rem;
+    min-height: 600px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .approval-table {
+        overflow-x: auto;
+    }
+
+    .btn-approve, .btn-reject {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+}
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    z-index: 9999;
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin cá nhân</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home-page.css">
+    <script>
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+    </script>
+    <style>
+        body{margin-top:20px;}
+        .avatar{
+            width:200px;
+            height:200px;
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<div th:replace="layout :: nav"></div>
+<div id="toast-container"></div> <!--toast thông báo mới-->
+
+<!-- Edit Profile Form -->
+<div class="container bootstrap snippets bootdey">
+    <h1 class="text-primary">Edit Profile</h1>
+    <hr>
+    <div class="row">
+        <!-- left column -->
+        <div class="col-md-3">
+            <div class="text-center">
+                <img th:src="${user.getAvatar()}" class="avatar img-circle img-thumbnail" alt="avatar">
+                <br>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateAvatarModal">Cập nhật ảnh</button>
+                <div th:if="${imageError}" th:text="${imageError}" class="text-danger"></div>
+            </div>
+        </div>
+
+        <!-- edit form column -->
+        <div class="col-md-9 personal-info">
+            <h3>Thông tin cá nhân</h3>
+
+            <form class="form-horizontal" role="form" th:action="@{/user/edit-profile}" th:object="${user}" method="post">
+                <div><input type="hidden" th:field="*{id}"></div>
+                <div class="form-group mb-3">
+                    <div class="col-lg-8">
+                        <label for="name" class="col-lg-3 control-label">Họ và tên:</label>
+                        <input class="form-control" id="name" type="text" th:field="*{name}" >
+                        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="text-danger"></div>
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+
+                    <div class="col-lg-4">
+                        <label class="control-label ">Ngày sinh:</label>
+                        <label for="birthday"></label><input class="form-control" id="birthday" th:field="*{dob}"  type="date">
+                        <div th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="text-danger"></div>
+                        <div th:if="${dobError}" th:text="${dobError}" class="text-danger"></div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <label for="gender" class="control-label col-lg-3">Giới tính:</label>
+                        <select class="form-control" id="gender" th:field="*{gender}">
+                            <option th:value="MALE" >Nam</option>
+                            <option th:value="FEMALE" >Nữ</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <div class="col-lg-8">
+                        <label for="email" class="col-lg-3 control-label">Email:</label>
+                        <input class="form-control" id="email" type="text" th:field="*{email}">
+                        <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></div>
+                        <div th:if="${emailError}" th:text="${emailError}" class="text-danger"></div>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <div class="col-lg-8">
+                        <label for="phoneNumber" class="col-lg-3 control-label">Số điện thoại: </label>
+                        <input class="form-control" id="phoneNumber" type="text" th:field="*{phoneNumber}">
+                        <div th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger"></div>
+                    </div>
+                </div>
+                <div class="form-group mb-3">
+                    <div class="col-lg-8">
+                        <label for="address" class="col-lg-3 control-label">Địa chỉ: </label>
+                        <input class="form-control" id="address" type="text" th:field="*{address}">
+                        <div th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-danger"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-8 d-flex justify-content-end">
+                        <button class="btn btn-primary me-2" type="submit" sec:authorize="hasAnyRole('ADMIN')">Cập nhật</button>
+                        <a class="btn btn-secondary" th:href="@{/}">Hủy</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<hr>
+<!-- Footer -->
+<div th:replace="layout :: footer"></div>
+
+<div class="modal fade" id="updateAvatarModal" tabindex="-1" aria-labelledby="updateAvatarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateAvatarModalLabel">Cập nhật ảnh đại diện</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/user/change-avatar}" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="avatar" class="form-label">Chọn ảnh mới</label>
+                        <input type="file" class="form-control" id="avatar" name="avatar" accept=".jpg,.png,.jpeg" required>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary me-2">Cập nhật</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script></body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CODEGYM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!--link các icon trong footer-->
+    <link rel="stylesheet" href="/css/home-page.css">
+</head>
+<body>
+<div id="toast-container"></div> <!--toast thông báo mới-->
+<!-- Navbar -->
+<div th:replace="~{layout :: nav}"></div>
+<!-- Section -->
+<div th:replace="~{layout :: section}"></div>
+<!--Thông báo-->
+<div th:replace="~{layout :: noti}"></div>
+<!--Giảng viên -->
+<div th:replace="~{layout :: teacher}"></div>
+<!--Dự án tiêu biểu-->
+<div th:replace="~{layout :: project}"></div>
+<!--Footer-->
+<div th:replace="~{layout :: footer}"></div>
+
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+</body>
+</html>

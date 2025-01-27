@@ -1,0 +1,495 @@
+body {
+    font-family: 'Quicksand', sans-serif;
+    background-color: white;
+    color: #4A5568;
+}
+.notif-link {
+    display: flex;
+    align-items: center;
+}
+#body-fixed {
+    height: 600px !important;
+}
+
+.main-title {
+    color: #282781;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: bold;
+    margin: 5rem 0;
+}
+
+.navbar {
+    background-color: #282781; /* Màu nền của navbar */
+    border: 1px solid #242472; /* Đường viền */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Thêm bóng đổ cho navbar */
+}
+
+
+.nav-link:hover {
+    color: #86868d !important;
+}
+
+.dropdown-item {
+    color: white;
+    font-size: 11px !important;
+}
+
+.nav-item a {
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.dropdown-menu {
+    background-color: #282781;
+    margin-top: 15px !important;
+}
+
+.dropdown-item:hover {
+    background-color: rgba(40, 39, 129, 0.7); /* Nền trong suốt 70% */
+    color: #c8bcbc; /* Màu chữ khi hover */
+    cursor: pointer; /* Thêm hiệu ứng con trỏ */
+}
+
+/*section*/
+
+.hero-image {
+    height: 700px;
+    width: 100%; /* hoặc giá trị phù hợp */
+    margin-top: 32px;
+    object-fit: contain; /* Đảm bảo hình ảnh không bị méo */
+}
+
+.hero-section {
+    background: #282781;
+    max-height: 700px; /* Giới hạn chiều cao của toàn bộ section */
+    align-items: center; /* Căn giữa nội dung theo chiều dọc */
+    position: relative; /* Thêm thuộc tính này để căn chỉnh ảnh với đáy của section */
+
+}
+
+
+.hero-content {
+    color: white;
+    position: relative;
+}
+
+.hero-button {
+    background-color: #f15a29;
+    color: white;
+    padding: 12px 32px;
+    border-radius: 50px;
+    text-decoration: none;
+}
+
+.hero-button:hover {
+    background-color: #e55527;
+    color: white;
+}
+
+.animate-fade-in {
+    animation: fadeIn 1.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+hr.divider {
+    margin: 0;
+    border: 0;
+    border-top: 1px solid #686464;
+}
+
+/*thông báo css*/
+swiper-container {
+    width: 100%;
+    padding: 2rem 0;
+}
+
+swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.announcement-card {
+    height: 350px;
+    width: auto;
+    border-color: transparent;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.announcement-image-container {
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+}
+
+.announcement-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.announcement-image-container:hover .announcement-image {
+    transform: scale(1.3);
+}
+
+.card-body {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.announcement-meta {
+    display: flex;
+    justify-content: space-between;
+}
+
+.announcement-tag {
+    font-size: 0.9rem;
+    color: #ff4444;
+    font-weight: 550;
+}
+
+.announcement-date {
+    color: #110101;
+    font-size: 0.9rem;
+    font-weight: 550;
+}
+
+.announcement-title {
+    font-size: 1.3rem;
+    line-height: 1.4;
+    font-weight: 700;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    text-decoration: none;
+}
+
+.announcement-title:hover {
+    color: #282781;
+    text-decoration: underline;
+}
+
+.view-details {
+    font-size: 1.3rem;
+    color: #ff4444;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.view-details:hover {
+    color: #cc0000;
+}
+
+.btn-load-more {
+    text-align: center;
+    margin-top: 25px;
+}
+
+/*footer css*/
+
+.footer {
+    background-color: #282781;
+    color: #ffffff;
+    padding: 10px 0;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.logo span {
+    color: #fd754d;
+}
+
+.contact-info {
+    color: #888;
+    margin-top: 30px;
+}
+
+.contact-info div {
+    margin-bottom: 15px;
+}
+
+.contact-icon {
+    font-size: 20px;
+    color: #ff6b6b;
+    margin-right: 10px;
+}
+
+.products {
+    margin-bottom: 20px;
+}
+
+
+.post-title {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.post-title:hover {
+    color: #ff752e;
+}
+
+.subscribe-btn {
+    background-color: #fd6f3c;
+    border: none;
+    padding: 10px 25px;
+}
+
+.subscribe-btn:hover {
+    background-color: #282781;
+}
+
+.footer-heading {
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.social-icons {
+    text-align: left; /* Căn giữa các biểu tượng */
+}
+
+.social-icons a {
+    font-size: 25px;
+    margin: 0 10px; /* Tạo khoảng cách giữa các biểu tượng */
+    color: #ece9e9; /* Màu mặc định */
+    transition: color 0.3s; /* Tạo hiệu ứng chuyển màu mượt mà */
+    text-decoration: none;
+}
+
+.social-icons a:hover {
+    color: inherit; /* Đảm bảo hover chỉ ảnh hưởng đến màu */
+}
+
+.social-icons a:nth-child(1):hover {
+    color: #4267B2; /* Facebook: màu xanh dương */
+}
+
+.social-icons a:nth-child(2):hover {
+    color: #0077B5; /* LinkedIn: màu xanh nhạt */
+}
+
+.social-icons a:nth-child(3):hover {
+    color: #FF0000; /* YouTube: màu đỏ */
+}
+
+.social-icons a:nth-child(4):hover {
+    color: #000000; /* TikTok: màu đen */
+}
+
+/*  teacher css*/
+
+.announcement-card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.card-img-top {
+    height: 450px; /* Chiều cao cố định cho hình ảnh */
+    object-fit: cover; /* Cắt ảnh để vừa khít khung */
+    border-radius: 10px 10px 0 0; /* Bo tròn viền trên */
+    transition: transform 0.9s ease;
+}
+
+.card-title {
+    font-size: 1.3rem;
+    color: #282781;
+}
+
+.card-img {
+    height: 250px;
+}
+
+.card-text {
+    font-size: 1.2rem;
+    color: #e32b2b;
+    margin-bottom: 20px;
+}
+
+.announcement-card:hover {
+    transform: translateY(-10px); /* Hiệu ứng nâng lên khi hover */
+    box-shadow: 0 20px 40px rgba(110, 144, 255, 0.2); /* bóng đổ khi hover */
+}
+
+.announcement-card:hover .card-img-top {
+    transform: scale(1.2); /* zoom ảnh khi hover */
+}
+
+
+/*css của team-form*/
+.titles {
+    margin-top: 120px;
+    color: #282781;
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+/*css của team-form*/
+
+
+/*css cho Chuông thông báo*/
+.badge-notify {
+    position: absolute;
+    top: 5px;
+    right: 0;
+    background-color: #f86767;
+    color: white;
+    font-size: 10px;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    justify-content: center;
+}
+
+.badge-notify.show {
+    display: inline-block;
+}
+
+.badge-notify {
+    display: none;
+}
+
+.notif-icon {
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.notif-icon:hover {
+    transform: scale(1.1);
+}
+
+
+.notif-dd {
+    width: 330px;
+    padding: 0;
+    border-radius: 10px; /* Thay đổi giá trị này để điều chỉnh độ bo tròn */
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    overflow: hidden; /* Đảm bảo nội dung bên trong không tràn ra ngoài */
+}
+
+.notif-dd.show {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.notif-header {
+    border-bottom: 1px solid #eee;
+    padding: 5px;
+    background-color: #ffffff;
+    text-align: center;
+    color: #212020;
+    font-size: 1.8rem;
+    font-weight: 650;
+}
+
+.notif-list {
+    background-color: white;
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s ease;
+}
+
+.notif-list:hover {
+    background-color: #f1f1f1;
+}
+
+.notif-img img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+}
+
+.notif-detail p {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+.notif-detail p b {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.notif-detail p small {
+    display: block; /* Đưa thời gian xuống dòng mới */
+    margin-top: 6px; /* Khoảng cách giữa nội dung và thời gian */
+    color: #888;
+    font-size: 0.8rem;
+}
+
+/*css cho Chuông thông báo*/
+
+
+/** toast thông báo mới **/
+/** Vị trí của toast **/
+#toast-container {
+    position: fixed;
+    padding: 5px;
+    top: 10px;
+    right: 10px;
+    width: auto;
+    z-index: 1050;
+}
+
+.toast-custom {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.toast-custom.fade-out {
+    opacity: 0; /* Mờ dần */
+    transform: translateY(-30px); /* Trượt lên */
+}
+.toast-custom .toast-header i {
+    font-size: 1.2rem;
+    color: #fdfdfd;
+}
+
+
+/** toast thông báo mới **/

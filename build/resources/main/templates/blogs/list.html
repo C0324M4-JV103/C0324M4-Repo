@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Danh sách thông báo</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="/css/home-page.css">
+    <link rel="stylesheet" href="/css/blog.css">
+</head>
+<body>
+<div th:replace="~{layout :: nav}"></div>
+<div layout:fragment="content">
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="main-title" style="text-align: center;">DANH SÁCH THÔNG BÁO</h2>
+            <div th:if="${#authorization.expression('hasAnyRole(''ADMIN'', ''TEACHER'')')}">
+                <a href="/blogs/create" class="btn btn-primary rounded-pill">
+                    <i class="fas fa-plus me-2"></i>Tạo Thông Báo Mới
+                </a>
+            </div>
+        </div>
+
+        <!-- Hiển thị thông báo -->
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <!-- Success Toast -->
+            <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true">
+                <div class="toast-header bg-success text-white">
+                    <strong class="me-auto">Thành công</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" th:text="${toastMessage}"></div>
+            </div>
+
+            <!-- Error Toast -->
+            <div th:if="${toastMessage != null and toastType == 'danger'}" class="toast" role="alert"
+                 aria-live="assertive"
+                 aria-atomic="true">
+                <div class="toast-header bg-danger text-white">
+                    <strong class="me-auto">Cảnh báo</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body" th:text="${toastMessage}"></div>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(blogs)}" class="alert alert-info text-center">
+            Chưa có bài viết nào.
+        </div>
+
+        <!-- Danh sách blogs -->
+        <div class="row g-4" th:unless="${#lists.isEmpty(blogs)}">
+            <div class="col-md-4" th:each="blog : ${blogs}">
+                <div class="card announcement-card">
+                    <div class="announcement-image-container">
+                        <img src="/img/logocg.png" class="announcement-image" alt="Blog Image"
+                             style="object-fit: cover; height: 200px; width: 100%;">
+                    </div>
+                    <div class="card-body">
+                        <div class="announcement-meta">
+                            <span class="announcement-tag">
+                                <i class="fas fa-newspaper me-1"></i>Thông báo
+                            </span>
+                            <span class="announcement-date">
+                                <i class="far fa-calendar-alt me-1" style="color: #ff4444"></i>
+                                <span th:text="${#temporals.format(blog.createdAt, 'dd/MM/yyyy')}">Date</span>
+                            </span>
+                        </div>
+                        <a th:href="@{/blogs/{id}(id=${blog.id})}" class="announcement-title"
+                           th:text="${blog.name}">Blog Title</a>
+                        <p class="card-text" th:text="${#strings.abbreviate(blog.description, 100)}">Description</p>
+
+                        <div class="d-flex justify-content-between align-items-center mt-3">
+                            <a th:href="@{/blogs/{id}(id=${blog.id})}" class="view-details">
+                                Xem chi tiết <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                            <div th:if="${#authorization.expression('hasAnyRole(''ADMIN'', ''TEACHER'')')}"
+                                 class="action-buttons">
+                                <a th:href="@{/blogs/edit/{id}(id=${blog.id})}"
+                                   class="btn btn-sm btn-warning me-2">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form th:action="@{/blogs/delete/{id}(id=${blog.id})}" method="post"
+                                      style="display:inline-block;" id="deleteForm">
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                                            data-bs-target="#confirmDeleteModal"
+                                            th:data-name="${blog.name}" th:data-id="${blog.id}">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Phân trang -->
+        <div class="d-flex justify-content-center mt-4">
+            <nav th:if="${blogs.totalPages > 0}">
+                <ul class="pagination rounded-pill">
+                    <li class="page-item" th:classappend="${blogs.first} ? 'disabled'">
+                        <a class="page-link" th:href="@{/blogs(page=${blogs.number - 1})}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, blogs.totalPages - 1)}"
+                        th:classappend="${i == blogs.number} ? 'active'">
+                        <a class="page-link" th:href="@{/blogs(page=${i})}" th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${blogs.last} ? 'disabled'">
+                        <a class="page-link" th:href="@{/blogs(page=${blogs.number + 1})}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Delete -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa thông báo này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" onclick="document.getElementById('deleteForm').submit();">
+                    Xóa
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{layout :: footer}"></div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
+<script>
+    // Tự động hiển thị toast khi có thông báo
+    var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+    var toastList = toastElList.map(function (toastEl) {
+        return new bootstrap.Toast(toastEl)
+    })
+    toastList.forEach(toast => toast.show());
+</script>
+</body>
+</html> 
