@@ -2,12 +2,11 @@ package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.NotificationDTO;
 import com.c0324.casestudym5.model.*;
-import com.c0324.casestudym5.service.BlogsService;
-import com.c0324.casestudym5.service.NotificationService;
-import com.c0324.casestudym5.service.TopicService;
-import com.c0324.casestudym5.service.UserService;
+import com.c0324.casestudym5.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,22 +22,26 @@ public class HomeController {
     private final TopicService topicService;
     private final BlogsService blogsService;
 
+    private final TeacherService teacherService;
     @Autowired
     public HomeController(UserService userService, NotificationService notificationService,
-                          TopicService topicService, BlogsService blogsService) {
+                          TopicService topicService, BlogsService blogsService, TeacherService teacherService) {
         this.userService = userService;
         this.notificationService = notificationService;
         this.topicService = topicService;
         this.blogsService = blogsService;
+        this.teacherService = teacherService;
     }
 
     @GetMapping(value = {"/", "/home"})
-    public String homePage(Model model ) {
+    public String homePage(Model model) {
+        Page<Teacher> list = teacherService.getTeachersPage(1,4);
         List<Topic> latestTopics = topicService.getLatestTopics(3);
         List<Blogs> latestBlogs = blogsService.getLatestBlogs(5);
 
         model.addAttribute("topics", latestTopics);
         model.addAttribute("blogs", latestBlogs);
+        model.addAttribute("list", list);
 
         return "common/home-page";
     }

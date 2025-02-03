@@ -1,9 +1,6 @@
 package com.c0324.casestudym5.controller;
 
-import com.c0324.casestudym5.dto.NotificationDTO;
-import com.c0324.casestudym5.dto.RegisterTeacherDTO;
-import com.c0324.casestudym5.dto.RegisterTopicDTO;
-import com.c0324.casestudym5.dto.TeamDTO;
+import com.c0324.casestudym5.dto.*;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.util.AppConstants;
@@ -84,6 +81,17 @@ public class StudentController {
         }
         return "redirect:/student/team";
     }
+
+    @GetMapping("/student-details/{id}")
+    @ResponseBody
+    public ResponseEntity<InvitedStudentDTO> getStudentById(@PathVariable Long id) {
+        InvitedStudentDTO studentDTO = studentService.getStudentDTOById(id);
+        if (studentDTO != null) {
+            return ResponseEntity.ok(studentDTO);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/team")
     public String formRegisterTeam(@RequestParam(name = "page", required = false, defaultValue = "1") int page,
                                    @RequestParam(name = "search", required = false, defaultValue = "") String search,
@@ -95,9 +103,10 @@ public class StudentController {
             model.addAttribute("team", new TeamDTO());
         }
 
-        if (currentTeam != null && !currentStudent.isLeader()){
+        if (currentTeam != null && !currentStudent.isLeader()) {
             return "common/404";
         }
+
 
         Page<Student> availableStudents = studentService.getAvailableStudents(page, search, currentStudent.getId());
         List<Invitation> invitation = invitationService.findByStudent(currentStudent);
@@ -178,12 +187,11 @@ public class StudentController {
     }
 
 
-
     @GetMapping("/info-team")
     public String teamInfo(Model model, Pageable pageable) {
         Student currentStudent = getCurrentStudent();
         Team team = currentStudent.getTeam();
-        if (team == null){
+        if (team == null) {
             return "common/404";
         }
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
@@ -210,8 +218,7 @@ public class StudentController {
             redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã có đề tài hoặc đang đợi phê duyệt");
             return "redirect:/student/info-team";
         }
-        if (currentTeam.getTeacher() == null)
-        {
+        if (currentTeam.getTeacher() == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng đăng ký giáo viên trước khi đăng ký đề tài!");
             return "redirect:/student/info-team";
         }
@@ -301,7 +308,7 @@ public class StudentController {
 
     @GetMapping("/list-teacher")
     public String getAllTeachers(@RequestParam(defaultValue = "0") int page, Model model) {
-        int pageSize = 10; // 10 giáo viên mỗi trang
+        int pageSize = 5; // 10 giáo viên mỗi trang
         Pageable pageable = PageRequest.of(page, pageSize);
 
         // Lấy danh sách giáo viên
@@ -377,8 +384,8 @@ public class StudentController {
         return "redirect:/student/list-teacher";
     }
 
-
     @GetMapping("/teacher-details/{id}")
+    @ResponseBody
     public ResponseEntity<RegisterTeacherDTO> getTeacherById(@PathVariable Long id) {
         Optional<Teacher> teacherOptional = teacherService.getTeacherById(id);
         if (teacherOptional.isPresent()) {

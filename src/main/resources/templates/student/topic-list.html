@@ -21,8 +21,8 @@
                 <img th:src="${topic?.image?.url}" class="ann-image" alt="img">
             </div>
             <div class="card-body">
-                <h5 class="card-title" th:text="${topic.name}">Tên đề tài</h5>
-                <h5 class="card-title ann-title" th:text="${topic.content}">Nội dung đề tài </h5>
+                <h5 class="card-title fw-bold" th:text="${topic.name}">Tên đề tài</h5>
+<!--                <h5 class="card-title ann-title" th:text="${topic.content}">Nội dung đề tài </h5>-->
                 <a th:href="@{/topics/{id}(id=${topic.id})}" class="view-details">Xem chi tiết →</a>
             </div>
         </div>

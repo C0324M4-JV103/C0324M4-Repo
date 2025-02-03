@@ -308,9 +308,13 @@ public class TopicServiceImpl implements TopicService {
         if (topic == null) {
             throw new RuntimeException("Nhóm chưa đăng ký đề tài");
         }
-        if(topic.getDeadline().after(newDeadline)) {
+        if (topic.getDeadline() != null && topic.getDeadline().after(newDeadline)) {
             throw new RuntimeException("Hạn nộp mới phải sau hạn nộp cũ");
         }
+//        else if (topic.getDeadline() == null) {
+//            System.out.println("Lưu ý: Deadline cũ chưa được thiết lập, đặt mới mà không cần kiểm tra.");
+//        }
+
         List<Student> students = team.getStudents();
 
         // set new deadline for the topic

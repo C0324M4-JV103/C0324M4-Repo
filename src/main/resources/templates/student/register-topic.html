@@ -93,11 +93,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="topic : ${topics}">
-                            <td class="text-center" th:text="${topic.id}"></td>
+                        <tr th:each="topic, loop : ${topics}">
+                            <td class="text-center" th:text="${loop.count}"></td>
                             <td th:text="${topic.name}"></td>
                             <td>
-                                <a th:href="@{/student/topic/{id}(id=${topic.id})}" class="btn btn-primary view-topic">Xem</a>
+                                <a th:href="@{/topics/{id}(id=${topic.id})}" class="btn btn-primary view-topic">Xem</a>
                             </td>
                         </tr>
                         </tbody>

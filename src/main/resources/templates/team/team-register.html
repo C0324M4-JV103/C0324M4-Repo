@@ -4,10 +4,37 @@
     <meta charset="UTF-8">
     <title>Đăng ký nhóm sinh viên</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link rel="stylesheet" href="/css/home-page.css">
     <link rel="stylesheet" href="/css/team-register.css">
+    <style>
+        .profile-image {
+            width: 220px;
+            height: 340px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .form-control-plaintext {
+            background-color: #f0f0f0;
+            padding: 0.375rem 0.75rem;
+            border-radius: 10px;
+        }
+
+        .modal-dialog {
+            max-width: 70%;
+        }
+
+        .btn-info i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-info:hover i {
+            transform: scale(1.2);
+        }
+    </style>
 </head>
 <body>
 <div th:replace="~{layout :: nav}"></div>
@@ -73,10 +100,10 @@
                 <thead class="table-dark">
                 <tr>
                     <th style="width:5%;">STT</th>
-                    <th style="width:30%;">Tên</th>
-                    <th style="width:15%;">Mã số</th>
-                    <th style="width:20%;">Ngày sinh</th>
-                    <th style="width:20%;">Trạng thái</th>
+                    <th style="width:30%;">Họ và Tên</th>
+                    <th style="width:20%;">Mã số</th>
+                    <th style="width:25%;">Ngày sinh</th>
+                    <th style="width:10%;">Chi tiết</th>
                     <th th:if="${currentTeam != null and currentStudent.isLeader()}" style="width:10%;">Mời</th>
                 </tr>
                 </thead>
@@ -84,18 +111,25 @@
                 <tr th:each="s, loop : ${list}">
                     <td style="width:5%;" th:text="${(currentPage - 1) * 5 + loop.index + 1}"></td>
                     <td style="width:30%;" th:text="${s.user.name}"></td>
-                    <td style="width:15%;" th:text="${s.code}"></td>
-                    <td style="width:20%;" th:text="${#dates.format(s.user.dob, 'dd/MM/yyyy')}"></td>
-                    <td style="width:20%;">
-                        <span th:class="${s.teamStatus == 'Chưa có nhóm'} ? 'text-danger' : 'text-success'"
-                              th:text="${s.teamStatus}"></span>
+                    <td style="width:20%;" th:text="${s.code}"></td>
+                    <td style="width:25%;" th:text="${#dates.format(s.user.dob, 'dd/MM/yyyy')}"></td>
+                    <td style="width:10%;">
+                    <span class="btn-info" th:onclick="'loadStudentDetails(' + ${s.id} + ')'">
+                        <i class="fas fa-eye"></i></span>
                     </td>
                     <td style="width:10%;" th:if="${currentTeam != null and currentStudent.isLeader()}">
                         <form th:action="@{/student/invite-team}" method="post">
                             <input type="hidden" name="studentId" th:value="${s.id}"/>
-                            <span class="text-success" th:if="${s.team != null}"><span class="fas fa-check" style="font-size: 1.2rem"></span></span>
-                            <button class="btn-common btn-icons" th:if="${s.team == null and !invitationService.existsByStudentAndTeam(s, currentTeam)}" type="submit">Mời</button>
-                            <button class="btn-common btn-disable" th:if="${s.team == null and invitationService.existsByStudentAndTeam(s, currentTeam)}" disabled>Đã mời</button>
+                            <span class="text-success" th:if="${s.team != null}"><span class="fas fa-check"
+                                                                                       style="font-size: 1.2rem"></span></span>
+                            <button class="btn-common btn-icons"
+                                    th:if="${s.team == null and !invitationService.existsByStudentAndTeam(s, currentTeam)}"
+                                    type="submit">Mời
+                            </button>
+                            <button class="btn-common btn-disable"
+                                    th:if="${s.team == null and invitationService.existsByStudentAndTeam(s, currentTeam)}"
+                                    disabled>Đã mời
+                            </button>
                         </form>
                     </td>
                 </tr>
@@ -154,6 +188,75 @@
             Đi đến nhóm của bạn<i class="fas fa-arrow-right m-1" style="font-size: 1rem"></i>
         </a>
     </div>
+
+    <div class="modal fade" id="studentDetailModal" tabindex="-1" aria-labelledby="studentDetailModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="studentDetailModalLabel">Thông tin chi tiết</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Hình ảnh -->
+                        <div class="col-md-3 d-flex align-items-center">
+                            <img id="studentAvatar" src="" alt="Sinh viên"
+                                 class="profile-image">
+                        </div>
+                        <!-- Thông tin -->
+                        <div class="info-container col-md-9">
+                            <div class="row mb-3">
+                                <div class="col-md-9">
+                                    <label class="form-label fw-bold ms-1">Tên sinh viên</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="studentName">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold ms-1">Giới tính</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="studentGender">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-9">
+                                    <label class="form-label fw-bold ms-1">Địa chỉ</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="studentAddress">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold ms-1">Số điện thoại</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="studentPhoneNumber">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-9">
+                                    <label class="form-label fw-bold ms-1">Ngày sinh</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="studentDob">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold ms-1">Lớp</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="studentClazz">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-9">
+                                    <label class="form-label fw-bold ms-1">Email</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="studentEmail">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label fw-bold ms-1">Nhóm</label>
+                                    <input type="text" readonly class="form-control-plaintext" id="studentTeam">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Nút mở modal -->
     <div class="mt-3">
         <button class="btn btn-primary my-4" data-bs-toggle="modal" data-bs-target="#createTeamModal"
@@ -202,5 +305,6 @@
 <script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
 <script th:src="@{/js/notification.js}"></script>
 <script th:src="@{/js/toast-noti.js}"></script>
+<script th:src="@{/js/details-student.js}"></script>
 </body>
 </html>

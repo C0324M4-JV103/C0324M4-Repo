@@ -1,6 +1,7 @@
 package com.c0324.casestudym5.service;
 
 
+import com.c0324.casestudym5.dto.InvitedStudentDTO;
 import com.c0324.casestudym5.dto.StudentDTO;
 import com.c0324.casestudym5.model.Student;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
@@ -10,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 
 public interface StudentService {
@@ -19,6 +21,7 @@ public interface StudentService {
     Student getStudentByUserEmail(String email);
     void save(Student student);
     Student findById(Long id);
+    InvitedStudentDTO getStudentDTOById(Long id);
     Student findStudentByUserId(Long id);
     String getStudentEmailById(Long id);
     Page<Student> getAvailableStudents(int page, String search, Long currentStudentId);

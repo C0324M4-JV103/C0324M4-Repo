@@ -1,5 +1,6 @@
 package com.c0324.casestudym5.service.impl;
 
+import com.c0324.casestudym5.dto.InvitedStudentDTO;
 import com.c0324.casestudym5.dto.StudentDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
@@ -71,6 +72,27 @@ public class StudentServiceImpl implements StudentService {
     public Student findById(Long id) {
         return studentRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public InvitedStudentDTO getStudentDTOById(Long id) {
+        Student student = studentRepository.findById(id).orElse(null);
+        if (student == null) {
+            return null;
+        }
+        return new InvitedStudentDTO(
+                student.getId(),
+                student.getUser().getName(),
+                student.getUser().getEmail(),
+                student.getClazz(),
+                student.getUser().getPhoneNumber(),
+                student.getUser().getDob(),
+                student.getUser().getAddress(),
+                student.getUser().getGender(),
+                student.getUser().getAvatar(),
+                student.getTeamStatus()
+        );
+    }
+
 
     @Override
     public Student findStudentByUserId(Long id) {

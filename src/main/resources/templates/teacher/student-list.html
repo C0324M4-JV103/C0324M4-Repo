@@ -71,7 +71,7 @@
             <div class="card-info-team">
                 <div class="card-image">
                     <img th:if="${s.user?.avatar?.url != null}" th:src="${s.user?.avatar?.url}" alt="/img/default-image-student.png">
-                    <img th:unless="${s.user?.avatar?.url != null}" src="/img/default-image-student.png" alt="/img/default-image-student.png">
+                    <img th:unless="${s.user?.avatar?.url != null}" th:src="@{${s.user.gender == 'MALE' ? '/img/avatar-boy.png' : '/img/avatar-girl.png'}}" alt="img">
                 </div>
                 <h5 class="mt-3 no-wrap" th:text="${s.user.name != null ? s.user.name : 'Không có'}"></h5>
                 <p class="text-start">
