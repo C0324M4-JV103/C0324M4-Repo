@@ -291,3 +291,14 @@ h2 {
     transition: background-color 0.3s;
     width: max-content;
 }
+
+.phase-number-card {
+    border-radius: 15px;
+    padding: 5px 10px;
+    display: inline-block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    background-color: #282781;
+    color: #ffffff;
+    font-weight: bold;
+}
