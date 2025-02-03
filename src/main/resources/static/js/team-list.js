@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 deleteTeamId = null;
                 const deleteModal = bootstrap.Modal.getInstance(document.getElementById('deleteModal'));
                 deleteModal.hide();
-                location.reload();
+                // location.reload();
             }
         }
     }

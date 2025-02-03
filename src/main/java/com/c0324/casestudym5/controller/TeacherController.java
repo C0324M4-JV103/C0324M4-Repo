@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,9 +41,11 @@ public class TeacherController {
     private final ClazzService classService;
     private final DocumentService documentService;
     private final FirebaseService firebaseService;
+    private final SimpMessagingTemplate messagingTemplate;
+
 
     @Autowired
-    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService, StudentService studentService, ClazzService classService, DocumentService documentService, FirebaseService firebaseService) {
+    public TeacherController(TeacherService teacherService, TeamService teamService, UserService userService, TopicService topicService, StudentService studentService, ClazzService classService, DocumentService documentService, FirebaseService firebaseService, SimpMessagingTemplate messagingTemplate) {
         this.teacherService = teacherService;
         this.teamService = teamService;
         this.userService = userService;
@@ -51,6 +54,7 @@ public class TeacherController {
         this.classService = classService;
         this.documentService = documentService;
         this.firebaseService = firebaseService;
+        this.messagingTemplate = messagingTemplate;
     }
     @GetMapping("/detail/{id}")
     public String getTeacher(@PathVariable Long id, Model model) {
@@ -98,8 +102,11 @@ public class TeacherController {
     @MessageMapping("/delete-team")
     public String handleNotification(@Payload Map<String, Object> payload, Principal principal) {
         Long teamId = Long.parseLong(payload.get("teamId").toString());
+        Team team = teamService.findById(teamId);
         User sender = userService.findByEmail(principal.getName());
         teamService.deleteTeam(teamId, sender);
+
+        messagingTemplate.convertAndSend("/socket/notification", "Đã xóa nhóm " + team.getName() + " thành công");
         return "redirect:/teacher/team";
     }
 
@@ -110,8 +117,11 @@ public class TeacherController {
         Date newDeadline = sdf.parse(payload.get("deadline").toString());
         User setBy = userService.findByEmail(principal.getName());
         topicService.setNewDeadline(teamId, newDeadline, setBy);
+
+        messagingTemplate.convertAndSend("/socket/notification", "Hạn chót nộp dự án đã được cập nhật");
         return "redirect:/teacher/team";
     }
+
 
     @GetMapping("/topics")
     public String getPendingTopics(Model model,
