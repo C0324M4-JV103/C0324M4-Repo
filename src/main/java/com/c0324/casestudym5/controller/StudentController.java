@@ -1,9 +1,6 @@
 package com.c0324.casestudym5.controller;
 
-import com.c0324.casestudym5.dto.NotificationDTO;
-import com.c0324.casestudym5.dto.RegisterTeacherDTO;
-import com.c0324.casestudym5.dto.RegisterTopicDTO;
-import com.c0324.casestudym5.dto.TeamDTO;
+import com.c0324.casestudym5.dto.*;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.service.*;
 import com.c0324.casestudym5.util.AppConstants;
@@ -37,29 +34,18 @@ public class StudentController {
     private final TeamService teamService;
     private final TopicService topicService;
     private final InvitationService invitationService;
-    private final NotificationService notificationService;
     private final TeacherService teacherService;
+    private final DocumentService documentService;
 
     @Autowired
-    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService, NotificationService notificationService, TeacherService teacherService) {
+    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService, TeacherService teacherService, DocumentService documentService) {
         this.studentService = studentService;
         this.userService = userService;
         this.teamService = teamService;
         this.topicService = topicService;
         this.invitationService = invitationService;
-        this.notificationService = notificationService;
         this.teacherService = teacherService;
-    }
-
-    @ModelAttribute
-    public void addNotificationsToModel(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
-        User currentUser = userService.findByEmail(userEmail);
-        if (currentUser != null) {
-            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
-            model.addAttribute("notifications", notifications);
-        }
+        this.documentService = documentService;
     }
 
     @InitBinder
@@ -84,6 +70,26 @@ public class StudentController {
         return studentService.findStudentByUserId(currentUser.getId());
     }
 
+
+    @GetMapping("/menu")
+    public String studentMenu() {
+        Student currentStudent = getCurrentStudent();
+        if (currentStudent.getTeam() != null) {
+            return "redirect:/student/info-team";
+        }
+        return "redirect:/student/team";
+    }
+
+    @GetMapping("/student-details/{id}")
+    @ResponseBody
+    public ResponseEntity<InvitedStudentDTO> getStudentById(@PathVariable Long id) {
+        InvitedStudentDTO studentDTO = studentService.getStudentDTOById(id);
+        if (studentDTO != null) {
+            return ResponseEntity.ok(studentDTO);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
     @GetMapping("/team")
     public String formRegisterTeam(@RequestParam(name = "page", required = false, defaultValue = "1") int page,
                                    @RequestParam(name = "search", required = false, defaultValue = "") String search,
@@ -94,19 +100,21 @@ public class StudentController {
         if (!model.containsAttribute("team")) {
             model.addAttribute("team", new TeamDTO());
         }
+
+        if (currentTeam != null && !currentStudent.isLeader()) {
+            return "common/404";
+        }
+
+
         Page<Student> availableStudents = studentService.getAvailableStudents(page, search, currentStudent.getId());
         List<Invitation> invitation = invitationService.findByStudent(currentStudent);
 
-        boolean isInTeam = (currentTeam != null);
-        boolean isLeader = (currentTeam != null && currentStudent.isLeader());
-
         model.addAttribute("search", search);
         model.addAttribute("currentPage", page);
-        model.addAttribute("isInTeam", isInTeam);
-        model.addAttribute("isLeader", isLeader);
-        model.addAttribute("invitation", invitation);
-        model.addAttribute("list", availableStudents);// hiện thông tin lời mời
+        model.addAttribute("invitation", invitation); // hiện thông tin lời mời
+        model.addAttribute("list", availableStudents);
         model.addAttribute("currentTeam", currentTeam);
+        model.addAttribute("currentStudent", currentStudent);
         model.addAttribute("invitationService", invitationService);
         model.addAttribute("totalPages", availableStudents.getTotalPages());
 
@@ -161,26 +169,17 @@ public class StudentController {
 
     @PostMapping("/invitation/handle")
     public String handleInvitation(Long invitationId, boolean accept, RedirectAttributes redirectAttributes) {
+        String result = invitationService.handleInvitation(invitationId, accept);
 
-        Invitation invitation = invitationService.findById(invitationId);
-
-        Student student = invitation.getStudent();
-        Team team = invitation.getTeam();
-
-        if (accept) {
-            if (team.getStudents().size() < 5) {
-                student.setTeam(team);
-                studentService.save(student);
-                // xóa khỏi db khi xác nhận
-                invitationService.deleteAllByStudent(student);
-                redirectAttributes.addFlashAttribute("successMessage", "Bạn đã tham gia nhóm thành công!");
-                return "redirect:/student/info-team";
-            } else {
-                redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ thành viên!");
-            }
-        } else {
-            invitationService.delete(invitation);
+        if ("success".equals(result)) {
+            redirectAttributes.addFlashAttribute("successMessage", "Bạn đã tham gia nhóm thành công!");
+            return "redirect:/student/info-team";
+        } else if ("full".equals(result)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã đủ thành viên!");
+            redirectAttributes.addFlashAttribute("errorType", "full");
+        } else if ("declined".equals(result)) {
             redirectAttributes.addFlashAttribute("errorMessage", "Bạn đã từ chối lời mời!");
+            redirectAttributes.addFlashAttribute("errorType", "declined");
         }
         return "redirect:/student/team";
     }
@@ -190,9 +189,11 @@ public class StudentController {
     public String teamInfo(Model model, Pageable pageable) {
         Student currentStudent = getCurrentStudent();
         Team team = currentStudent.getTeam();
+        if (team == null) {
+            return "common/404";
+        }
         Page<Student> availableStudents = studentService.findAllExceptCurrentStudent(currentStudent.getId(), pageable);
 
-        model.addAttribute("student", currentStudent);
         model.addAttribute("team", team);
         model.addAttribute("student", currentStudent);
         model.addAttribute("list", availableStudents);
@@ -215,8 +216,7 @@ public class StudentController {
             redirectAttributes.addFlashAttribute("errorMessage", "Nhóm đã có đề tài hoặc đang đợi phê duyệt");
             return "redirect:/student/info-team";
         }
-        if (currentTeam.getTeacher() == null)
-        {
+        if (currentTeam.getTeacher() == null) {
             redirectAttributes.addFlashAttribute("errorMessage", "Vui lòng đăng ký giáo viên trước khi đăng ký đề tài!");
             return "redirect:/student/info-team";
         }
@@ -293,16 +293,20 @@ public class StudentController {
     public String redirectToProgress() {
         Student currentStudent = getCurrentStudent();
         Team currentTeam = currentStudent.getTeam();
-        if (currentTeam != null && currentTeam.getTopic() != null && currentTeam.getTopic().getApproved() == AppConstants.TOPIC_APPROVED) {
+        if (currentTeam == null) {
+            return "common/404";
+        }
+        if (currentTeam.getTopic() != null && currentTeam.getTopic().getApproved() == AppConstants.TOPIC_APPROVED) {
             Long topicId = currentTeam.getTopic().getId();
             return "redirect:/progress/" + topicId;
         }
         return "redirect:/student/info-team";
     }
 
+
     @GetMapping("/list-teacher")
     public String getAllTeachers(@RequestParam(defaultValue = "0") int page, Model model) {
-        int pageSize = 10; // 10 giáo viên mỗi trang
+        int pageSize = 5; // 10 giáo viên mỗi trang
         Pageable pageable = PageRequest.of(page, pageSize);
 
         // Lấy danh sách giáo viên
@@ -378,8 +382,8 @@ public class StudentController {
         return "redirect:/student/list-teacher";
     }
 
-
     @GetMapping("/teacher-details/{id}")
+    @ResponseBody
     public ResponseEntity<RegisterTeacherDTO> getTeacherById(@PathVariable Long id) {
         Optional<Teacher> teacherOptional = teacherService.getTeacherById(id);
         if (teacherOptional.isPresent()) {
@@ -399,5 +403,24 @@ public class StudentController {
             return ResponseEntity.ok(teacherDTO);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/documents")
+    public String getAllDocuments(@RequestParam(defaultValue = "0") int page,
+                                  @RequestParam(defaultValue = "5") int size,
+                                  Model model) {
+        User currentUser = userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Student currentStudent = studentService.findStudentByUserId(currentUser.getId());
+        Team currentTeam = currentStudent.getTeam();
+        Teacher teacher = currentTeam.getTeacher();
+        Page<Document> documentPage = documentService.getDocumentsPage(page, size, teacher);
+
+        model.addAttribute("documents", documentPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", documentPage.getTotalPages());
+        model.addAttribute("totalItems", documentPage.getTotalElements());
+        model.addAttribute("pageSize", size);
+
+        return "student/document-view";
     }
 }

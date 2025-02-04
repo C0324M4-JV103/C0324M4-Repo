@@ -13,4 +13,5 @@ public interface InvitationService {
     boolean existsByStudentAndTeam(Student student, Team team);
     void deleteAllByStudent(Student student);
     void inviteStudent(Long studentId, Student currentStudent, Team currentTeam);
+    String handleInvitation(Long invitationId, boolean accept);
 }

@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <span class="timestamp">${comment.timeDifference}</span>
                     </div>
                     <p class="mb-2" >${comment.content}</p>
-                    <button class="btn btn-outline-primary btn-sm" id="btn-show-reply-${comment.id}" onclick="toggleQuestion(this)">
+                    <button class="btn btn-sm-reply" id="btn-show-reply-${comment.id}" onclick="toggleQuestion(this)">
                         <i class="fas fa-reply"></i> Trả lời
                     </button>
                     <!-- Ô trả lời bên trong khung -->

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/documents.css">
+    <link rel="stylesheet" href="/css/home-page.css">
+    <title>Upload Document</title>
+</head>
+<body class="pt-5">
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <!-- Success Toast -->
+    <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert" aria-live="assertive"
+         aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" th:text="${toastMessage}"></div>
+    </div>
+
+    <!-- Error Toast -->
+    <div th:if="${toastMessage != null and toastType == 'danger'}" class="toast" role="alert" aria-live="assertive"
+         aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Cảnh báo</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" th:text="${toastMessage}"></div>
+    </div>
+</div>
+<div th:replace="layout :: nav"></div>
+<div id="toast-container"></div> <!--toast thông báo mới-->
+<h1 class="text-center mb-4">Thêm tài liệu</h1>
+<div class="container">
+
+    <form th:action="@{/teacher/documents/upload}" th:object="${documentDTO}" method="post"
+          enctype="multipart/form-data" class="container">
+        <div th:if="${notFoundError}" th:text="${notFoundError}" class="error"></div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Tên tài liệu</label>
+            <input type="text" id="name" th:field="*{name}" class="form-control">
+            <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Mô tả</label>
+            <textarea id="description" th:field="*{description}" class="form-control"></textarea>
+            <div th:if="${#fields.hasErrors('description')}" th:errors="*{description}" class="error"></div>
+        </div>
+        <div class="mb-3">
+            <label for="file" class="form-label">Chọn file</label>
+            <input type="file" id="file" th:field="*{fileUrl}" class="form-control">
+            <div th:if="${#fields.hasErrors('fileUrl')}" th:errors="*{fileUrl}" class="error"></div>
+        </div>
+<!--        <div class="mb-3">-->
+<!--            <label for="teacherId" class="form-label">ID giáo viên</label>-->
+<!--            <input type="text" id="teacherId" th:field="*{teacher}" class="form-control">-->
+<!--            <div th:if="${#fields.hasErrors('teacher')}" th:errors="*{teacher}" class="error"></div>-->
+<!--        </div>-->
+        <button type="submit" class="btn btn-primary w-100">Tải lên</button>
+    </form>
+    <div th:if="${!documents.isEmpty()}">
+        <div class="table-container" >
+            <h2 class="mt-5 text-center">Tài liệu đã tải lên</h2>
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên tài liệu</th>
+                    <th>Mô tả</th>
+                    <th>Giáo viên</th>
+                    <th>Link tải</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="document,stat : ${documents}">
+                    <td th:text="${stat.index + 1}"></td>
+                    <td th:text="${document.name}"></td>
+                    <td th:text="${document.description}"></td>
+                    <td th:text="${document.teacher.user.name}"></td>
+                    <td><a th:href="${document.fileUrl.url}" class="btn btn-link">Download</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Phân trang -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/teacher/documents/upload(page=${currentPage - 1}, size=${pageSize})}"
+                       aria-label="Previous">Trước</a>
+                </li>
+                <li class="page-item"
+                    th:each="pageNum : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${currentPage == pageNum} ? 'active'">
+                    <a class="page-link"
+                       th:href="@{/teacher/documents/upload(page=${pageNum}, size=${pageSize})}"
+                       th:text="${pageNum + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link"
+                       th:href="@{/teacher/documents/upload(page=${currentPage + 1}, size=${pageSize})}"
+                       aria-label="Next">Tiếp</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+
+<div th:replace="layout :: footer"></div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.6.9/dist/sweetalert2.min.js"></script>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
+</body>
+</html>

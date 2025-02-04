@@ -8,6 +8,7 @@ import com.c0324.casestudym5.service.NotificationService;
 import com.c0324.casestudym5.service.UserService;
 import com.c0324.casestudym5.util.CommonMapper;
 import com.c0324.casestudym5.util.DateTimeUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
@@ -19,6 +20,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -27,29 +29,16 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final NotificationService notificationService;
 
     @Autowired
-    public UserController(UserService userService, NotificationService notificationService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.notificationService = notificationService;
     }
 
     @InitBinder
     public void initBinder(WebDataBinder dataBinder) {
         StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
         dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
-    }
-
-    @ModelAttribute
-    public void addNotificationsToModel(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userEmail = authentication.getName();
-        User currentUser = userService.findByEmail(userEmail);
-        if (currentUser != null) {
-            List<NotificationDTO> notifications = notificationService.getTop3NotificationsByUserIdDesc(currentUser.getId());
-            model.addAttribute("notifications", notifications);
-        }
     }
 
     @GetMapping("/change-password")
@@ -59,7 +48,8 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordDTO changePasswordDTO, BindingResult bindingResult, Model model) {
+    public String changePassword(@Valid @ModelAttribute("changePassword") ChangePasswordDTO changePasswordDTO, BindingResult bindingResult,
+                                 Model model, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("changePassword", changePasswordDTO);
             return "common/change-password-form";
@@ -84,6 +74,10 @@ public class UserController {
             model.addAttribute("error", "Mật khẩu cũ không đúng");
             return "common/change-password-form";
         }
+
+        // Invalidate the session
+        request.getSession().invalidate();
+        redirectAttributes.addFlashAttribute("toastType", "success");
 
         return "redirect:/login?logout";
     }

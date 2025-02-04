@@ -31,4 +31,10 @@ public class Notification {
 
     @Column(columnDefinition = "TIMESTAMP")
     private Date createdAt;
+
+    @Column(name = "is_read", nullable = false)
+    private boolean isRead = false;
+
+    private String url;
+
 }

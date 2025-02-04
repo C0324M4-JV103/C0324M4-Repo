@@ -11,6 +11,7 @@
 <body>
 
 <div th:replace="~{layout :: nav}"></div>
+<div id="toast-container"></div> <!--toast thông báo mới-->
 
 <div class="container">
     <h1 class="main-title py-5">DANH SÁCH ĐỀ TÀI</h1>
@@ -20,8 +21,8 @@
                 <img th:src="${topic?.image?.url}" class="ann-image" alt="img">
             </div>
             <div class="card-body">
-                <h5 class="card-title" th:text="${topic.name}">Tên đề tài</h5>
-                <h5 class="card-title ann-title" th:text="${topic.content}">Nội dung đề tài </h5>
+                <h5 class="card-title fw-bold" th:text="${topic.name}">Tên đề tài</h5>
+<!--                <h5 class="card-title ann-title" th:text="${topic.content}">Nội dung đề tài </h5>-->
                 <a th:href="@{/topics/{id}(id=${topic.id})}" class="view-details">Xem chi tiết →</a>
             </div>
         </div>
@@ -44,6 +45,9 @@
 
 <div th:replace="~{layout :: footer}"></div>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
-
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
 </body>
 </html>

@@ -13,7 +13,8 @@
 <body>
 <!-- Navbar -->
 <div th:replace="~{layout :: nav}"></div>
-<!-- Toast message -->
+<div id="toast-container"></div> <!--toast thông báo mới-->
+    <!-- Toast message -->
 <div th:if="${errorMessage != null}" class="toast-container position-fixed top-0 end-0 p-3">
     <div class="toast" role="alert" aria-live="assertive" aria-atomic="true" id="warningToast">
         <div class="toast-header bg-danger text-white">
@@ -73,7 +74,9 @@
                 <p class="fw-bold mb-0" th:text="|Giai đoạn *{phaseNumber} (Vui lòng tự đánh giá tiến độ giai đoạn)|"></p>
                 <div class="d-flex align-items-center">
                     <p class="fw-bold mb-0 me-2" id="progressPercent" th:text="${reportTopic.phaseProgressPercent != null ? reportTopic.phaseProgressPercent : 0} + '%'"></p>
-                    <input th:field="*{phaseProgressPercent}" type="number" id="progressNumber" min="0" max="100" class="form-control form-control-sm" style="width: 80px;" placeholder="0-100">
+                    <label for="progressSlider"></label><input th:field="*{phaseProgressPercent}" type="range" id="progressSlider" min="0" max="100" step="1"
+                                                               class="form-range" style="width: 80%;"
+                                                               th:value="${reportTopic.phaseProgressPercent != null ? reportTopic.phaseProgressPercent : 0}">
                 </div>
             </div>
             <!-- Progress Bar -->
@@ -83,6 +86,7 @@
                      th:aria-valuenow="${reportTopic.phaseProgressPercent} != null ? ${reportTopic.phaseProgressPercent} : 0"
                      aria-valuemin="0" aria-valuemax="100"></div>
             </div>
+
 
             <div class="form-floating mb-4">
                 <textarea id="content" class="form-control form-control-lg custom-height" th:field="*{reportContent}" placeholder="Nhập nội dung báo cáo" required></textarea>
@@ -105,7 +109,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const progressBar = document.getElementById('progressBar');
-        const progressNumber = document.getElementById('progressNumber');
+        const progressSlider = document.getElementById('progressSlider');
         const progressPercent = document.getElementById('progressPercent');
 
         function updateProgress(value) {
@@ -114,11 +118,13 @@
             progressPercent.textContent = value + '%';
         }
 
-        progressNumber.addEventListener('input', function () {
-            const value = progressNumber.value;
+        // Cập nhật khi người dùng thay đổi giá trị của thanh trượt
+        progressSlider.addEventListener('input', function () {
+            const value = progressSlider.value;
             updateProgress(value);
         });
     });
+
 </script>
 <!-- JavaScript -->
 <script>
@@ -141,6 +147,8 @@
     });
 </script>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
 <script th:src="@{/js/notification.js}"></script>
 <script th:src="@{/js/toast-noti.js}"></script>
 </body>

@@ -17,7 +17,7 @@
 
 .card-info-team img {
     width: 100%;
-    height: auto;
+    height: 200px;
     border-radius: 8px;
 }
 
@@ -105,14 +105,19 @@ h5 {
     border-color: #b15333;
     margin-bottom: 3rem;
 }
+.add-sv{
+    text-align: center;
+    background: #fd6f3c;
+    color: white;
+    margin-left: 850px;
+}
 
-.add-topic:hover {
+.add-topic:hover, .add-sv:hover {
     background: #282781;
     border-color: #282781;
 }
 
 .text-register-topic {
-    margin-top: 5rem;
     font-size: 1.6rem;
     color: red;
     font-weight: 500;

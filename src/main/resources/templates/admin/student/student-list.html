@@ -5,13 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Danh sách Sinh Viên</title>
-    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!--link các icon trong footer-->
-    <link rel="stylesheet" href="/css/teachers.css">
     <link rel="stylesheet" href="/css/home-page.css">
+    <link rel="stylesheet" href="/css/teachers.css">
 </head>
 <body>
 <div class="toast-container position-fixed top-0 end-0 p-3">
@@ -48,15 +47,13 @@
                 <option value=''>Chọn lớp</option>
                 <option th:each="c : ${classes}" th:text="${c.name}" th:value="${c.id}"></option>
             </select>
-            <button type="submit" class="btn btn-primary me-1" style="width: 400px;">
-                <i class="fas fa-search"></i> Tìm kiếm
+            <button type="submit" class="btn btn-primary me-1">
+                <i class="fas fa-search"></i>
             </button>
-            <a th:href="@{/admin/student}" class="btn btn-danger" style="width: 500px;">
-                <i class="fa-solid fa-x"></i> Bỏ tìm kiếm
+            <a th:href="@{/admin/student}" class="btn btn-danger">
+                <i class="fa-solid fa-x"></i>
             </a>
         </form>
-    </div>
-    <div class="mb-5">
         <a href="/admin/create-student" class="btn btn-success">
             <i class="fas fa-plus"></i> Thêm sinh viên
         </a>

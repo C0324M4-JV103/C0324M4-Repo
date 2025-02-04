@@ -12,6 +12,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
+
 import com.c0324.casestudym5.model.Topic;
 
 @Service
@@ -44,156 +45,121 @@ public class MailService {
         newThread.setName("mail-sender");
         newThread.start();
     }
-    public void sendMailInvitedTeamToStudent(String to, String subject, String recipientName, String senderName , String teamName) {
+
+    private void sendEmail(String to, String subject, Context context, String templateName) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(to);
             helper.setSubject(subject);
-            // Create the email content using Thymeleaf
-            Context context = new Context();
-            context.setVariable("recipientName", recipientName);
-            context.setVariable("senderName", senderName);
-            context.setVariable("teamName", teamName);
-            String content = templateEngine.process("common/invited-team-mail", context);
-            helper.setText(content, true); // set true to send HTML content
-            mailSender.send(message);
+            // Tạo nội dung email từ Thymeleaf
+            String content = templateEngine.process(templateName, context);
+            helper.setText(content, true); // set true để gửi nội dung HTML
+            queue.add(message);
         } catch (Exception e) {
             throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
         }
     }
 
-    public void sendMailApprovedToTeam(String to, String subject, String teamName, String teacherName, String topicName, String action) {
+    public void sendMailInvitedTeamToStudent(String to, String subject, String recipientName, String senderName, String teamName) {
+        Context context = new Context();
+        context.setVariable("recipientName", recipientName);
+        context.setVariable("senderName", senderName);
+        context.setVariable("teamName", teamName);
+        sendEmail(to, subject, context, "common/invited-team-mail");
+    }
+
+    public void sendMailRejectToTeam(Topic topic, String to, String subject, String teamName,
+                                     String teacherName, String topicName, Long topicId, String action, String reason) {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
 
         executorService.submit(() -> {
-            try {
-                MimeMessage message = mailSender.createMimeMessage();
-                MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-                helper.setTo(to);
-                helper.setSubject(subject);
 
             // Create the email content using Thymeleaf
-                Context context = new Context();
-                context.setVariable("teamName", teamName);
-                context.setVariable("teacherName", teacherName);
-                context.setVariable("topicName", topicName);
-                context.setVariable("action", action);
-                String content = templateEngine.process("common/topic-notification-mail", context);
-                helper.setText(content, true); // set true to send HTML content
+            Context context = new Context();
+            context.setVariable("teamName", teamName);
+            context.setVariable("teacherName", teacherName);
+            context.setVariable("topicName", topicName);
+            context.setVariable("topicId", topicId);
+            context.setVariable("topic", topic);
+            context.setVariable("action", action);
+            context.setVariable("reason", reason); // Pass reason to email template
+            sendEmail(to, subject, context, "common/topic-notification-mail");
 
-                mailSender.send(message);
-            } catch (Exception e) {
-                throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
-            }
+        });
+        executorService.shutdown();
+    }
+
+    public void sendMailApprovedToTeam(Topic topic, String to, String subject, String teamName,
+                                       String teacherName, String topicName, Long topicId, String action) {
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        executorService.submit(() -> {
+            // Create the email content using Thymeleaf
+            Context context = new Context();
+            context.setVariable("teamName", teamName);
+            context.setVariable("teacherName", teacherName);
+            context.setVariable("topicName", topicName);
+            context.setVariable("topicId", topicId);
+            context.setVariable("topic", topic);
+            context.setVariable("action", action);
+            sendEmail(to, subject, context, "common/topic-notification-mail");
         });
         executorService.shutdown();
     }
 
     public void sendRegisterTopicEmail(String to, String subject, String senderName, String teacherName, String topicName, String teamName) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(to);
-            helper.setSubject(subject);
-
-            Context context = new Context();
-            context.setVariable("senderName", senderName);
-            context.setVariable("teacherName", teacherName);
-            context.setVariable("topicName", topicName);
-            context.setVariable("teamName", teamName);
-            String content = templateEngine.process("common/register-topic-mail", context);
-
-            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
-            queue.add(message);
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
-        }
+        Context context = new Context();
+        context.setVariable("senderName", senderName);
+        context.setVariable("teacherName", teacherName);
+        context.setVariable("topicName", topicName);
+        context.setVariable("teamName", teamName);
+        sendEmail(to, subject, context, "common/register-topic-mail");
     }
 
     public void sendSubmittedProgressReportEmail(String to, String subject, String senderName, String teacherName, Topic topic, String teamName, String phaseName) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(to);
-            helper.setSubject(subject);
-
-            Context context = new Context();
-            context.setVariable("studentName", senderName);
-            context.setVariable("teacherName", teacherName);
-            context.setVariable("topic", topic);
-            context.setVariable("teamName", teamName);
-            context.setVariable("phaseName", phaseName);
-            String content = templateEngine.process("common/progress-report-mail", context);
-
-            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
-            queue.add(message);
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
-        }
+        Context context = new Context();
+        context.setVariable("studentName", senderName);
+        context.setVariable("teacherName", teacherName);
+        context.setVariable("topic", topic);
+        context.setVariable("teamName", teamName);
+        context.setVariable("phaseName", phaseName);
+        sendEmail(to, subject, context, "common/progress-report-mail");
     }
 
     public void sendDeleteTeamEmail(String to, String subject, String senderName, String studentName, String teamName) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(to);
-            helper.setSubject(subject);
-
-            Context context = new Context();
-            context.setVariable("senderName", senderName);
-            context.setVariable("studentName", studentName);
-            context.setVariable("teamName", teamName);
-            String content = templateEngine.process("common/delete-team-email", context);
-
-            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
-            queue.add(message);
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
-        }
-
+        Context context = new Context();
+        context.setVariable("senderName", senderName);
+        context.setVariable("studentName", studentName);
+        context.setVariable("teamName", teamName);
+        sendEmail(to, subject, context, "common/delete-team-email");
     }
 
     public void sendQuestionEmail(String to, String subject, String senderName, String teacherName, String topicName, Long topicId) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(to);
-            helper.setSubject(subject);
-
-            Context context = new Context();
-            context.setVariable("senderName", senderName);
-            context.setVariable("teacherName", teacherName);
-            context.setVariable("topicName", topicName);
-            context.setVariable("topicId", topicId);
-            String content = templateEngine.process("common/student-question-mail", context);
-
-            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
-            queue.add(message);
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
-        }
+        Context context = new Context();
+        context.setVariable("senderName", senderName);
+        context.setVariable("teacherName", teacherName);
+        context.setVariable("topicName", topicName);
+        context.setVariable("topicId", topicId);
+        sendEmail(to, subject, context, "common/student-question-mail");
     }
 
+
     public void sendAnswerEmail(String to, String subject, String senderName, String studentName, String topicName, Long topicId) {
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-            helper.setTo(to);
-            helper.setSubject(subject);
+        Context context = new Context();
+        context.setVariable("senderName", senderName);
+        context.setVariable("studentName", studentName);
+        context.setVariable("topicName", topicName);
+        context.setVariable("topicId", topicId);
+        sendEmail(to, subject, context, "common/teacher-answer-mail");
+    }
 
-            Context context = new Context();
-            context.setVariable("senderName", senderName);
-            context.setVariable("studentName", studentName);
-            context.setVariable("topicName", topicName);
-            context.setVariable("topicId", topicId);
-            String content = templateEngine.process("common/teacher-answer-mail", context);
-
-            helper.setText(content, true); // set true để nội dung email được gửi dưới dạng HTML
-            queue.add(message);
-        } catch (Exception e) {
-            throw new RuntimeException("Lỗi khi gửi email: " + e.getMessage(), e);
-        }
-
+    public void sendNewDeadlineEmail(String to, String subject, String senderName, String studentName, String topicName, Long topicId) {
+        Context context = new Context();
+        context.setVariable("senderName", senderName);
+        context.setVariable("studentName", studentName);
+        context.setVariable("topicName", topicName);
+        context.setVariable("topicId", topicId);
+        sendEmail(to, subject, context, "common/new-deadline-mail");
     }
 }

@@ -34,7 +34,8 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     Optional<Student> findByCode(String code);
 
     Student findStudentByUserId(Long id);
-    @Query("select s from Student s where s.id != :currentStudentId")
+    @Query("select s from Student s where s.id != :currentStudentId " +
+            "order by case when s.team is null then 0 else 1 end, SUBSTRING_INDEX(s.user.name, ' ', -1) asc ")
     Page<Student> findAllExceptCurrentStudent(Long currentStudentId, Pageable pageable);
     @Query("select s from Student s where s.id != :currentStudentId " +
             "and (s.user.name like %:search% or s.code like %:search%)")
@@ -43,4 +44,14 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
 
     @Query("SELECT s FROM Student s WHERE s.team.id = :teamId")
     List<Student> findStudentsByTeamId(@Param("teamId") Long teamId);
+
+    @Query("SELECT s FROM Student s WHERE s.team.teacher.id = :teacherId " +
+            "AND (:name IS NULL OR s.user.name LIKE %:name%) " +
+            "AND (:email IS NULL OR s.user.email LIKE %:email%) " +
+            "AND (:clazzId IS NULL OR s.clazz.id = :clazzId)")
+    Page<Student> findStudentsByTeacherIdAndSearchCriteria(@Param("teacherId") Long teacherId,
+                                                           @Param("name") String name,
+                                                           @Param("email") String email,
+                                                           @Param("clazzId") Long clazzId,
+                                                           Pageable pageable);
 }

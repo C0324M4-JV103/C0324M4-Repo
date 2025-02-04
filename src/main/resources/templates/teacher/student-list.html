@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="/css/home-page.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách Sinh Viên</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!--link các icon trong footer-->
+    <link rel="stylesheet" href="/css/home-page.css">
+    <link rel="stylesheet" href="/css/teacher-student-list.css">
+</head>
+<body>
+<!-- Navbar -->
+<div th:replace="~{layout.html :: nav}"></div>
+<div id="toast-container"></div> <!--toast thông báo mới-->
+
+
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    <!-- Success Toast -->
+    <div th:if="${toastMessage != null and toastType == 'success'}" class="toast" role="alert" aria-live="assertive"
+         aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <strong class="me-auto">Thành công</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" th:text="${toastMessage}"></div>
+    </div>
+
+    <!-- Error Toast -->
+    <div th:if="${toastMessage != null and toastType == 'danger'}" class="toast" role="alert" aria-live="assertive"
+         aria-atomic="true">
+        <div class="toast-header bg-danger text-white">
+            <strong class="me-auto">Cảnh báo</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" th:text="${toastMessage}"></div>
+    </div>
+</div>
+
+<div class="student-list">
+    <!-- Search Bar -->
+    <div class="search-bar-container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <form th:action="@{/teacher/student-list}" method="get" class="d-flex align-items-center" th:object="${search}">
+                <input type="text" name="name" class="form-control me-3" placeholder="Tên sinh viên" th:field="*{name}">
+                <input type="text" name="email" class="form-control me-3" placeholder="Email sinh viên" th:field="*{email}">
+                <select class="form-select me-3" name="class" th:field="*{clazzId}">
+                    <option value=''>Chọn lớp</option>
+                    <option th:each="c : ${classes}" th:text="${c.name}" th:value="${c.id}"></option>
+                </select>
+                <button type="submit" class="btn btn-primary me-1" style="width: 400px;">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
+                <a th:href="@{/teacher/student-list}" class="btn btn-danger" style="width: 500px;">
+                    <i class="fa-solid fa-x"></i> Bỏ tìm kiếm
+                </a>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${students.isEmpty()}" class="alert alert-warning text-center">
+        Không tìm thấy học sinh nào!
+    </div>
+
+    <div class="card-info-team-container">
+        <div th:each="s : ${students}">
+            <div class="card-info-team">
+                <div class="card-image">
+                    <img th:if="${s.user?.avatar?.url != null}" th:src="${s.user?.avatar?.url}" alt="/img/default-image-student.png">
+                    <img th:unless="${s.user?.avatar?.url != null}" th:src="@{${s.user.gender == 'MALE' ? '/img/avatar-boy.png' : '/img/avatar-girl.png'}}" alt="img">
+                </div>
+                <h5 class="mt-3 no-wrap" th:text="${s.user.name != null ? s.user.name : 'Không có'}"></h5>
+                <p class="text-start">
+                    <span class="fas fa-id-card me-1"></span><strong>MSSV: </strong> <span th:text="${s.code != null ? s.code : 'Không có'}"></span>
+                </p>
+                <p class="text-start">
+                    <span class="fas fa-users me-1"></span><strong>Lớp: </strong> <span th:text="${s.clazz.name != null ? s.clazz.name : 'Không có'}"></span>
+                </p>
+                <p class="text-start">
+                    <span class="fas fa-calendar-alt me-1"></span><strong>Ngày sinh: </strong> <span th:text="${s.user.dob != null ? #dates.format(s.user.dob, 'dd/MM/yyyy') : 'Không có'}"></span>
+                </p>
+                <p class="text-start">
+                    <span class="fas fa-envelope me-1"></span><strong>Email: </strong> <span th:text="${s.user.email != null ? s.user.email : 'Không có'}"></span>
+                </p>
+                <p class="text-start">
+                    <span class="fas fa-phone me-1"></span><strong>Số điện thoại: </strong> <span th:text="${s.user.phoneNumber != null ? s.user.phoneNumber : 'Không có'}"></span>
+                </p>
+                <p class="text-start" th:if="${s.team != null}">
+                    <span class="fas fa-users me-1"></span><strong>Nhóm: </strong> <span th:text="${s.team.name != null ? s.team.name : 'Không có'}"></span>
+                </p>
+                <p class="text-start" th:unless="${s.team != null}">
+                    <span class="fas fa-users me-1"></span><strong>Nhóm: </strong> <span>Không có</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="pagination-container">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/teacher/student-list(page=${currentPage - 1}, name=${search.name}, email=${search.email}, clazzId=${search.clazzId})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:href="@{/teacher/student-list(page=${i}, name=${search.name}, email=${search.email}, clazzId=${search.clazzId})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/teacher/student-list(page=${currentPage + 1}, name=${search.name}, email=${search.email}, clazzId=${search.clazzId})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+</div>
+<!-- Footer -->
+<div th:replace="~{layout :: footer}"></div>
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
+<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
+</body>
+</html>

@@ -27,7 +27,7 @@ public class StudentDTO {
     @NotEmpty(message = "Tên không được để trống")
     private String name;
 
-    @Pattern(regexp = "^MSV-\\d{4}$", message = "Mã sinh viên không hợp lệ. Định dạng phải là MSV-XXXX")
+    @Pattern(regexp = "^HV-\\d{3}$", message = "Mã sinh viên không hợp lệ. Định dạng phải là HV-XXX")
     @NotEmpty(message = "Mã sinh viên không được để trống")
     private String code;
 

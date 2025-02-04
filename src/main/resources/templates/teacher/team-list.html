@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Quản lí nhóm sinh viên</title>
@@ -12,6 +12,8 @@
 </head>
 <body>
 <div th:replace="layout :: nav" ></div>
+<div id="toast-container"></div> <!--toast thông báo mới-->
+<div class="toast-container position-fixed top-0 end-0 p-3"></div> <!--toast-->
 
 <div class="container search-container">
     <form th:action="@{/teacher/team}" method="get" >
@@ -61,7 +63,7 @@
                     </a>
                 </td>
                 <td>
-                    <a href="#" class="btn btn-secondary ">Hạn cuối nộp dự án</a>
+                    <a class="btn btn-secondary " th:attr="data-team-id=${team.id}, data-current-deadline=${#dates.format(team.deadline, 'dd/MM/yyyy')}" onclick="showDeadlineModal(this)" >Hạn cuối nộp dự án</a>
                 </td>
             </tr>
             </tbody>
@@ -85,11 +87,40 @@
     </div>
 </div>
 
+<!-- Deadline Modal -->
+<div class="modal fade" id="deadlineModal" tabindex="-1" aria-labelledby="deadlineModalLabel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deadlineModalLabel">Cập nhật hạn cuối nộp dự án</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="deadlineForm">
+                    <div class="mb-3">
+                        <label for="currentDeadline" class="form-label">Hạn nộp hiện tại</label>
+                        <input type="text" class="form-control" id="currentDeadline" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newDeadline" class="form-label">Hạn nộp mới</label>
+                        <input type="date" class="form-control" id="newDeadline">
+                    </div>
+                    <span id="deadlineError" class="text-danger"></span>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" id="saveDeadlineButton">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div th:replace="layout :: footer" class="margin-top"></div>
 
 <!-- Confirmation Modal -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="false">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -109,6 +140,8 @@
 <script th:src="@{/js/team-list.js}"></script>
 <script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
 <script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
 <script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>

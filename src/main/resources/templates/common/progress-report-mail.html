@@ -15,7 +15,7 @@
                     <td>
                         <b>Kính gửi <span th:text="${teacherName}">Giáo viên</span>,</b>
                         <p><span th:text="${studentName}">Một sinh viên</span> trong nhóm <strong th:text="${teamName}">Tên nhóm</strong> đã nộp báo cáo tiến độ giai đoạn <strong th:text="${phaseName}">Số giai đoạn</strong> của đề tài <strong th:text="${topic.name}">Tên đề tài</strong>.</p>
-                        <a th:href="@{http://localhost:8080/topics/(id=${topic.id})}" style="display: inline-block; padding: 11px 30px; margin: 20px 0 30px; font-size: 15px; color: #fff; background: #282781; border-radius: 60px; text-decoration: none;">Xem Tiến Độ Đề Tài</a>
+                        <a th:href="@{http://localhost:8080/progress/{id}(id=${topic.id})}" style="display: inline-block; padding: 11px 30px; margin: 20px 0 30px; font-size: 15px; color: #fff; background: #282781; border-radius: 60px; text-decoration: none;">Xem Tiến Độ Đề Tài</a>
                         <p>Xin cảm ơn!</p>
                         <b>- <span th:text="${teamName}">Đội ngũ</span></b>
                     </td>

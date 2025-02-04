@@ -1,5 +1,6 @@
 package com.c0324.casestudym5.service.impl;
 
+import com.c0324.casestudym5.dto.InvitedStudentDTO;
 import com.c0324.casestudym5.dto.StudentDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.dto.StudentSearchDTO;
@@ -29,15 +30,17 @@ public class StudentServiceImpl implements StudentService {
     private final FirebaseService firebaseService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final TeacherRepository teacherRepository;
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository, ClassRepository classRepository, MultiFileRepository multiFileRepository, RoleRepository roleRepository, FirebaseService firebaseService, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {this.studentRepository = studentRepository;
+    public StudentServiceImpl(StudentRepository studentRepository, ClassRepository classRepository, MultiFileRepository multiFileRepository, RoleRepository roleRepository, FirebaseService firebaseService, UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, TeacherRepository teacherRepository) {this.studentRepository = studentRepository;
         this.clazzRepository = classRepository;
         this.multiFileRepository = multiFileRepository;
         this.roleRepository = roleRepository;
         this.firebaseService = firebaseService;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.teacherRepository = teacherRepository;
     }
 
     @Override
@@ -69,6 +72,27 @@ public class StudentServiceImpl implements StudentService {
     public Student findById(Long id) {
         return studentRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public InvitedStudentDTO getStudentDTOById(Long id) {
+        Student student = studentRepository.findById(id).orElse(null);
+        if (student == null) {
+            return null;
+        }
+        return new InvitedStudentDTO(
+                student.getId(),
+                student.getUser().getName(),
+                student.getUser().getEmail(),
+                student.getClazz(),
+                student.getUser().getPhoneNumber(),
+                student.getUser().getDob(),
+                student.getUser().getAddress(),
+                student.getUser().getGender(),
+                student.getUser().getAvatar(),
+                student.getTeamStatus()
+        );
+    }
+
 
     @Override
     public Student findStudentByUserId(Long id) {
@@ -136,9 +160,6 @@ public class StudentServiceImpl implements StudentService {
 
         // Lưu Student
         studentRepository.save(newStudent);
-
-
-
     }
 
     @Override
@@ -209,6 +230,15 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public boolean existsByCode(String code) {
         return studentRepository.findByCode(code).isPresent();
+    }
+
+    @Override
+    public Page<Student> findStudentsByTeacherId(Long userId, Pageable pageable, StudentSearchDTO search) {
+        Teacher teacher = teacherRepository.findTeacherByUserId(userId);
+        if (teacher == null) {
+            return null;
+        }
+        return studentRepository.findStudentsByTeacherIdAndSearchCriteria(teacher.getId(), search.getName(), search.getEmail(), search.getClazzId(), pageable);
     }
 
 

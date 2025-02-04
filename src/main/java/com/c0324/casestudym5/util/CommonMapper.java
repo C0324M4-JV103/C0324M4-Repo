@@ -1,3 +1,4 @@
+
 package com.c0324.casestudym5.util;
 
 import com.c0324.casestudym5.dto.*;
@@ -44,6 +45,7 @@ public class CommonMapper {
         notificationDTO.setSenderName(notification.getSender().getName());
         notificationDTO.setSenderAvatar(notification.getSender().getAvatar() != null ? notification.getSender().getAvatar().getUrl() : AppConstants.URL_DEFAULT_AVATAR);
         notificationDTO.setTimeDifference(DateTimeUtil.getTimeDifference(notification.getCreatedAt()));
+        notificationDTO.setUrl(notification.getUrl());
         return notificationDTO;
     }
 

@@ -12,12 +12,14 @@ import com.c0324.casestudym5.util.DateTimeUtil;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -50,23 +52,37 @@ public class AdminController {
         this.facultyService = facultyService;
     }
 
+    @InitBinder
+    public void initBinder(WebDataBinder dataBinder) {
+        StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+        dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
+    }
+
     // Teacher Functionality
     @GetMapping("/teacher")
-    public String getAllTeachers(@RequestParam(required = false) String searchQuery,
+    public String getAllTeachers(@RequestParam(required = false) String email,
+                                 @RequestParam(required = false) String name,
+                                 @RequestParam(required = false) String phoneNumber,  // Sửa lại đây
                                  @RequestParam(defaultValue = "0") int page,
                                  @RequestParam(defaultValue = "5") int size, Model model) {
         Page<Teacher> teacherPage;
-        if (searchQuery != null && !searchQuery.isEmpty()) {
-            teacherPage = teacherService.searchTeachers(searchQuery, page, size);
+
+        // Kiểm tra điều kiện tìm kiếm
+        if ((email != null && !email.isEmpty()) ||
+                (name != null && !name.isEmpty()) ||
+                (phoneNumber != null && !phoneNumber.isEmpty())) {
+            teacherPage = teacherService.searchTeachers(email, name, phoneNumber, PageRequest.of(page, size));
         } else {
-            // Nếu không có searchQuery, lấy tất cả giáo viên với phân trang
             teacherPage = teacherService.getTeachersPage(page, size);
         }
+
         model.addAttribute("teachers", teacherPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", teacherPage.getTotalPages());
         model.addAttribute("totalItems", teacherPage.getTotalElements());
-        model.addAttribute("searchQuery", searchQuery);
+        model.addAttribute("email", email);
+        model.addAttribute("name", name);
+        model.addAttribute("phoneNumber", phoneNumber);
 
         if (model.containsAttribute("toastMessage")) {
             String toastMessage = (String) model.getAttribute("toastMessage");
@@ -75,8 +91,8 @@ public class AdminController {
             model.addAttribute("toastType", toastType);
         }
         return "admin/teacher/teacher-list";
-
     }
+
 
     @GetMapping("/teacher/create")
     public String createTeacherForm(Model model) {
@@ -93,9 +109,6 @@ public class AdminController {
                                 @RequestParam("avatar") MultipartFile avatar,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
-        // Trim dữ liệu đầu vào
-        teacherDTO.setEmail(teacherDTO.getEmail().trim());
-        teacherDTO.setName(teacherDTO.getName().trim());
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("faculties", facultyService.findAll());
@@ -157,10 +170,6 @@ public class AdminController {
                               @RequestParam(value = "avatar", required = false) MultipartFile avatar,
                               Model model,
                               RedirectAttributes redirectAttributes) {
-
-        // Trim dữ liệu đầu vào
-        teacherDTO.setEmail(teacherDTO.getEmail().trim());
-        teacherDTO.setName(teacherDTO.getName().trim());
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("faculties", facultyService.findAll());
@@ -266,16 +275,6 @@ public class AdminController {
                                Model model,
                                RedirectAttributes redirectAttributes) {
 
-
-        String trimmedEmail = studentDTO.getEmail().trim();
-        String trimmedName = studentDTO.getName().trim();
-
-        String cleanedEmail = trimmedEmail.replaceAll("\\s+", " ");
-        String cleanedName = trimmedName.replaceAll("\\s+", " ");
-
-        studentDTO.setEmail(cleanedEmail);
-        studentDTO.setName(cleanedName);
-
         if (bindingResult.hasErrors()) {
             model.addAttribute("clazzes", clazzService.getAllClazzes());
             return "admin/student/student-create";
@@ -352,15 +351,6 @@ public class AdminController {
                               @RequestParam(value = "avatar", required = false) MultipartFile avatar,
                               Model model,
                               RedirectAttributes redirectAttributes) {
-
-        String trimmedEmail = studentDTO.getEmail().trim();
-        String trimmedName = studentDTO.getName().trim();
-
-        String cleanedEmail = trimmedEmail.replaceAll("\\s+", " ");
-        String cleanedName = trimmedName.replaceAll("\\s+", " ");
-
-        studentDTO.setEmail(cleanedEmail);
-        studentDTO.setName(cleanedName);
 
 
         if (bindingResult.hasErrors()) {

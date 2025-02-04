@@ -42,7 +42,7 @@ public class Student {
     private List<Comment> comments;
 
     public String getTeamStatus() {
-        return team == null ? "Chưa có nhóm" : "Đã có nhóm";
+        return team == null ? "Chưa có nhóm" : team.getName();
     }
 
 }

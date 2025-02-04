@@ -1,5 +1,6 @@
 package com.c0324.casestudym5.util;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.Duration;
@@ -49,6 +50,12 @@ public class DateTimeUtil {
             age--;
         }
         return age;
+    }
+
+    public static LocalDate convertDateToLocalDate(Date dateToConvert) {
+        return dateToConvert.toInstant()
+          .atZone(ZoneId.systemDefault())
+          .toLocalDate();
     }
 
 }

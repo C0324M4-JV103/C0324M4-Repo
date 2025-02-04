@@ -86,6 +86,7 @@ public class CommentService {
                     .receiver(teacher.getUser())
                     .sender(student.getUser())
                     .createdAt(createdAt)
+                    .url("/progress/" + topicId)
                     .build();
             notificationService.sendNotification(notification);
             String subject = "Thắc mắc của sinh viên về đề tài " + topic.getName();
@@ -127,6 +128,7 @@ public class CommentService {
                     .receiver(receiver)
                     .sender(teacher.getUser())
                     .createdAt(repliedAt)
+                    .url("/progress/" + topicId)
                     .build();
             notificationService.sendNotification(notification);
 
