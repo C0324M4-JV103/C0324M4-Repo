@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CODEGYM</title>
+    <title>Đăng ký đề tài</title>
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.2/css/bootstrap.min.css}"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -38,7 +38,7 @@
                     </div>
                 </div>
 
-                <form th:action="@{/student/handle-register-topic}" th:object="${registerTopic}" method="post" enctype="multipart/form-data">
+                <form th:action="@{/student/handle-register-topic}" th:object="${registerTopic}" method="post" enctype="multipart/form-data" id="register-form">
                     <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-start">
                         <h1 class="lead fw-normal mb-0 me-3 main-title">Đăng ký đề tài</h1>
                     </div>
@@ -78,6 +78,11 @@
                 </form>
             </div>
 
+            <!-- Vertical line -->
+            <div class="col-1 d-flex justify-content-center">
+                <div class="vr" id="verticalLine"></div>
+            </div>
+
             <!-- Topic list -->
             <div class="col-md-9 col-lg-6 col-xl-5 d-none d-md-block">
                 <div th:if="${#lists.isEmpty(topics)}">
@@ -93,11 +98,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="topic, loop : ${topics}">
-                            <td class="text-center" th:text="${loop.count}"></td>
+                        <tr th:each="topic : ${topics}">
+                            <td class="text-center" th:text="${topic.id}"></td>
                             <td th:text="${topic.name}"></td>
                             <td>
-                                <a th:href="@{/topics/{id}(id=${topic.id})}" class="btn btn-primary view-topic">Xem</a>
+                                <a th:href="@{/student/topic/{id}(id=${topic.id})}" class="btn btn-primary view-topic">Xem</a>
                             </td>
                         </tr>
                         </tbody>
@@ -147,6 +152,10 @@
 
 <!-- Footer -->
 <div th:replace="~{layout :: footer}"></div>
+<!-- Script -->
+<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/notification.js}"></script>
+<script th:src="@{/js/toast-noti.js}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <!-- Disable submit button after form submission -->
@@ -186,10 +195,13 @@
         });
     });
 </script>
-<script th:src="@{/webjars/bootstrap/5.3.2/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/webjars/sockjs-client/1.5.1/sockjs.min.js}"></script>
-<script th:src="@{/webjars/stomp-websocket/2.3.3/stomp.min.js}"></script>
-<script th:src="@{/js/notification.js}"></script>
-<script th:src="@{/js/toast-noti.js}"></script>
+<!-- Adjust vertical line height -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var formHeight = document.getElementById('register-form').offsetHeight;
+        var verticalLine = document.getElementById('verticalLine');
+        verticalLine.style.minHeight = formHeight + 'px';
+    });
+</script>
 </body>
 </html>

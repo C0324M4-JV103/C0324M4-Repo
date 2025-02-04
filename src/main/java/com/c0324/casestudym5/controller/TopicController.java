@@ -2,7 +2,6 @@
 package com.c0324.casestudym5.controller;
 
 import com.c0324.casestudym5.dto.CommentDTO;
-import com.c0324.casestudym5.dto.NotificationDTO;
 import com.c0324.casestudym5.dto.ProgressReportDTO;
 import com.c0324.casestudym5.model.*;
 import com.c0324.casestudym5.service.*;
@@ -24,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,14 +35,12 @@ public class TopicController {
     private final TopicService topicService;
     private final UserService userService;
     private final CommentService commentService;
-    private final NotificationService notificationService;
     private final StudentService studentService;
 
 
     @Autowired
-    public TopicController(TopicService topicService, NotificationService notificationService, StudentService studentService, UserService userService, CommentService commentService) {
+    public TopicController(TopicService topicService, StudentService studentService, UserService userService, CommentService commentService) {
         this.topicService = topicService;
-        this.notificationService = notificationService;
         this.studentService = studentService;
         this.userService = userService;
         this.commentService = commentService;
@@ -66,7 +64,7 @@ public class TopicController {
     }
 
     @GetMapping("/topics/{topicId}/progress/{phaseNum}")
-    public String showProgressReportForm(@PathVariable Long topicId, @PathVariable Integer phaseNum , Model model, RedirectAttributes redirectAttributes) {
+    public String showProgressReportForm(@PathVariable Long topicId, @PathVariable Integer phaseNum, Model model, RedirectAttributes redirectAttributes) {
         Topic topic = topicService.getTopicById(topicId);
         User currentUser = getCurrentUser();
         Student student = studentService.findStudentByUserId(currentUser.getId());
@@ -88,18 +86,18 @@ public class TopicController {
             redirectAttributes.addFlashAttribute("errorMessage", "Giai đoạn không hợp lệ");
             return "redirect:/progress/" + topic.getId();
         }
-        // check status of phase if status = 0 => redirect to info team
-        Phase phase = topic.getPhases().stream()
+        // get the latest phase
+        Phase latestPhase = topic.getPhases().stream()
                 .filter(p -> Objects.equals(p.getPhaseNumber(), phaseNum))
-                .findFirst()
+                .max(Comparator.comparing(Phase::getReportDate))
                 .orElse(null);
 
-        if (phase == null || phase.getStatus() == 0) {
+        if (latestPhase == null || latestPhase.getStatus() == 0) {
             redirectAttributes.addFlashAttribute("errorMessage", "Giai đoạn này chưa được mở.");
             return "redirect:/progress/" + topic.getId();
         }
 
-        ProgressReportDTO progressReportDTO = CommonMapper.mapPhaseToProgressReportDTO(phase);
+        ProgressReportDTO progressReportDTO = CommonMapper.mapPhaseToProgressReportDTO(latestPhase);
         model.addAttribute("topic", topic);
         model.addAttribute("reportTopic", progressReportDTO);
         return "team/progress-report";

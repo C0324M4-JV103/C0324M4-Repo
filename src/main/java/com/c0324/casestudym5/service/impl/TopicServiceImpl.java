@@ -228,36 +228,67 @@ public class TopicServiceImpl implements TopicService {
     @Override
     @Transactional
     public String submitProgressReport(Long topicId, ProgressReportDTO progressReportDTO, Student student) {
-        Phase phase = phaseRepository.findByTopicIdAndPhaseNumber(topicId, progressReportDTO.getPhaseNumber());
-        if (phase == null) {
+        List<Phase> phases = phaseRepository.findByTopicIdAndPhaseNumber(topicId, progressReportDTO.getPhaseNumber());
+        if (phases.isEmpty()) {
             return "Không tìm thấy giai đoạn";
         }
+        Phase phase = phases.get(0); // Assuming you want to work with the first result
         if (!Objects.equals(student.getTeam().getTopic().getId(), topicId) || phase.getStatus() == AppConstants.PHASE_CLOSED) {
             return "Không thể báo cáo giai đoạn này";
         }
         if (progressReportDTO.getPhaseProgressPercent() > 100 || progressReportDTO.getPhaseProgressPercent() < 50) {
             return "Tiến độ không hợp lệ (50% - 100%)";
         }
-        phase.setStatus(AppConstants.PHASE_COMPLETED);
-        phase.setReportContent(progressReportDTO.getReportContent());
-        phase.setPhaseProgressPercent(progressReportDTO.getPhaseProgressPercent());
-        phase.setReportDate(LocalDateTime.now());
-        phase.setReporter(student.getUser());
 
-        // upload report file to firebase
-        try {
-            if (progressReportDTO.getReportFile() == null) {
-                return "Không tìm thấy file báo cáo";
+        // Clone the phase if it has been submitted before (status = 2)
+        if (phase.getStatus() == AppConstants.PHASE_COMPLETED) {
+            Phase newPhase = new Phase();
+            newPhase.setTopic(phase.getTopic());
+            newPhase.setPhaseNumber(phase.getPhaseNumber());
+            newPhase.setStatus(AppConstants.PHASE_COMPLETED);
+            newPhase.setStartDate(phase.getStartDate());
+            newPhase.setEndDate(phase.getEndDate());
+            newPhase.setPhaseProgressPercent(progressReportDTO.getPhaseProgressPercent());
+            newPhase.setReportContent(progressReportDTO.getReportContent());
+            newPhase.setReportDate(LocalDateTime.now());
+            newPhase.setReporter(student.getUser());
+
+            // Upload report file to firebase
+            try {
+                if (progressReportDTO.getReportFile() == null) {
+                    return "Không tìm thấy file báo cáo";
+                }
+                String url_report = firebaseService.uploadFileToFireBase(progressReportDTO.getReportFile(), AppConstants.URL_REPORT);
+                MultiFile report = new MultiFile();
+                report.setUrl(url_report);
+                multiFileRepository.save(report);
+                newPhase.setReportFile(report);
+            } catch (Exception e) {
+                return "Lỗi khi tải file lên";
             }
-            String url_report = firebaseService.uploadFileToFireBase(progressReportDTO.getReportFile(), AppConstants.URL_REPORT);
-            MultiFile report = new MultiFile();
-            report.setUrl(url_report);
-            multiFileRepository.save(report);
-            phase.setReportFile(report);
-        } catch (Exception e) {
-            return "Lỗi khi tải file lên";
+            phaseRepository.save(newPhase);
+        } else {
+            phase.setStatus(AppConstants.PHASE_COMPLETED);
+            phase.setReportContent(progressReportDTO.getReportContent());
+            phase.setPhaseProgressPercent(progressReportDTO.getPhaseProgressPercent());
+            phase.setReportDate(LocalDateTime.now());
+            phase.setReporter(student.getUser());
+
+            // Upload report file to firebase
+            try {
+                if (progressReportDTO.getReportFile() == null) {
+                    return "Không tìm thấy file báo cáo";
+                }
+                String url_report = firebaseService.uploadFileToFireBase(progressReportDTO.getReportFile(), AppConstants.URL_REPORT);
+                MultiFile report = new MultiFile();
+                report.setUrl(url_report);
+                multiFileRepository.save(report);
+                phase.setReportFile(report);
+            } catch (Exception e) {
+                return "Lỗi khi tải file lên";
+            }
+            phaseRepository.save(phase);
         }
-        phaseRepository.save(phase);
 
         // Send notification to the teacher
         Topic topic = phase.getTopic();
@@ -277,16 +308,15 @@ public class TopicServiceImpl implements TopicService {
         }
 
         // Open next phase and check if all phases are completed
-        Phase next_phase = phaseRepository.findByTopicIdAndPhaseNumber(topicId, progressReportDTO.getPhaseNumber() + 1);
+        Phase next_phase = phaseRepository.findByTopicIdAndPhaseNumber(topicId, progressReportDTO.getPhaseNumber() + 1).stream().findFirst().orElse(null);
         if (next_phase != null && next_phase.getStatus() == AppConstants.PHASE_CLOSED) {
             next_phase.setStatus(AppConstants.PHASE_OPENED);
             phaseRepository.save(next_phase);
-        }
-        else {
+        } else {
             boolean allPhasesCompleted = true;
             for (int i = 1; i <= 4; i++) {
-                Phase p = phaseRepository.findByTopicIdAndPhaseNumber(topicId, i);
-                if (p.getStatus() != AppConstants.PHASE_COMPLETED) {
+                Phase p = phaseRepository.findByTopicIdAndPhaseNumber(topicId, i).stream().findFirst().orElse(null);
+                if (p == null || p.getStatus() != AppConstants.PHASE_COMPLETED) {
                     allPhasesCompleted = false;
                     break;
                 }
@@ -318,7 +348,11 @@ public class TopicServiceImpl implements TopicService {
         topic.setDeadline(newDeadline);
 
         // set last phase end date to new deadline
-        Phase lastPhase = phaseRepository.findByTopicIdAndPhaseNumber(topic.getId(), 4);
+        List<Phase> lastPhases = phaseRepository.findByTopicIdAndPhaseNumber(topic.getId(), 4);
+        if (lastPhases.isEmpty()) {
+            throw new RuntimeException("Không tìm thấy giai đoạn cuối");
+        }
+        Phase lastPhase = lastPhases.get(0); // Only one last phase
         lastPhase.setEndDate(LocalDate.from(DateTimeUtil.convertDateToLocalDate(newDeadline).atStartOfDay()));
         phaseRepository.save(lastPhase);
 
