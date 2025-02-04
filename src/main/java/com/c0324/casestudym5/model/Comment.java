@@ -18,10 +18,10 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "VARCHAR(50)", nullable = false)
+    @Column(columnDefinition = "VARCHAR(255)", nullable = false)
     private String content;
 
-    @Column(columnDefinition = "VARCHAR(50)")
+    @Column(columnDefinition = "VARCHAR(255)")
     private String reply;
 
     @Column(columnDefinition = "TIMESTAMP", nullable = false)

@@ -41,6 +41,7 @@
 
     <form th:action="@{/teacher/documents/upload}" th:object="${documentDTO}" method="post"
           enctype="multipart/form-data" class="container">
+        <div th:if="${notFoundError}" th:text="${notFoundError}" class="error"></div>
         <div class="mb-3">
             <label for="name" class="form-label">Tên tài liệu</label>
             <input type="text" id="name" th:field="*{name}" class="form-control">
@@ -56,11 +57,11 @@
             <input type="file" id="file" th:field="*{fileUrl}" class="form-control">
             <div th:if="${#fields.hasErrors('fileUrl')}" th:errors="*{fileUrl}" class="error"></div>
         </div>
-        <div class="mb-3">
-            <label for="teacherId" class="form-label">ID giáo viên</label>
-            <input type="text" id="teacherId" th:field="*{teacher}" class="form-control">
-            <div th:if="${#fields.hasErrors('teacher')}" th:errors="*{teacher}" class="error"></div>
-        </div>
+<!--        <div class="mb-3">-->
+<!--            <label for="teacherId" class="form-label">ID giáo viên</label>-->
+<!--            <input type="text" id="teacherId" th:field="*{teacher}" class="form-control">-->
+<!--            <div th:if="${#fields.hasErrors('teacher')}" th:errors="*{teacher}" class="error"></div>-->
+<!--        </div>-->
         <button type="submit" class="btn btn-primary w-100">Tải lên</button>
     </form>
     <div th:if="${!documents.isEmpty()}">

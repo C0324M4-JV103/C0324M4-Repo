@@ -1,6 +1,5 @@
 package com.c0324.casestudym5.dto;
 
-import com.c0324.casestudym5.model.MultiFile;
 import com.c0324.casestudym5.model.Teacher;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,7 +28,6 @@ public class DocumentDTO {
 
     private boolean status;
 
-    @NotNull(message = "Giáo viên không được để trống")
     private Teacher teacher;
 
     @NotNull(message = "File không được để trống")

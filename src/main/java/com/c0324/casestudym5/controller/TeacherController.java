@@ -185,7 +185,9 @@ public class TeacherController {
     public String showDocumentsPage(@RequestParam(defaultValue = "0") int page,
                                     @RequestParam(defaultValue = "5") int size,
                                     Model model) {
-        Page<Document> documentPage = documentService.getDocumentsPage(page, size);
+        User currentUser = userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Teacher teacher = teacherService.getTeacherByEmail(currentUser.getEmail());
+        Page<Document> documentPage = documentService.getDocumentsPage(page, size, teacher);
         model.addAttribute("documentDTO", new DocumentDTO());
         model.addAttribute("teachers", teacherService.getAllTeachers());
         model.addAttribute("documents", documentPage.getContent());
@@ -208,14 +210,23 @@ public class TeacherController {
             return "teacher/documents";
         }
 
-        Optional<Teacher> teacherOptional = teacherService.getTeacherById(documentDTO.getTeacher().getId());
-        if (teacherOptional.isEmpty()) {
+//        Optional<Teacher> teacherOptional = teacherService.getTeacherById(documentDTO.getTeacher().getId());
+//        if (teacherOptional.isEmpty()) {
+//            model.addAttribute("teachers", teacherService.getAllTeachers());
+//            model.addAttribute("documentDTO", documentDTO);
+//            model.addAttribute("error", "Không tìm thấy giáo viên.");
+//            return "teacher/documents";
+//        }
+//        Teacher teacher = teacherOptional.get();
+
+        User currentUser = userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Teacher teacher = teacherService.getTeacherByEmail(currentUser.getEmail());
+        if(teacher == null){
             model.addAttribute("teachers", teacherService.getAllTeachers());
             model.addAttribute("documentDTO", documentDTO);
-            model.addAttribute("error", "Không tìm thấy giáo viên.");
+            model.addAttribute("notFoundError", "Không tìm thấy giáo viên");
             return "teacher/documents";
         }
-        Teacher teacher = teacherOptional.get();
 
         // Upload file lên Firebase
         String fileUrl = firebaseService.uploadFileToFireBase(documentDTO.getFileUrl(), "documents");

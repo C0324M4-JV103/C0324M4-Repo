@@ -2,8 +2,8 @@ package com.c0324.casestudym5.service;
 
 import com.c0324.casestudym5.model.Document;
 import com.c0324.casestudym5.model.MultiFile;
+import com.c0324.casestudym5.model.Teacher;
 import com.c0324.casestudym5.repository.DocumentRepository;
-import com.c0324.casestudym5.repository.FacultyRepository;
 import com.c0324.casestudym5.repository.MultiFileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,25 +11,25 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
 public class DocumentService {
 
-    @Autowired
-    private DocumentRepository documentRepository;
+    private final DocumentRepository documentRepository;
+
+    private final MultiFileRepository multiFileRepository;
 
     @Autowired
-    private MultiFileRepository multiFileRepository;
+    public DocumentService(DocumentRepository documentRepository, MultiFileRepository multiFileRepository) {
+        this.documentRepository = documentRepository;
+        this.multiFileRepository = multiFileRepository;
+    }
 
-    public Page<Document> getDocumentsPage(int page, int size) {
+    public Page<Document> getDocumentsPage(int page, int size, Teacher teacher) {
         Pageable pageable = PageRequest.of(page, size);
-        return documentRepository.findAll(pageable);
+        return documentRepository.findByTeacherId(pageable, teacher.getId());
     }
 
-    public List<Document> getAllDocuments() {
-        return documentRepository.findAll();
-    }
 
     public void saveDocument(Document document, String fileUrl) {
         MultiFile file = new MultiFile();
@@ -40,8 +40,5 @@ public class DocumentService {
         documentRepository.save(document);
     }
 
-    public Page<Document> getDocuments(Pageable pageable) {
-        return documentRepository.findAll(pageable);
-    }
 }
 
