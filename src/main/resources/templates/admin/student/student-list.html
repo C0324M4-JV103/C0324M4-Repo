@@ -47,15 +47,13 @@
                 <option value=''>Chọn lớp</option>
                 <option th:each="c : ${classes}" th:text="${c.name}" th:value="${c.id}"></option>
             </select>
-            <button type="submit" class="btn btn-primary me-1" style="width: 400px;">
-                <i class="fas fa-search"></i> Tìm kiếm
+            <button type="submit" class="btn btn-primary me-1">
+                <i class="fas fa-search"></i>
             </button>
-            <a th:href="@{/admin/student}" class="btn btn-danger" style="width: 500px;">
-                <i class="fa-solid fa-x"></i> Bỏ tìm kiếm
+            <a th:href="@{/admin/student}" class="btn btn-danger">
+                <i class="fa-solid fa-x"></i>
             </a>
         </form>
-    </div>
-    <div class="mb-5">
         <a href="/admin/create-student" class="btn btn-success">
             <i class="fas fa-plus"></i> Thêm sinh viên
         </a>
