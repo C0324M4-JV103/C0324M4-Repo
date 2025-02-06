@@ -33,7 +33,7 @@
                             Tải file mô tả
                         </a>
                     </div>
-                    <div class="topic-meta mt-3" th:if="${topic.team == null and topic.approved == null}">
+                    <div class="topic-meta mt-3" th:if="${topic.team != null}">
                         <div class="topic-meta-item">
                             <i class="fa-solid fa-user"></i>
                             <span th:if="${topic.team}" class="ms-1" th:text="${topic.team.name}">Tên nhóm</span>
