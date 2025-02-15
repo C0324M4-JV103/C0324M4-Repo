@@ -12,12 +12,14 @@ import com.c0324.casestudym5.util.DateTimeUtil;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -48,6 +50,12 @@ public class AdminController {
         this.clazzService = clazzService;
         this.userService = userService;
         this.facultyService = facultyService;
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder dataBinder) {
+        StringTrimmerEditor stringTrimmerEditor = new StringTrimmerEditor(true);
+        dataBinder.registerCustomEditor(String.class, stringTrimmerEditor);
     }
 
     // Teacher Functionality
@@ -101,9 +109,6 @@ public class AdminController {
                                 @RequestParam("avatar") MultipartFile avatar,
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
-        // Trim dữ liệu đầu vào
-        teacherDTO.setEmail(teacherDTO.getEmail().trim());
-        teacherDTO.setName(teacherDTO.getName().trim());
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("faculties", facultyService.findAll());
@@ -165,10 +170,6 @@ public class AdminController {
                               @RequestParam(value = "avatar", required = false) MultipartFile avatar,
                               Model model,
                               RedirectAttributes redirectAttributes) {
-
-        // Trim dữ liệu đầu vào
-        teacherDTO.setEmail(teacherDTO.getEmail().trim());
-        teacherDTO.setName(teacherDTO.getName().trim());
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("faculties", facultyService.findAll());
@@ -274,16 +275,6 @@ public class AdminController {
                                Model model,
                                RedirectAttributes redirectAttributes) {
 
-
-        String trimmedEmail = studentDTO.getEmail().trim();
-        String trimmedName = studentDTO.getName().trim();
-
-        String cleanedEmail = trimmedEmail.replaceAll("\\s+", " ");
-        String cleanedName = trimmedName.replaceAll("\\s+", " ");
-
-        studentDTO.setEmail(cleanedEmail);
-        studentDTO.setName(cleanedName);
-
         if (bindingResult.hasErrors()) {
             model.addAttribute("clazzes", clazzService.getAllClazzes());
             return "admin/student/student-create";
@@ -360,15 +351,6 @@ public class AdminController {
                               @RequestParam(value = "avatar", required = false) MultipartFile avatar,
                               Model model,
                               RedirectAttributes redirectAttributes) {
-
-        String trimmedEmail = studentDTO.getEmail().trim();
-        String trimmedName = studentDTO.getName().trim();
-
-        String cleanedEmail = trimmedEmail.replaceAll("\\s+", " ");
-        String cleanedName = trimmedName.replaceAll("\\s+", " ");
-
-        studentDTO.setEmail(cleanedEmail);
-        studentDTO.setName(cleanedName);
 
 
         if (bindingResult.hasErrors()) {

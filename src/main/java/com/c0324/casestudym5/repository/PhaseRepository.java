@@ -9,5 +9,5 @@ import java.util.List;
 public interface PhaseRepository extends JpaRepository<Phase, Long> {
     List<Phase> findPhaseByTopicOrderByIdAsc(Topic topic);
 
-    Phase findByTopicIdAndPhaseNumber(Long topicId, Integer phaseNumber);
+    List<Phase> findByTopicIdAndPhaseNumber(Long topicId, int phaseNumber);
 }

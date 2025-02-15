@@ -34,18 +34,16 @@ public class StudentController {
     private final TeamService teamService;
     private final TopicService topicService;
     private final InvitationService invitationService;
-    private final NotificationService notificationService;
     private final TeacherService teacherService;
     private final DocumentService documentService;
 
     @Autowired
-    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService, NotificationService notificationService, TeacherService teacherService, DocumentService documentService) {
+    public StudentController(StudentService studentService, UserService userService, TeamService teamService, TopicService topicService, InvitationService invitationService, TeacherService teacherService, DocumentService documentService) {
         this.studentService = studentService;
         this.userService = userService;
         this.teamService = teamService;
         this.topicService = topicService;
         this.invitationService = invitationService;
-        this.notificationService = notificationService;
         this.teacherService = teacherService;
         this.documentService = documentService;
     }
@@ -409,11 +407,13 @@ public class StudentController {
 
     @GetMapping("/documents")
     public String getAllDocuments(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "3") int size,
+                                  @RequestParam(defaultValue = "5") int size,
                                   Model model) {
-        Pageable pageable = PageRequest.of(page, size);
-
-        Page<Document> documentPage = documentService.getDocuments(pageable);
+        User currentUser = userService.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        Student currentStudent = studentService.findStudentByUserId(currentUser.getId());
+        Team currentTeam = currentStudent.getTeam();
+        Teacher teacher = currentTeam.getTeacher();
+        Page<Document> documentPage = documentService.getDocumentsPage(page, size, teacher);
 
         model.addAttribute("documents", documentPage.getContent());
         model.addAttribute("currentPage", page);
